@@ -1,0 +1,3777 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir Resepsionis - FITNESS CENTER FV UNY</title>
+    <!-- Access Control dynamically loaded -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #0a2540;
+            --primary-brand: #0a2540;
+            --primary-brand-light: #163b60;
+            --primary-brand-dark: #f8fafc;
+            --accent: #ff6b00;
+            --accent-light: #ff8533;
+            --accent-dark: #e05e00;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --border-color: rgba(10,37,64,0.08);
+            --text-primary: #0a2540;
+            --text-secondary: #334155;
+            --text-light: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gold: #e2a828;
+            --font-heading: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --sidebar-w: 270px;
+            --header-h: 72px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-sm: 0 2px 8px rgba(10,37,64,0.04);
+            --shadow-md: 0 8px 24px rgba(10,37,64,0.06);
+            --shadow-lg: 0 20px 48px rgba(10,37,64,0.1);
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,h2,h3,h4,h5 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        /* LAYOUT */
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr;
+            min-height: 100vh;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dashboard-container.sidebar-collapsed {
+            grid-template-columns: 0px 1fr;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: var(--sidebar-w) 1fr;
+            }
+            .dashboard-container.sidebar-collapsed {
+                grid-template-columns: 0px 1fr;
+            }
+        }
+
+        /* SIDEBAR (Light Premium Theme) */
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid rgba(10,37,64,0.08);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-shadow: 2px 0 15px rgba(10,37,64,0.03);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed {
+            border-right: none;
+            width: 0 !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .sidebar-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 22px 14px;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-w);
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            z-index: 101;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 3px; }
+        .sidebar::-webkit-scrollbar-track { background: transparent; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(10,37,64,0.1); border-radius: 4px; }
+
+        /* Sidebar brand */
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 10px 24px;
+            border-bottom: 1px solid rgba(10,37,64,0.06);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-brand img {
+            height: 36px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(10,37,64,0.08);
+        }
+
+        .sidebar-brand .logo-bold {
+            font-family: var(--font-heading) !important;
+            font-size: 0.92rem !important;
+            font-weight: 900 !important;
+            color: var(--primary) !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.25 !important;
+        }
+
+        .sidebar-brand .logo-accent {
+            font-family: var(--font-heading) !important;
+            font-size: 0.68rem !important;
+            font-weight: 700 !important;
+            color: var(--accent) !important;
+            letter-spacing: 1.5px !important;
+            text-transform: uppercase !important;
+            line-height: 1.25 !important;
+        }
+
+        /* User card in sidebar */
+        .sidebar-user-card {
+            background: #f8fafc;
+            border: 1px solid rgba(10,37,64,0.06);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(255,107,0,0.25);
+        }
+
+        .sidebar-user-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-user-role {
+            font-size: 0.62rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Section labels */
+        .sidebar-section-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: rgba(10,37,64,0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 0 10px;
+            margin: 6px 0 4px;
+        }
+
+        /* Menu items */
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: var(--text-secondary) !important;
+            cursor: pointer !important;
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.2px;
+            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .menu-item:hover {
+            color: var(--accent) !important;
+            background: rgba(255,107,0,0.06);
+            transform: translateX(4px);
+        }
+
+        .menu-item.active {
+            color: var(--accent) !important;
+            background: rgba(255,107,0,0.08);
+            border-left: 3px solid var(--accent);
+            box-shadow: 0 2px 10px rgba(255,107,0,0.05);
+            font-weight: 800;
+        }
+
+        .menu-item.active i {
+            color: var(--accent);
+            filter: drop-shadow(0 0 3px rgba(255,107,0,0.3));
+        }
+
+        .menu-item i { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; color: #64748b; }
+        .menu-item.active i { color: var(--accent); }
+
+        .sidebar-footer {
+            border-top: 1px solid rgba(10,37,64,0.06);
+            padding-top: 14px;
+            margin-top: 14px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hamburger-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--primary);
+            cursor: pointer !important;
+            padding: 8px;
+            border-radius: 4px;
+            transition: 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+            margin-right: 5px;
+        }
+
+        .hamburger-btn:hover {
+            background-color: #f1f5f9;
+            color: var(--accent);
+        }
+
+        /* TOP HEADER (Light Premium Theme) */
+        .top-header {
+            background: #ffffff !important;
+            border-bottom: 1.5px solid rgba(10,37,64,0.08) !important;
+            border-top: 4px solid var(--accent) !important;
+            height: var(--header-h);
+            padding: 0 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 4px 15px rgba(10,37,64,0.03);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 18px; }
+
+        .logo-text { display: flex; flex-direction: column; }
+        .logo-bold { font-family: var(--font-heading); font-size: 1rem; font-weight: 900; color: var(--primary); line-height: 1.2; letter-spacing: 0.4px; }
+        .logo-accent { font-family: var(--font-heading); font-size: 0.75rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
+
+        .header-brand-logo { height: 38px; border-radius: 6px; box-shadow: 0 2px 6px rgba(10,37,64,0.08); }
+
+        .header-divider {
+            width: 1px;
+            height: 32px;
+            background: rgba(10,37,64,0.1);
+        }
+
+        .header-page-info { display: flex; flex-direction: column; }
+        .header-page-label { font-size: 0.65rem; color: var(--text-light); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        .header-page-title { font-size: 0.95rem; font-weight: 800; color: var(--primary); font-family: var(--font-heading); }
+
+        .header-right { display: flex; align-items: center; gap: 10px; }
+
+        .header-date-chip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: #f8fafc;
+            border: 1px solid rgba(10,37,64,0.08);
+            border-radius: 8px;
+            padding: 7px 14px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: var(--font-body);
+        }
+
+        .header-date-chip i { color: var(--accent); font-size: 0.85rem; }
+
+        .header-lang-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(10,37,64,0.12);
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: var(--font-body);
+        }
+
+        .header-lang-btn:hover {
+            border-color: var(--accent);
+            background: #f8fafc;
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: calc(100% + 5px);
+            right: 0;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            min-width: 170px;
+            z-index: 110;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: fadeInDropDown 0.2s ease forwards;
+        }
+
+        .lang-dropdown a {
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #334155;
+            text-decoration: none;
+            transition: background 0.2s ease;
+            text-align: left;
+            font-family: var(--font-body);
+        }
+
+        .lang-dropdown a:hover {
+            background: #f1f5f9;
+            color: var(--accent);
+        }
+
+        .header-clock-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid rgba(10,37,64,0.08);
+            border-radius: 8px;
+            padding: 7px 14px;
+            font-family: var(--font-body);
+        }
+
+        @keyframes fadeInDropDown {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--text-secondary);
+            background: #f8fafc;
+            border: 1px solid rgba(10,37,64,0.12);
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-family: var(--font-heading);
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .btn-header:hover {
+            background: var(--accent);
+            border-color: var(--accent-light);
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255,107,0,0.2);
+        }
+
+        /* WORKSPACE */
+        .workspace { padding: 26px 28px; flex: 1; }
+
+        .workspace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+            padding-bottom: 16px;
+            border-bottom: 1.5px solid rgba(10,37,64,0.09);
+        }
+
+        .workspace-title {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -0.3px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) { .grid-layout { grid-template-columns: 1fr; } }
+
+        /* DASHBOARD PANELS */
+        .dashboard-panel {
+            background: #fff;
+            border: 1px solid rgba(10,37,64,0.08);
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: visible;
+            transition: transform 0.35s cubic-bezier(0.25,1,0.5,1), box-shadow 0.35s ease;
+        }
+
+        .dashboard-panel::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light), transparent 80%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            pointer-events: none;
+        }
+
+        .dashboard-panel:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+        .dashboard-panel:hover::after { opacity: 1; }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(10,37,64,0.07);
+        }
+
+        .panel-title {
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .editor-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-heading);
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--accent-dark);
+            border-bottom: 2px solid rgba(255,107,0,0.15);
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+        }
+
+        /* FORMS */
+        .form-group { margin-bottom: 14px; position: relative; }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 0.8px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background: #f8fafd;
+            border: 1.5px solid rgba(10,37,64,0.12);
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 0.88rem;
+            font-family: var(--font-body);
+            color: var(--text-primary);
+            transition: all 0.2s ease;
+            outline: none;
+            appearance: none;
+        }
+
+        .form-group input::placeholder { color: rgba(100,116,139,0.5); }
+        .form-group input:hover, .form-group select:hover { border-color: rgba(255,107,0,0.3); background: #fff; }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(255,107,0,0.12), 0 2px 8px rgba(255,107,0,0.08);
+        }
+
+        /* BUTTONS */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            color: #fff;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 0.88rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+            box-shadow: 0 4px 14px rgba(255,107,0,0.28);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+            transform: skewX(-18deg);
+            transition: left 0.55s ease;
+        }
+
+        .btn:hover::before { left: 160%; }
+        .btn:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 10px 28px rgba(255,107,0,0.38); }
+        .btn:active { transform: scale(0.97) !important; transition: transform 0.1s !important; }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(10,37,64,0.16);
+            color: var(--text-secondary);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: rgba(10,37,64,0.28);
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(10,37,64,0.07);
+        }
+
+        /* PRICE PREVIEW */
+        .price-preview-card {
+            background: linear-gradient(135deg, #0a2540 0%, #163b60 100%);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 18px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(10,37,64,0.25);
+        }
+
+        .price-preview-card::before {
+            content: '';
+            position: absolute;
+            top: -30px; right: -30px;
+            width: 110px; height: 110px;
+            background: radial-gradient(circle, rgba(255,107,0,0.18) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .price-preview-title { color: rgba(255,255,255,0.55); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+        .price-preview-val { color: #fff; font-size: 2.1rem; font-weight: 900; font-family: var(--font-heading); letter-spacing: -1px; line-height: 1; }
+        .price-discount-info { color: var(--accent-light); font-size: 0.75rem; font-weight: 700; margin-top: 5px; }
+
+        /* MINI STATS */
+        .mini-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+
+        .mini-stat-card {
+            background: linear-gradient(135deg, #f8fafd, #f1f5f9);
+            border: 1px solid rgba(10,37,64,0.08);
+            border-radius: 10px;
+            padding: 13px 10px;
+            text-align: center;
+            transition: all 0.22s ease;
+        }
+
+        .mini-stat-card:hover {
+            background: #fff;
+            border-color: rgba(255,107,0,0.2);
+            box-shadow: 0 4px 14px rgba(255,107,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .mini-stat-title { font-size: 0.6rem; color: var(--text-light); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; letter-spacing: 0.7px; }
+        .mini-stat-val { font-size: 1.05rem; font-weight: 900; color: var(--primary); font-family: var(--font-heading); }
+
+        /* TABLES */
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 10px; border: 1px solid rgba(10,37,64,0.07); }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.84rem; }
+
+        thead tr { background: linear-gradient(90deg, #f0f4f8, #f8fafd); }
+
+        th {
+            padding: 13px 14px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 0.68rem;
+            letter-spacing: 0.7px;
+            border-bottom: 2px solid rgba(10,37,64,0.1);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(10,37,64,0.05);
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: rgba(255,107,0,0.03); color: var(--primary); }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active {
+            background: rgba(16,185,129,0.12);
+            color: #059669;
+            border: 1px solid rgba(16,185,129,0.25);
+        }
+
+        /* TOAST */
+        .toast-popup {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+            padding: 13px 20px;
+            border-radius: 12px;
+            box-shadow: 0 12px 32px rgba(16,185,129,0.38);
+            z-index: 9999;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            font-size: 0.88rem;
+            display: none;
+            align-items: center;
+            gap: 9px;
+            animation: toastSlide 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        @keyframes toastSlide {
+            from { transform: translateX(80px) scale(0.85); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* AUTOCOMPLETE STYLING UPGRADE */
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid rgba(255, 107, 0, 0.2);
+            border-top: none;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(10, 37, 64, 0.12);
+            max-height: 250px;
+            overflow-y: auto;
+            z-index: 10000;
+            margin-top: 6px;
+            padding: 6px;
+            display: none;
+            backdrop-filter: blur(8px);
+            animation: autocompleteFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes autocompleteFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .autocomplete-suggestion {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: var(--text-primary) !important;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 2px;
+        }
+
+        .autocomplete-suggestion:last-child { margin-bottom: 0; }
+
+        .autocomplete-suggestion:hover {
+            background: rgba(255, 107, 0, 0.08);
+            padding-left: 18px;
+            color: var(--accent) !important;
+        }
+
+        .autocomplete-suggestion span {
+            color: inherit !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .autocomplete-suggestion .suggest-sub {
+            font-size: 0.72rem;
+            color: var(--text-light) !important;
+            font-weight: 500;
+        }
+
+        .calendar-selects {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        
+        .calendar-selects select {
+            border: 1px solid rgba(10,37,64,0.1);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: #f8fafc;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s;
+        }
+        
+        .calendar-selects select:hover {
+            border-color: var(--accent);
+            background: #fff;
+        }
+
+        .calendar-day-item.has-bookings {
+            position: relative;
+        }
+
+        .calendar-day-item.has-bookings::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background-color: var(--accent);
+            border-radius: 50%;
+        }
+
+        .calendar-day-item.active.has-bookings::after {
+            background-color: #ffffff;
+        }
+
+        /* SCROLL REVEAL */
+        .reveal-on-scroll { opacity: 0; transform: translateY(18px); transition: opacity 0.65s cubic-bezier(0.25,1,0.5,1), transform 0.65s cubic-bezier(0.25,1,0.5,1); }
+        .reveal-on-scroll.revealed { opacity: 1; transform: translateY(0); }
+        .delay-100 { transition-delay: 0.08s; }
+        .delay-200 { transition-delay: 0.16s; }
+        .delay-300 { transition-delay: 0.24s; }
+        .delay-400 { transition-delay: 0.32s; }
+
+        /* NAV PROFILE ICON */
+        .nav-profile-icon { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+        .nav-profile-icon:hover { transform: scale(1.12) translateY(-2px); }
+
+        /* PRINT */
+        @media print {
+            body * { visibility: hidden; }
+            #memberCardPrintArea, #memberCardPrintArea * { visibility: visible; }
+            #memberCardPrintArea {
+                position: fixed;
+                left: 50%; top: 50%;
+                transform: translate(-50%, -50%);
+                width: 350px !important;
+                height: 220px !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+            }
+            .modal-overlay { background: none !important; backdrop-filter: none !important; }
+        }
+
+        /* CUSTOM DATE PICKER & LARGE CALENDAR WIDGET */
+        .custom-date-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .custom-date-input-wrapper input {
+            width: 100%;
+            padding-right: 40px !important;
+            cursor: pointer;
+            background-color: #fff !important;
+        }
+        .custom-date-input-wrapper .calendar-icon {
+            position: absolute;
+            right: 14px;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+        .custom-calendar-widget {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 340px;
+            background: #ffffff;
+            border: 1px solid rgba(10,37,64,0.12);
+            border-radius: 14px;
+            box-shadow: 0 16px 48px rgba(10,37,64,0.18);
+            padding: 16px;
+            z-index: 99999;
+            font-family: var(--font-body);
+            animation: calWidgetPop 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            overflow: visible;
+        }
+
+        @keyframes calWidgetPop {
+            from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .calendar-header button {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .calendar-header button:hover {
+            background-color: rgba(255,107,0,0.08);
+            color: var(--accent);
+        }
+        #calendarMonthYear {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(10,37,64,0.06);
+            padding-bottom: 8px;
+        }
+        .calendar-weekdays div {
+            padding: 4px 0;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+            text-align: center;
+            min-height: 220px;
+        }
+        .calendar-day-item {
+            height: 36px;
+            width: 100%;
+            font-size: 0.83rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        .calendar-day-item:not(.empty):hover {
+            background-color: rgba(255,107,0,0.08);
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+        .calendar-day-item.active {
+            background: linear-gradient(135deg, var(--accent), #d95e00);
+            color: #ffffff !important;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(255,107,0,0.35);
+        }
+        .calendar-day-item.empty {
+            cursor: default;
+            background: none !important;
+            pointer-events: none;
+        }
+        .calendar-day-item.today {
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            font-weight: 800;
+        }
+        .calendar-day-item.today.active {
+            border-color: transparent;
+        }
+        /* Custom Logout Button */
+        .btn-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(225, 29, 72, 0.05);
+            border: 1.5px solid rgba(225, 29, 72, 0.2);
+            color: #e11d48;
+            padding: 8px 18px;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.3, 1);
+            box-shadow: 0 2px 4px rgba(225, 29, 72, 0.02);
+        }
+
+        .btn-logout i {
+            transition: transform 0.3s ease;
+            color: #f43f5e;
+        }
+
+        .btn-logout:hover {
+            background: #be123c;
+            border-color: #be123c;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(190, 18, 60, 0.25);
+        }
+
+        .btn-logout:hover i {
+            transform: translateX(4px);
+            color: #ffffff;
+        }
+
+        /* Sidebar Logout Button */
+        .btn-logout-sidebar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: rgba(225, 29, 72, 0.04);
+            border: 1.5px solid rgba(225, 29, 72, 0.15);
+            color: #e11d48;
+            padding: 10px 16px;
+            border-radius: 9px;
+            font-size: 0.82rem;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 1, 0.3, 1);
+            box-shadow: 0 2px 4px rgba(225, 29, 72, 0.02);
+        }
+
+        .btn-logout-sidebar i {
+            transition: transform 0.3s ease;
+            color: #f43f5e;
+        }
+
+        .btn-logout-sidebar:hover {
+            background: #be123c;
+            border-color: #be123c;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(190, 18, 60, 0.2);
+        }
+
+        .btn-logout-sidebar:hover i {
+            transform: translateX(4px);
+            color: #ffffff;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script type="module" src="./supabaseSync.js"></script>
+</head>
+<body>
+
+    <div class="dashboard-container" id="dashboardContainer">
+        <!-- Aside Sidebar -->
+        <aside class="sidebar" id="receptionistSidebar">
+            <div class="sidebar-inner">
+                <!-- Brand -->
+                <div class="sidebar-brand">
+                    <img src="assets/logo.png" alt="Logo Fitness Center FV UNY">
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="logo-bold" style="color: var(--primary);">FITNESS CENTER</span>
+                        <span class="logo-accent" style="color: var(--accent);">FV UNY</span>
+                    </div>
+                </div>
+
+
+
+                <!-- Navigation -->
+                <div class="sidebar-section-label">Menu Utama</div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" onclick="switchPanel('kasir')" id="nav_kasir">
+                        <i class="fa-solid fa-cash-register"></i> Kasir Kunjungan
+                    </li>
+                    <li class="menu-item" onclick="switchPanel('booking')" id="nav_booking">
+                        <i class="fa-solid fa-calendar-check"></i> Booking &amp; Jadwal
+                    </li>
+                    <li class="menu-item" onclick="switchPanel('products')" id="nav_products">
+                        <i class="fa-solid fa-bag-shopping"></i> Kasir Produk
+                    </li>
+                    <div class="sidebar-section-label" style="margin-top:10px;">Laporan</div>
+                    <li class="menu-item" onclick="switchPanel('reports')" id="nav_reports">
+                        <i class="fa-solid fa-chart-line"></i> Kas &amp; Laporan
+                    </li>
+                </ul>
+
+                <!-- Footer -->
+                <div class="sidebar-footer">
+                    <button class="btn-logout-sidebar" onclick="handleLogout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <div class="main-content" id="mainContent">
+            <!-- TOP HEADER -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="hamburger-btn" id="sidebarToggleBtn" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <img src="assets/logo.png" alt="Logo Fitness Center" class="header-brand-logo">
+                    <div class="header-divider"></div>
+                    <div style="display: flex; flex-direction: column; text-align: left;">
+                        <span style="font-size: 1.15rem; font-weight: 800; color: var(--primary); font-family: var(--font-heading); line-height: 1.2;">FITNESS CENTER</span>
+                        <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-light); opacity: 0.85; line-height: 1.2;" data-translate="fv_uny_portal">Fakultas Vokasi UNY</span>
+                    </div>
+                </div>
+                <div class="header-right">
+
+                    <!-- Admin Sync Status Badge -->
+                    <div id="adminSyncBadge" title="Status sinkronisasi data dari Admin" style="display: flex; align-items: center; gap: 6px; background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25); border-radius: 30px; padding: 5px 12px; font-size: 0.72rem; font-weight: 700; color: #059669; cursor: default; transition: all 0.3s; letter-spacing: 0.3px;">
+                        <span id="adminSyncDot" style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#10b981; animation: pulseDot 2s infinite;"></span>
+                        <span id="adminSyncLabel">TERHUBUNG ADMIN</span>
+                    </div>
+
+                    <!-- Clock Box -->
+                    <div class="header-clock-card">
+                        <i class="fa-regular fa-clock" style="font-size: 1.1rem; color: var(--text-light); opacity: 0.7;"></i>
+                        <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.1;">
+                            <span id="liveTime" style="font-size: 0.95rem; font-weight: 800; color: var(--primary);">--.--</span>
+                            <span id="liveDay" style="font-size: 0.7rem; font-weight: 600; color: #64748b; text-transform: capitalize;">--</span>
+                        </div>
+                    </div>
+
+
+                    <a href="javascript:void(0)" onclick="handleLogout()" class="btn-logout">
+                        <i class="fa-solid fa-right-from-bracket"></i> <span data-translate="logout">Keluar</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- WORKSPACE -->
+            <main class="workspace">
+                <!-- PANEL 1: KASIR KUNJUNGAN -->
+                <div id="panel_kasir">
+                    <div class="workspace-header" style="margin-bottom: 25px;">
+                        <h2 class="workspace-title">Kasir Tiket Kunjungan & Member</h2>
+                    </div>
+
+                    <div class="grid-layout">
+            <!-- Left Column: Input Form -->
+            <div class="dashboard-panel">
+                <h3 class="editor-section-title"><i class="fa-solid fa-cash-register"></i> Input Tiket Masuk</h3>
+                <form onsubmit="handleKasirSubmit(event)" id="kasirForm">
+                    <div class="form-group" style="position: relative;">
+                        <label for="kasirName">Nama Pengunjung</label>
+                        <input type="text" id="kasirName" required placeholder="Nama lengkap pengunjung..." autocomplete="off">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="kasirPhone">No. WhatsApp (opsional)</label>
+                        <input type="tel" id="kasirPhone" placeholder="Contoh: 0851xxxxxxxx">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kasirCivitas">Status Civitas</label>
+                        <select id="kasirCivitas" onchange="updateKasirPrice(); toggleKasirNimField();" required>
+                            <option value="UNY (Mahasiswa, Tendik/Dosen)">UNY (Mahasiswa, Tendik/Dosen)</option>
+                            <option value="Alumni UNY">Alumni UNY</option>
+                            <option value="Umum / Publik">Masyarakat Umum</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="kasirNimGroup">
+                        <label for="kasirNim">Nomor Identitas (NIM / NIP / NIDN)</label>
+                        <input type="text" id="kasirNim" placeholder="Masukkan NIM / NIP Anda...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kasirKategori">Kategori Akses</label>
+                        <select id="kasirKategori" onchange="updateKasirDurations(); updateKasirPrice(); updateKasirSubmitButton();" required>
+                            <option value="Member">Member (Bulanan)</option>
+                            <option value="Insidental">Insidental (Harian)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="kasirDurationGroup">
+                        <label for="kasirDuration">Durasi</label>
+                        <select id="kasirDuration" onchange="updateKasirPrice()" required>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="kasirTrainerGroup">
+                        <label for="kasirTrainer">Pelatih Pilihan (Opsional)</label>
+                        <select id="kasirTrainer" onchange="updateKasirPrice()">
+                            <option value="Mandiri (Tanpa Pelatih)">Mandiri (Tanpa Pelatih)</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="kasirClassGroup">
+                        <label for="kasirClass">Pilih Program Kelas (Opsional)</label>
+                        <select id="kasirClass" onchange="updateKasirPrice()">
+                            <option value="Tanpa Kelas">Tidak memilih / Tanpa Kelas</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="kasirEquipmentGroup">
+                        <label for="kasirEquipment">Pilih Kategori Alat (Opsional)</label>
+                        <select id="kasirEquipment" onchange="updateKasirPrice()">
+                            <option value="Tanpa Alat">Tidak memilih / Tanpa Alat</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kasirPayment">Metode Pembayaran</label>
+                        <select id="kasirPayment" required onchange="toggleKasirBankSelect()">
+                            <option value="Tunai">Tunai (Cash)</option>
+                            <option value="QRIS">QRIS</option>
+                            <option value="Transfer Bank">Transfer Bank</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="kasirBankSelectGroup" style="display: none;">
+                        <label for="kasirBankSelect">Pilih Bank Transfer</label>
+                        <select id="kasirBankSelect">
+                            <!-- Loaded dynamically from admin banks -->
+                        </select>
+                    </div>
+
+                    <!-- Price Preview -->
+                    <div class="price-preview-card">
+                        <div class="price-preview-title">Total Harga</div>
+                        <div id="kasirPriceDisplay" class="price-preview-val">Rp 0</div>
+                        <div id="kasirDiscountInfo" class="price-discount-info" style="display: none;"></div>
+                    </div>
+
+                    <button type="submit" id="kasirSubmitBtn" class="btn"><i class="fa-solid fa-address-card"></i> Cetak & Simpan Kartu Member</button>
+                </form>
+            </div>
+
+            <!-- Right Column: Today's Logs -->
+            <div class="dashboard-panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Log Tiket Hari Ini</h3>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span id="kasirTodayCount" style="background: var(--accent); color: #fff; font-weight: 700; font-size: 0.75rem; padding: 3px 10px; border-radius: 30px;">0 tiket</span>
+                        <button class="btn btn-outline" style="width: auto; font-size: 0.75rem; padding: 6px 12px;" onclick="printKasirSummary()"><i class="fa-solid fa-print"></i> Cetak Rekap</button>
+                    </div>
+                </div>
+
+                <!-- Mini summary stats cards -->
+                <div class="mini-stats-grid">
+                    <div class="mini-stat-card">
+                        <div class="mini-stat-title">Total Pendapatan</div>
+                        <div id="kasirTodayRevenue" class="mini-stat-val">Rp 0</div>
+                    </div>
+                    <div class="mini-stat-card">
+                        <div class="mini-stat-title">Member</div>
+                        <div id="kasirTodayMember" class="mini-stat-val">0</div>
+                    </div>
+                    <div class="mini-stat-card">
+                        <div class="mini-stat-title">Insidental</div>
+                        <div id="kasirTodayInsidental" class="mini-stat-val">0</div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama</th>
+                                <th>Kategori</th>
+                                <th>Durasi</th>
+                                <th>Pelatih</th>
+                                <th>Kelas</th>
+                                <th>Alat</th>
+                                <th>Harga</th>
+                                <th>Metode</th>
+                                <th>Waktu</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kasirLogBody">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+                    <!-- FINANCIAL TREND PANEL (Moved to bottom of Kasir) -->
+                    <div class="dashboard-panel" style="margin-top: 30px; clear: both;">
+                        <div class="panel-header">
+                            <h3 class="panel-title"><i class="fa-solid fa-chart-line"></i> Tren Pemasukan Fitness Center</h3>
+                            <span style="font-size: 0.8rem; color: var(--text-light);">7 Periode Transaksi Terakhir</span>
+                        </div>
+                        <div id="revenueChartContainer" style="padding: 10px 0;"></div>
+                    </div>
+                </div>
+
+                <!-- PANEL 2: BOOKING & JADWAL -->
+                <div id="panel_booking" style="display: none;">
+                    <div class="workspace-header" style="margin-bottom: 25px;">
+                        <h2 class="workspace-title">Booking & Jadwal Latihan</h2>
+                    </div>
+                    <div class="grid-layout">
+                        <!-- Left Column: Booking Form -->
+                        <div class="dashboard-panel">
+                            <h3 class="editor-section-title"><i class="fa-solid fa-calendar-plus"></i> Buat Jadwal Baru</h3>
+                            <form onsubmit="handleNewBooking(event)" id="bookingForm">
+                                <div class="form-group" style="position: relative;">
+                                    <label for="bookingMemberName">Cari Member (Nama/Phone)</label>
+                                    <input type="text" id="bookingMemberName" required placeholder="Cari nama member..." autocomplete="off">
+                                </div>
+                                <div class="form-group" style="position: relative; overflow: visible; z-index: 100;">
+                                    <label for="bookingDate">Tanggal Latihan</label>
+                                    <div class="custom-date-input-wrapper">
+                                        <input type="text" id="bookingDate" required placeholder="Pilih tanggal..." readonly onclick="toggleCustomCalendar(event)">
+                                        <i class="fa-regular fa-calendar-days calendar-icon" style="pointer-events: none;"></i>
+                                    </div>
+                                    <!-- LARGE CUSTOM CALENDAR WIDGET -->
+                                    <div id="customCalendarWidget" class="custom-calendar-widget" style="display: none;">
+                                        <div class="calendar-header">
+                                            <button type="button" id="prevMonthBtn"><i class="fa-solid fa-chevron-left"></i></button>
+                                            <div class="calendar-selects">
+                                                <select id="calendarMonthSelect" onchange="onCalendarSelectChange()"></select>
+                                                <select id="calendarYearSelect" onchange="onCalendarSelectChange()"></select>
+                                            </div>
+                                            <button type="button" id="nextMonthBtn"><i class="fa-solid fa-chevron-right"></i></button>
+                                        </div>
+                                        <div class="calendar-weekdays">
+                                            <div>Min</div><div>Sen</div><div>Sel</div><div>Rab</div><div>Kam</div><div>Jum</div><div>Sab</div>
+                                        </div>
+                                        <div class="calendar-days" id="calendarDaysGrid">
+                                            <!-- Generated dynamically by JS -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingDay">Hari</label>
+                                    <select id="bookingDay" required>
+                                        <option value="Senin">Senin</option>
+                                        <option value="Selasa">Selasa</option>
+                                        <option value="Rabu">Rabu</option>
+                                        <option value="Kamis">Kamis</option>
+                                        <option value="Jumat">Jumat</option>
+                                        <option value="Sabtu">Sabtu</option>
+                                        <option value="Minggu">Minggu</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingTime">Waktu Latihan</label>
+                                    <select id="bookingTime" required>
+                                        <option value="Pagi (07:00 - 11:00)">Pagi (07:00 - 11:00)</option>
+                                        <option value="Siang (11:00 - 15:00)">Siang (11:00 - 15:00)</option>
+                                        <option value="Sore/Malam (15:00 - 21:00)">Sore/Malam (15:00 - 21:00)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingTrainer">Pelatih Pilihan (Opsional)</label>
+                                    <select id="bookingTrainer">
+                                        <option value="Mandiri (Tanpa Pelatih)">Mandiri (Tanpa Pelatih)</option>
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingKelas">Pilih Program Kelas (Opsional)</label>
+                                    <select id="bookingKelas">
+                                        <option value="Tanpa Kelas">Tidak memilih / Tanpa Kelas</option>
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bookingAlat">Pilih Kategori Alat (Opsional)</label>
+                                    <select id="bookingAlat">
+                                        <option value="Tanpa Alat">Tidak memilih / Tanpa Alat</option>
+                                        <!-- Populated dynamically -->
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn"><i class="fa-solid fa-calendar-check"></i> Simpan Jadwal Booking</button>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Booking Lists -->
+                        <div class="dashboard-panel">
+                            <h3 class="editor-section-title"><i class="fa-solid fa-calendar-days"></i> Daftar Booking Jadwal</h3>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Member</th>
+                                            <th>Tanggal</th>
+                                            <th>Hari</th>
+                                            <th>Waktu</th>
+                                            <th>Pelatih</th>
+                                            <th>Kelas</th>
+                                            <th>Alat</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="bookingLogBody">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 3: KASIR PRODUK -->
+                <div id="panel_products" style="display: none;">
+                    <div class="workspace-header" style="margin-bottom: 25px;">
+                        <h2 class="workspace-title">Kasir Pembelian Produk</h2>
+                    </div>
+                    <div class="grid-layout">
+                        <!-- Left Column: Sell Product Form -->
+                        <div class="dashboard-panel">
+                            <h3 class="editor-section-title"><i class="fa-solid fa-cart-plus"></i> Input Penjualan Produk</h3>
+                            <form onsubmit="handleProductSaleSubmit(event)" id="productSaleForm">
+                                <div class="form-group">
+                                    <label for="saleBuyerName">Nama Pembeli</label>
+                                    <input type="text" id="saleBuyerName" required placeholder="Nama lengkap pembeli..." autocomplete="off">
+                                </div>
+                                <div class="form-group">
+                                    <label for="saleProductSelect">Pilih Produk</label>
+                                    <select id="saleProductSelect" onchange="updateProductSalePrice()" required>
+                                        <!-- Loaded dynamically from fit_uny_products -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="saleQty">Jumlah (Qty)</label>
+                                    <input type="number" id="saleQty" value="1" min="1" onchange="updateProductSalePrice()" oninput="updateProductSalePrice()" required>
+                                </div>
+                                <div class="form-group">
+                                     <label for="salePayment">Metode Pembayaran</label>
+                                     <select id="salePayment" required onchange="toggleSaleBankSelect()">
+                                         <option value="Tunai">Tunai (Cash)</option>
+                                         <option value="QRIS">QRIS</option>
+                                         <option value="Transfer Bank">Transfer Bank</option>
+                                     </select>
+                                 </div>
+
+                                 <div class="form-group" id="saleBankSelectGroup" style="display: none;">
+                                     <label for="saleBankSelect">Pilih Bank Transfer</label>
+                                     <select id="saleBankSelect">
+                                         <!-- Loaded dynamically from admin banks -->
+                                     </select>
+                                 </div>
+
+                                <!-- Price Preview -->
+                                <div class="price-preview-card">
+                                    <div class="price-preview-title">Total Pembayaran</div>
+                                    <div id="salePriceDisplay" class="price-preview-val">Rp 0</div>
+                                </div>
+
+                                <button type="submit" class="btn"><i class="fa-solid fa-cash-register"></i> Proses Penjualan</button>
+                            </form>
+                        </div>
+
+                        <!-- Right Column: Recent Sales Logs -->
+                        <div class="dashboard-panel">
+                            <h3 class="editor-section-title"><i class="fa-solid fa-receipt"></i> Log Penjualan Produk</h3>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Pembeli</th>
+                                            <th>Produk</th>
+                                            <th>Qty</th>
+                                            <th>Total Bayar</th>
+                                            <th>Metode</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productSalesLogBody">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 4: KAS & LAPORAN -->
+                <div id="panel_reports" style="display: none;">
+                    <div class="workspace-header" style="margin-bottom: 25px;">
+                        <h2 class="workspace-title">Laporan Keuangan & Statistik</h2>
+                    </div>
+
+                    <!-- Financial Cards -->
+                    <div class="mini-stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 30px;">
+                        <div class="mini-stat-card">
+                            <div class="mini-stat-title">Pemasukan Tiket/Member</div>
+                            <div id="reportTotalRegIncome" class="mini-stat-val">Rp 0</div>
+                        </div>
+                        <div class="mini-stat-card">
+                            <div class="mini-stat-title">Pemasukan Produk</div>
+                            <div id="reportTotalProdIncome" class="mini-stat-val">Rp 0</div>
+                        </div>
+                        <div class="mini-stat-card">
+                            <div class="mini-stat-title">Total Pendapatan</div>
+                            <div id="reportTotalNetIncome" class="mini-stat-val">Rp 0</div>
+                        </div>
+                        <div class="mini-stat-card">
+                            <div class="mini-stat-title">Produk Terjual</div>
+                            <div id="reportTotalProdQty" class="mini-stat-val">0 unit</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-panel" style="margin-bottom: 30px;">
+                        <div class="panel-header">
+                            <h3 class="panel-title"><i class="fa-solid fa-chart-line"></i> Grafik Tren Pemasukan</h3>
+                            <span style="font-size: 0.8rem; color: var(--text-light);">7 Periode Transaksi Terakhir</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 10px 0;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-gray); margin-bottom: 10px;"><i class="fa-solid fa-chart-bar"></i> Pendapatan per Periode (Bar Chart)</div>
+                                <canvas id="reportBarChart" style="width:100%;max-height:220px;"></canvas>
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-gray); margin-bottom: 10px;"><i class="fa-solid fa-chart-line"></i> Tren Kumulatif Pendapatan (Line Chart)</div>
+                                <canvas id="reportLineChart" style="width:100%;max-height:220px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid-layout" style="grid-template-columns: 1fr 1fr;">
+                        <!-- Left: Registration Income Table -->
+                        <div class="dashboard-panel">
+                            <h3 class="editor-section-title"><i class="fa-solid fa-users"></i> Pemasukan Registrasi</h3>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Nama</th>
+                                            <th>Kategori</th>
+                                            <th>Harga</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reportRegsTableBody">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Right: Product Sales Income Table -->
+                        <div class="dashboard-panel">
+                            <h3 class="editor-section-title"><i class="fa-solid fa-box-open"></i> Pemasukan Produk</h3>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Produk</th>
+                                            <th>Qty</th>
+                                            <th>Total Bayar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="reportProductsTableBody">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+     <!-- PRINT MEMBER CARD MODAL -->
+     <div class="modal-overlay" id="memberCardModal" style="display: none; position: fixed; inset: 0; background: rgba(3,15,40,0.7); align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(8px);">
+        <div style="background: #fff; border-radius: 22px; padding: 32px 28px; max-width: 500px; width: 95%; box-shadow: 0 32px 80px rgba(0,0,0,0.35); animation: modalPop 0.4s cubic-bezier(0.34,1.56,0.64,1); position: relative; overflow: hidden;">
+            <!-- Modal top gradient bar -->
+            <div style="position:absolute; top:0; left:0; right:0; height:4px; background: linear-gradient(90deg, #ff6b00, #ffa333, #ff6b00); background-size: 200%; animation: shimmerBar 2s linear infinite;"></div>
+
+            <style>
+                @keyframes modalPop { from { transform: scale(0.85) translateY(20px); opacity:0; } to { transform: scale(1) translateY(0); opacity:1; } }
+                @keyframes shimmerBar { 0% { background-position: 0%; } 100% { background-position: 200%; } }
+                @keyframes cardGlow { 0%,100% { box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(226,168,40,0.12); } 50% { box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 50px rgba(226,168,40,0.22); } }
+            </style>
+
+            <h3 style="font-family:var(--font-heading); font-size:1.05rem; font-weight:900; color:#0a2540; text-align:center; margin-bottom:22px; text-transform:uppercase; letter-spacing:0.5px;">
+                <i class="fa-solid fa-id-card" style="color:#ff6b00; margin-right:8px;"></i> Cetak Kartu Anggota
+            </h3>
+
+            <!-- ══════════════════════════════════
+                 PREMIUM MEMBER CARD
+            ══════════════════════════════════ -->
+            <div id="memberCardPrintArea" style="
+                margin: 0 auto 22px;
+                width: 100%;
+                max-width: 420px;
+                height: 240px;
+                border-radius: 18px;
+                background: linear-gradient(135deg, #0c1826 0%, #0f2035 35%, #152844 60%, #0a1020 100%);
+                color: #fff;
+                padding: 20px 22px;
+                position: relative;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(226,168,40,0.12);
+                text-align: left;
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                font-family: var(--font-heading);
+                border: 1px solid rgba(226,168,40,0.2);
+                animation: cardGlow 4s ease-in-out infinite;
+            ">
+                <!-- Background mesh/texture overlay -->
+                <div style="position:absolute; inset:0; opacity:0.04; background-image: repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,1) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,1) 29px); pointer-events:none; z-index:1;"></div>
+
+                <!-- Holographic shimmer stripe -->
+                <div style="position:absolute; top:0; left:0; right:0; height:3px; background: linear-gradient(90deg, transparent 0%, rgba(226,168,40,0.6) 20%, rgba(255,200,80,0.9) 40%, rgba(226,168,40,0.6) 60%, transparent 100%); z-index:3;"></div>
+
+                <!-- Decorative radial glows -->
+                <div style="position:absolute; top:-50px; right:-50px; width:180px; height:180px; background: radial-gradient(circle, rgba(226,168,40,0.15) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:2;"></div>
+                <div style="position:absolute; bottom:-60px; left:-30px; width:200px; height:200px; background: radial-gradient(circle, rgba(255,107,0,0.1) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:2;"></div>
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:280px; height:280px; background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, transparent 70%); border-radius:50%; pointer-events:none; z-index:2;"></div>
+
+                <!-- ── CARD HEADER ── -->
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:5; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    <div>
+                        <div style="font-size:0.9rem; font-weight:900; letter-spacing:1.5px; color:#fff; line-height:1;">FITNESS CENTER</div>
+                        <div style="font-size:0.6rem; font-weight:700; color:#e2a828; letter-spacing:2px; margin-top:2px; text-transform:uppercase;">VOKASI UNY · MEMBER CARD</div>
+                    </div>
+                    <!-- Gold EMV Chip -->
+                    <div style="width:40px; height:30px; background:linear-gradient(135deg, #fce0ad 0%, #e8b84b 40%, #d4a017 60%, #b8860b 100%); border-radius:5px; box-shadow:0 2px 8px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3); position:relative; overflow:hidden; flex-shrink:0;">
+                        <div style="position:absolute; top:0; left:0; right:0; bottom:0; border:0.5px solid rgba(0,0,0,0.2); border-radius:5px;"></div>
+                        <div style="position:absolute; top:50%; left:0; right:0; height:0.5px; background:rgba(0,0,0,0.3);"></div>
+                        <div style="position:absolute; left:50%; top:0; bottom:0; width:0.5px; background:rgba(0,0,0,0.3);"></div>
+                        <div style="position:absolute; top:25%; left:20%; right:20%; bottom:25%; border:0.5px solid rgba(0,0,0,0.15); border-radius:2px;"></div>
+                    </div>
+                </div>
+
+                <!-- ── CARD BODY ── -->
+                <div style="position:relative; z-index:5; flex:1; display:flex; flex-direction:column; justify-content:flex-end; gap:8px; padding-top:10px;">
+                    <div>
+                        <span id="printCardMemberId" style="font-size:0.72rem; font-weight:700; color:#e2a828; font-family:'Courier New',monospace; letter-spacing:3px; display:block; margin-bottom:3px;">FC0001</span>
+                        <span id="printCardName" style="font-size:1.3rem; font-weight:900; text-transform:uppercase; color:#fff; letter-spacing:0.5px; display:block; text-shadow:0 2px 8px rgba(0,0,0,0.5);">MEMBER NAME</span>
+                    </div>
+
+                    <!-- Info row -->
+                    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                        <div style="display:flex; gap:18px;">
+                            <div>
+                                <div style="font-size:0.42rem; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px;">Masa Berlaku</div>
+                                <div style="font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.9);" id="printCardExpiry">29 Juli 2026</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.42rem; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px;">Tipe</div>
+                                <div style="font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.9);" id="printCardType">Mahasiswa UNY</div>
+                            </div>
+                            <div>
+                                <div style="font-size:0.42rem; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px;">NIM / NIP</div>
+                                <div style="font-size:0.65rem; font-weight:700; color:rgba(255,255,255,0.9);" id="printCardNim">-</div>
+                            </div>
+                        </div>
+
+                        <!-- Right side: Status + QR -->
+                        <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px; flex-shrink:0;">
+                            <span style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; font-size:0.5rem; font-weight:900; padding:3px 9px; border-radius:20px; text-transform:uppercase; letter-spacing:1px; box-shadow:0 3px 8px rgba(16,185,129,0.4);">● ACTIVE</span>
+                            <div style="width:48px; height:48px; background:#fff; border-radius:6px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,0.4); padding:3px;">
+                                <i class="fa-solid fa-qrcode" style="font-size:2.4rem; color:#000;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom holographic bar -->
+                <div style="position:absolute; bottom:0; left:0; right:0; height:2.5px; background:linear-gradient(90deg,transparent,rgba(226,168,40,0.5),rgba(255,200,80,0.8),rgba(226,168,40,0.5),transparent); z-index:3;"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex; gap:12px; margin-top:6px;">
+                <button onclick="closeMemberCardModal()" style="flex:1; padding:12px; border-radius:10px; border:1.5px solid rgba(10,37,64,0.18); background:transparent; color:#475569; font-family:var(--font-heading); font-weight:700; font-size:0.88rem; text-transform:uppercase; cursor:pointer; transition:all 0.2s; letter-spacing:0.5px;">
+                    Batal
+                </button>
+                <button onclick="triggerCardPrint()" style="flex:2; padding:12px; border-radius:10px; border:none; background:linear-gradient(135deg,#ff6b00,#e05e00); color:#fff; font-family:var(--font-heading); font-weight:800; font-size:0.88rem; text-transform:uppercase; cursor:pointer; transition:all 0.3s; letter-spacing:0.5px; box-shadow:0 6px 18px rgba(255,107,0,0.35); display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <i class="fa-solid fa-print"></i> Cetak Kartu
+                </button>
+            </div>
+        </div>
+     </div>
+
+     <!-- TOAST POPUP NOTIFICATION -->
+    <div class="toast-popup" id="toastNotify">
+        <i class="fa-solid fa-circle-check"></i> Perubahan berhasil disimpan!
+    </div>
+
+    <!-- ADMIN SYNC TOAST -->
+    <div id="adminSyncToast" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background: linear-gradient(135deg, #0a2540, #163b60); color:#fff; padding: 12px 22px; border-radius: 30px; font-size: 0.82rem; font-weight: 700; z-index: 9999; box-shadow: 0 8px 32px rgba(10,37,64,0.3); border: 1px solid rgba(255,107,0,0.3); letter-spacing: 0.3px; display:none; align-items:center; gap:10px;">
+        <i class="fa-solid fa-rotate" style="color:#ff6b00; animation: spin 1s linear infinite;"></i>
+        <span id="adminSyncToastMsg">Data Admin diperbarui!</span>
+    </div>
+
+    <!-- CONTROLLER ENGINE -->
+    <script>
+        // Route Guard: Restrict access to staff/admin sessions
+        if (sessionStorage.getItem("fit_uny_staff_authorized") !== "true") {
+            alert("Akses Terlarang: Halaman ini khusus untuk staf resmi.");
+            window.location.href = "login-resepsionis.html";
+        }
+
+        // ============================================================
+        // ADMIN SYNC ENGINE — Reads all data set by admin from localStorage
+        // ============================================================
+        function showAdminSyncToast(message) {
+            const toast = document.getElementById("adminSyncToast");
+            const msg = document.getElementById("adminSyncToastMsg");
+            if (!toast) return;
+            if (msg) msg.innerText = message || "Data dari Admin diperbarui!";
+            toast.style.display = "flex";
+            setTimeout(() => { toast.style.display = "none"; }, 3500);
+        }
+
+        function updateSyncBadge(synced) {
+            const badge = document.getElementById("adminSyncBadge");
+            const dot   = document.getElementById("adminSyncDot");
+            const label = document.getElementById("adminSyncLabel");
+            if (!badge) return;
+            if (synced) {
+                badge.style.background = "rgba(16,185,129,0.08)";
+                badge.style.borderColor = "rgba(16,185,129,0.25)";
+                badge.style.color = "#059669";
+                if (dot)   { dot.style.background = "#10b981"; }
+                if (label) label.innerText = "TERHUBUNG ADMIN";
+            } else {
+                badge.style.background = "rgba(239,68,68,0.08)";
+                badge.style.borderColor = "rgba(239,68,68,0.25)";
+                badge.style.color = "#dc2626";
+                if (dot)   { dot.style.background = "#ef4444"; }
+                if (label) label.innerText = "DATA LOKAL";
+            }
+        }
+
+        /**
+         * syncFromAdmin() — Reload semua data dari localStorage (yang diatur admin).
+         * Dipanggil saat: (1) halaman load, (2) setiap panel aktif, (3) storage event.
+         */
+        function syncFromAdmin(showToastNotif) {
+            // 1. Reload Trainer options
+            loadKasirTrainerOptions();
+            loadBookingSelectOptions();
+
+            // 2. Reload Kelas (Class) options
+            loadKasirClassOptions();
+
+            // 3. Reload Equipment options
+            loadKasirEquipmentOptions();
+
+            // 4. Reload payment methods from admin-configured banks
+            loadPaymentMethodsFromAdmin();
+
+            // 5. Reload price calculation (pricing + discounts from admin)
+            updateKasirPrice();
+
+            // 6. Update badge status
+            const hasAdminData = !!(localStorage.getItem("fit_uny_trainers") ||
+                                    localStorage.getItem("fit_uny_pricing")  ||
+                                    localStorage.getItem("fit_uny_products"));
+            updateSyncBadge(hasAdminData);
+
+            // 7. Optional toast notification
+            if (showToastNotif) {
+                showAdminSyncToast("🔄 Data Admin berhasil disinkronkan!");
+            }
+        }
+
+        /**
+         * loadPaymentMethodsFromAdmin() — Populate semua select metode pembayaran
+         * menggunakan data bank yang dikonfigurasi admin (fit_uny_banks).
+         */
+        function toggleKasirBankSelect() {
+            const pVal = document.getElementById("kasirPayment").value;
+            const group = document.getElementById("kasirBankSelectGroup");
+            const select = document.getElementById("kasirBankSelect");
+            if (!group || !select) return;
+            if (pVal === "Transfer Bank") {
+                group.style.display = "block";
+                select.setAttribute("required", "required");
+            } else {
+                group.style.display = "none";
+                select.removeAttribute("required");
+            }
+        }
+
+        function toggleSaleBankSelect() {
+            const pVal = document.getElementById("salePayment").value;
+            const group = document.getElementById("saleBankSelectGroup");
+            const select = document.getElementById("saleBankSelect");
+            if (!group || !select) return;
+            if (pVal === "Transfer Bank") {
+                group.style.display = "block";
+                select.setAttribute("required", "required");
+            } else {
+                group.style.display = "none";
+                select.removeAttribute("required");
+            }
+        }
+
+        function loadPaymentMethodsFromAdmin() {
+            const banks = JSON.parse(localStorage.getItem("fit_uny_banks")) || [];
+
+            const defaultMethods = [
+                { id: "tunai",    name: "Tunai (Cash)" },
+                { id: "qris",     name: "QRIS" },
+                { id: "transfer", name: "Transfer Bank" }
+            ];
+
+            // Build main option list
+            const optionsHtml = defaultMethods.map(m =>
+                `<option value="${m.name}">${m.name}</option>`
+            ).join("");
+
+            // Apply to kasir payment
+            const kasirPaymentEl = document.getElementById("kasirPayment");
+            if (kasirPaymentEl) {
+                const currentVal = kasirPaymentEl.value;
+                kasirPaymentEl.innerHTML = optionsHtml;
+                if (currentVal) kasirPaymentEl.value = currentVal;
+            }
+
+            // Apply to sale payment
+            const salePaymentEl = document.getElementById("salePayment");
+            if (salePaymentEl) {
+                const currentVal = salePaymentEl.value;
+                salePaymentEl.innerHTML = optionsHtml;
+                if (currentVal) salePaymentEl.value = currentVal;
+            }
+
+            // Build bank option list for sub-select
+            let bankOptionsHtml = "";
+            if (banks.length > 0) {
+                banks.forEach(b => {
+                    bankOptionsHtml += `<option value="${b.name}">${b.name} (${b.number})</option>`;
+                });
+            } else {
+                bankOptionsHtml = `<option value="Umum">Transfer Bank (Umum)</option>`;
+            }
+
+            const kasirBankSelectEl = document.getElementById("kasirBankSelect");
+            if (kasirBankSelectEl) {
+                kasirBankSelectEl.innerHTML = bankOptionsHtml;
+            }
+
+            const saleBankSelectEl = document.getElementById("saleBankSelect");
+            if (saleBankSelectEl) {
+                saleBankSelectEl.innerHTML = bankOptionsHtml;
+            }
+
+            toggleKasirBankSelect();
+            toggleSaleBankSelect();
+        }
+
+        const DEFAULT_PRICING = {
+            student: {
+                registration: 0,
+                member: { 1: 150000, 3: 375000 },
+                incidental: 20000
+            },
+            alumni: {
+                registration: 10000,
+                member: { 1: 150000 },
+                incidental: 35000
+            },
+            public: {
+                registration: 10000,
+                member: { 1: 170000, 2: 320000, 3: 460000 },
+                incidental: 35000
+            }
+        };
+
+        const DEFAULT_DISCOUNTS = {
+            student: { member: 0, incidental: 0 },
+            alumni:  { member: 0, incidental: 0 },
+            public:  { member: 0, incidental: 0 }
+        };
+
+        const DEFAULT_TRAINERS = [
+            {
+                id: "coach_budi",
+                name: "Coach Budi Santoso",
+                specialty_id: "trainer_1_special",
+                specialty_id_val: "Diet & Nutrisi Spesialis",
+                specialty_en: "Diet & Nutrition Specialist",
+                quota_filled: 8,
+                quota_max: 10,
+                bio_id: "Budi Santoso adalah lulusan Ilmu Keolahragaan UNY dengan pengalaman lebih dari 6 tahun di bidang nutrisi dan manajemen berat badan. Memiliki sertifikasi pelatih kebugaran nasional dan ahli gizi olahraga. Ia percaya bahwa kebugaran dimulai dari apa yang kita konsumsi.",
+                bio_en: "Budi Santoso is a UNY Sports Science graduate with over 6 years of experience in nutrition and weight management. Certified national fitness coach and sports nutritionist. He believes that fitness starts with what we consume.",
+                photo: "assets/trainer_male.png",
+                philosophy: "Sehat adalah investasi terbaik hidup Anda.",
+                price: 150000
+            },
+            {
+                id: "coach_sarah",
+                name: "Coach Sarah Amalia",
+                specialty_id: "trainer_2_special",
+                specialty_id_val: "Penurunan Berat Badan & Cardio",
+                specialty_en: "Weight Loss & Cardio Coach",
+                quota_filled: 6,
+                quota_max: 10,
+                bio_id: "Sarah Amalia adalah spesialis latihan kardiovaskular dan penurunan berat badan wanita. Mantan atlet atletik regional dengan sertifikasi HIIT dan Fungsional Training. Ia telah mendampingi ratusan member mencapai berat badan impian mereka secara sehat.",
+                bio_en: "Sarah Amalia is a cardiovascular training and female weight loss specialist. Former regional track athlete certified in HIIT and Functional Training. She has guided hundreds of members to healthy weight loss goals.",
+                photo: "assets/trainer_female.png",
+                philosophy: "Batasan Anda hanyalah apa yang Anda pikirkan.",
+                price: 150000
+            },
+            {
+                id: "coach_rian",
+                name: "Coach Rian Wijaya",
+                specialty_id: "trainer_3_special",
+                specialty_id_val: "Beban & Kekuatan Spesialis",
+                specialty_en: "Strength & Conditioning Specialist",
+                quota_filled: 5,
+                quota_max: 10,
+                bio_id: "Rian Wijaya adalah pelatih kekuatan berlisensi dengan spesialisasi Powerlifting dan peningkatan performa atlet. Ia memiliki sertifikasi praktisi beban dari APKI. Sangat ahli dalam mengajarkan teknik squat, bench, dan deadlift yang aman.",
+                bio_en: "Rian Wijaya is a licensed strength coach specializing in Powerlifting and athletic performance. He is a certified weight training practitioner from APKI. Highly skilled in teaching safe squat, bench, and deadlift techniques.",
+                photo: "assets/trainer_male.png",
+                philosophy: "Kekuatan fisik membangun kekuatan mental.",
+                price: 150000
+            },
+            {
+                id: "coach_dewi",
+                name: "Coach Dewi Lestari",
+                specialty_id: "trainer_4_special",
+                specialty_id_val: "Yoga & Pilates Spesialis",
+                specialty_en: "Yoga & Pilates Specialist",
+                quota_filled: 4,
+                quota_max: 10,
+                bio_id: "Dewi Lestari adalah instruktur Yoga dan Pilates bersertifikat internasional (RYT-200) dengan pengalaman lebih dari 4 tahun. Mengkhususkan diri dalam yoga restoratif, pilates penguatan core, serta meditasi pernapasan untuk kesehatan holistik.",
+                bio_en: "Dewi Lestari is an internationally certified Yoga and Pilates instructor (RYT-200) with over 4 years of experience. Specializes in restorative yoga, core pilates, and breath meditation for health.",
+                photo: "assets/trainer_female.png",
+                philosophy: "Bernapaslah dan biarkan tubuhmu bergerak dengan harmoni.",
+                price: 150000
+            }
+        ];
+
+        const DEFAULT_CLASSES = [
+            {
+                id: "class_1",
+                name_id: "Cardio & HIIT Blast",
+                name_en: "Cardio & HIIT Blast",
+                duration: "45 Menit",
+                level: "Menengah - Tinggi",
+                desc_id: "Cardio & High-Intensity Interval Training (HIIT) dirancang untuk menyelingi periode latihan anaerobik intensitas tinggi dengan pemulihan singkat. Ini sangat efektif membakar lemak dengan cepat, meningkatkan metabolisme tubuh, dan melatih daya tahan kardiovaskular dalam waktu singkat.",
+                desc_en: "Cardio & High-Intensity Interval Training (HIIT) alternates short bursts of intense anaerobic exercise with recovery periods. Highly effective for rapid fat burn, boosting metabolism, and training cardiovascular endurance.",
+                icon: "fa-fire-flame-simple",
+                price: 50000
+            },
+            {
+                id: "class_2",
+                name_id: "Yoga & Mind Balance",
+                name_en: "Yoga & Mind Balance",
+                duration: "60 Menit",
+                level: "Pemula - Menengah",
+                desc_id: "Kombinasi peregangan mendalam, postur yoga (asana), teknik pernapasan (pranayama), dan meditasi untuk meningkatkan fleksibilitas tubuh, melatih otot inti, memperbaiki postur, dan sangat efektif meredakan stres akademis maupun pekerjaan.",
+                desc_en: "A combination of deep stretching, yoga postures (asanas), breathing techniques (pranayama), and meditation to increase flexibility, train core muscles, improve posture, and relieve academic or work stress.",
+                icon: "fa-child-reaching",
+                price: 50000
+            },
+            {
+                id: "class_3",
+                name_id: "Power Lift & Strength",
+                name_en: "Power Lift & Strength",
+                duration: "50 Menit",
+                level: "Menengah",
+                desc_id: "Fokus pada penguasaan teknik dasar angkat beban seperti Squat, Bench Press, dan Deadlift secara aman dan terstruktur. Kelas ini membantu meningkatkan kepadatan tulang, membentuk massa otot, dan melatih kekuatan fungsional tubuh sehari-hari.",
+                desc_en: "Focuses on mastering fundamental compound weightlifting movements like Squats, Bench Press, and Deadlifts safely and structurally. Helps increase bone density, build muscle mass, and improve daily strength.",
+                icon: "fa-bolt",
+                price: 50000
+            },
+            {
+                id: "class_4",
+                name_id: "Spin & Peak Cycling",
+                name_en: "Spin & Peak Cycling",
+                duration: "45 Menit",
+                level: "Semua Tingkatan",
+                desc_id: "Latihan sepeda statis dalam ruangan berenergi tinggi yang dipandu musik ritmis dan instruktur dinamis. Sangat bagus untuk membakar kalori dalam jumlah besar, melatih otot kaki dan gluteus, serta minim dampak benturan pada persendian.",
+                desc_en: "An indoor cycling workout set to high-energy music and led by a dynamic instructor. Excellent for burning high calories, strengthening leg muscles, with low impact on the joints.",
+                icon: "fa-bicycle",
+                price: 50000
+            }
+        ];
+
+        const DEFAULT_EQUIPMENT = [
+            {
+                id: "strength",
+                name_id: "Strength & Resistance Area",
+                name_en: "Strength & Resistance Area",
+                desc_id: "Fokus utama bagi para atlet maupun penggiat angkat beban. Kami menyediakan area latihan beban bebas yang luas dan aman.",
+                desc_en: "Main focus for athletes or weight lifters. We provide a spacious and safe free weight training area.",
+                icon: "fa-weight-hanging",
+                price: 20000,
+                items: [
+                    { name_id: "Dumbbell Set Impor", name_en: "Imported Dumbbell Set", desc_id: "Pasangan dumbbell solid dari 2.5 kg hingga 40 kg.", desc_en: "Solid dumbbell pairs from 2.5 kg to 40 kg.", icon: "fa-dumbbell" },
+                    { name_id: "Olympic Barbells & Plates", name_en: "Olympic Barbells & Plates", desc_id: "Barbel standar olimpiade dengan bumper plate karet anti pantul.", desc_en: "Olympic standard barbells with bounce-free rubber bumper plates.", icon: "fa-bars" }
+                ]
+            },
+            {
+                id: "cardio",
+                name_id: "Cardio Theater Zone",
+                name_en: "Cardio Theater Zone",
+                desc_id: "Latih stamina kardiovaskular Anda dengan mesin kardio canggih yang dilengkapi dengan monitor detak jantung.",
+                desc_en: "Train your cardiovascular stamina with advanced cardio machines equipped with integrated heart rate monitors.",
+                icon: "fa-heart-pulse",
+                price: 20000,
+                items: [
+                    { name_id: "Treadmill Komersial", name_en: "Commercial Treadmill", desc_id: "Peredam getaran optimal, kecepatan dan kemiringan otomatis.", desc_en: "Optimal vibration absorption, auto speed and incline control.", icon: "fa-person-running" },
+                    { name_id: "Sepeda Statis & Spin Bike", name_en: "Stationary Bike & Spin Bike", desc_id: "Sistem resistensi magnetik yang sunyi dan sangat presisi.", desc_en: "Silent and highly precise magnetic resistance system.", icon: "fa-bicycle" },
+                    { name_id: "Elliptical Trainers", name_en: "Elliptical Trainers", desc_id: "Minim dampak benturan pada persendian lutut dan pergelangan kaki.", desc_en: "Low impact on knee and ankle joints.", icon: "fa-ellipsis-vertical" }
+                ]
+            },
+            {
+                id: "functional",
+                name_id: "Functional & Conditioning",
+                name_en: "Functional & Conditioning",
+                desc_id: "Peralatan dinamis untuk melatih kelincahan, daya ledak (power), fleksibilitas, dan kekuatan fungsional inti (core strength).",
+                desc_en: "Dynamic equipment to train agility, power, flexibility, and functional core strength.",
+                icon: "fa-bolt",
+                price: 20000,
+                items: [
+                    { name_id: "Medicine & Kettlebells", name_en: "Medicine & Kettlebells", desc_id: "Bahan besi cor dan karet premium untuk latihan dinamis ayunan.", desc_en: "Premium cast iron and rubber materials for dynamic swing workouts.", icon: "fa-basketball" },
+                    { name_id: "TRX Suspension Trainer", name_en: "TRX Suspension Trainer", desc_id: "Latihan berat badan sendiri untuk kestabilan sendi dan otot inti.", desc_en: "Bodyweight exercises for joint stability and core strength.", icon: "fa-lines-leaning" }
+                ]
+            }
+        ];
+
+        const DEFAULT_PRODUCTS = [
+            { id: "prod_shaker", name_id: "Shaker Whey Protein Botol Minum PURO, 400ml", name_en: "Puro Whey Protein Shaker Bottle, 400ml", price: 39000, original_price: null, image: "assets/shaker_puro.png", category: "perlengkapan" },
+            { id: "prod_handuk", name_id: "Handuk Terry Palmer 40x75 cm Cocok untuk Keringat", name_en: "Terry Palmer Hand Towel 40x75 cm for Sweat", price: 39900, original_price: null, image: "assets/handuk_terry.png", category: "lifestyle" },
+            { id: "prod_fitbar", name_id: "Fitbar Protein Chocolate 12x25gr", name_en: "Fitbar Protein Chocolate 12x25gr", price: 115100, original_price: null, image: "assets/fitbar_chocolate.png", category: "protein" },
+            { id: "prod_gloves", name_id: "Sarung Tangan untuk Gym, Nyaman dan Anti Slip untuk Pria & Wanita", name_en: "Anti-Slip Gym Gloves for Men & Women", price: 58000, original_price: null, image: "assets/sarung_tangan.png", category: "perlengkapan" },
+            { id: "prod_tumbler", name_id: "Cuculemon Tumbler Kapasitas Besar dengan Bahan Stainless Steel", name_en: "Cuculemon Stainless Steel Large Capacity Tumbler", price: 69000, original_price: 150000, image: "assets/cuculemon_tumbler.png", category: "lifestyle" }
+        ];
+
+        const DEFAULT_BANKS = [
+            { key: "bca", name: "BCA (Bank Central Asia)", number: "8023-1122-3344" },
+            { key: "mandiri", name: "Bank Mandiri", number: "137-00-5566-7788" },
+            { key: "bni", name: "BNI (Bank Negara Indonesia)", number: "0234-9988-77" },
+            { key: "bri", name: "BRI (Bank Rakyat Indonesia)", number: "6023-01-002233-53-4" }
+        ];
+
+        function initializeDatabase() {
+            if (!localStorage.getItem("fit_uny_pricing")) {
+                localStorage.setItem("fit_uny_pricing", JSON.stringify(DEFAULT_PRICING));
+            }
+            if (!localStorage.getItem("fit_uny_discounts")) {
+                localStorage.setItem("fit_uny_discounts", JSON.stringify(DEFAULT_DISCOUNTS));
+            }
+            if (!localStorage.getItem("fit_uny_trainers")) {
+                localStorage.setItem("fit_uny_trainers", JSON.stringify(DEFAULT_TRAINERS));
+            }
+            if (!localStorage.getItem("fit_uny_classes")) {
+                localStorage.setItem("fit_uny_classes", JSON.stringify(DEFAULT_CLASSES));
+            }
+            if (!localStorage.getItem("fit_uny_equipment")) {
+                localStorage.setItem("fit_uny_equipment", JSON.stringify(DEFAULT_EQUIPMENT));
+            }
+            if (!localStorage.getItem("fit_uny_products")) {
+                localStorage.setItem("fit_uny_products", JSON.stringify(DEFAULT_PRODUCTS));
+            }
+            if (!localStorage.getItem("fit_uny_banks")) {
+                localStorage.setItem("fit_uny_banks", JSON.stringify(DEFAULT_BANKS));
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Seed database with defaults if missing
+            initializeDatabase();
+
+            // Start clock
+            startLiveClock();
+            updateDateDisplay();
+
+            // ── SYNC FROM ADMIN: Load all admin-managed data on startup ──
+            syncFromAdmin(false);
+            updateKasirDurations();
+            renderKasirLog();
+            toggleKasirNimField();
+
+            // ── CROSS-TAB REAL-TIME SYNC: Detect admin changes in another tab ──
+            window.addEventListener("storage", (event) => {
+                if (!event.key || !event.key.startsWith("fit_uny_")) return;
+
+                const syncedKeys = {
+                    fit_uny_trainers:  "Daftar Pelatih diperbarui Admin",
+                    fit_uny_classes:   "Program Kelas diperbarui Admin",
+                    fit_uny_equipment: "Fasilitas/Peralatan diperbarui Admin",
+                    fit_uny_products:  "Daftar Produk diperbarui Admin",
+                    fit_uny_pricing:   "Harga Keanggotaan diperbarui Admin",
+                    fit_uny_discounts: "Diskon Khusus diperbarui Admin",
+                    fit_uny_banks:     "Metode Pembayaran diperbarui Admin"
+                };
+
+                // Handle pulse key dispatched by admin to guarantee sync fires
+                let resolvedKey = event.key;
+                let resolvedLabel = syncedKeys[event.key];
+                if (event.key === "fit_uny_admin_sync_pulse") {
+                    try {
+                        const pulse = JSON.parse(event.newValue);
+                        resolvedLabel = syncedKeys[pulse.key] || "Data Admin diperbarui";
+                        resolvedKey = pulse.key;
+                    } catch(e) {
+                        resolvedLabel = "Data Admin diperbarui";
+                    }
+                }
+
+                if (resolvedLabel) {
+                    // Re-sync all options
+                    syncFromAdmin(false);
+
+                    // Re-render currently active panel
+                    if (document.getElementById("panel_kasir") && document.getElementById("panel_kasir").style.display !== "none") {
+                        loadKasirTrainerOptions();
+                        loadKasirClassOptions();
+                        loadKasirEquipmentOptions();
+                        updateKasirPrice();
+                        renderKasirLog();
+                    } else if (document.getElementById("panel_products") && document.getElementById("panel_products").style.display !== "none") {
+                        loadProductsDropdown();
+                        renderProductSalesLog();
+                        updateProductSalePrice();
+                    } else if (document.getElementById("panel_booking") && document.getElementById("panel_booking").style.display !== "none") {
+                        loadBookingSelectOptions();
+                    }
+
+                    // Show sync notification
+                    showAdminSyncToast("🔄 " + resolvedLabel);
+                    updateSyncBadge(true);
+                }
+            });
+
+            // Collapse sidebar by default on tablet/mobile screens
+            if (window.innerWidth <= 992) {
+                const container = document.getElementById("dashboardContainer");
+                const sidebar = document.getElementById("receptionistSidebar");
+                if (container && sidebar) {
+                    container.classList.add("sidebar-collapsed");
+                    sidebar.classList.add("collapsed");
+                }
+            }
+
+            // Initialize autocomplete lookup for kasirName
+            initMemberAutocomplete("kasirName", (member) => {
+                document.getElementById("kasirName").value = member.name || "";
+                if (member.phone && document.getElementById("kasirPhone")) {
+                    document.getElementById("kasirPhone").value = member.phone;
+                }
+                if (member.status && document.getElementById("kasirCivitas")) {
+                    document.getElementById("kasirCivitas").value = member.status;
+                }
+                if (member.category && document.getElementById("kasirKategori")) {
+                    document.getElementById("kasirKategori").value = member.category;
+                    updateKasirDurations();
+                }
+                if (member.nim && document.getElementById("kasirNim")) {
+                    document.getElementById("kasirNim").value = member.nim;
+                }
+
+                // Auto-fill Trainer
+                if (document.getElementById("kasirTrainer")) {
+                    document.getElementById("kasirTrainer").value = member.trainer || "Mandiri (Tanpa Pelatih)";
+                }
+
+                // Auto-fill Class Program
+                if (document.getElementById("kasirClass")) {
+                    if (member.classProgram && member.classProgram !== "Tanpa Kelas") {
+                        const classes = JSON.parse(localStorage.getItem("fit_uny_classes")) || [];
+                        const found = classes.find(c => c.name_id === member.classProgram);
+                        document.getElementById("kasirClass").value = found ? found.id : "Tanpa Kelas";
+                    } else {
+                        document.getElementById("kasirClass").value = "Tanpa Kelas";
+                    }
+                }
+
+                // Auto-fill Equipment Category
+                if (document.getElementById("kasirEquipment")) {
+                    if (member.equipmentCat && member.equipmentCat !== "Tanpa Alat") {
+                        const equipment = JSON.parse(localStorage.getItem("fit_uny_equipment")) || [];
+                        const found = equipment.find(e => e.name_id === member.equipmentCat);
+                        document.getElementById("kasirEquipment").value = found ? found.id : "Tanpa Alat";
+                    } else {
+                        document.getElementById("kasirEquipment").value = "Tanpa Alat";
+                    }
+                }
+
+                updateKasirPrice();
+                toggleKasirNimField();
+            });
+
+            // Initialize autocomplete for Booking & Products Buyer
+            initMemberAutocomplete("bookingMemberName", (member) => {
+                document.getElementById("bookingMemberName").value = member.name || "";
+            });
+            initMemberAutocomplete("saleBuyerName", (member) => {
+                document.getElementById("saleBuyerName").value = member.name || "";
+            });
+
+            // Bind calendar month buttons dynamically to bypass scope problems
+            const prevBtn = document.getElementById("prevMonthBtn");
+            const nextBtn = document.getElementById("nextMonthBtn");
+            if (prevBtn) {
+                prevBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    changeCalendarMonth(-1);
+                };
+            }
+            if (nextBtn) {
+                nextBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    changeCalendarMonth(1);
+                };
+            }
+
+            // Scroll Reveal implementation
+            const selectors = [
+                ".dashboard-panel",
+                ".workspace-header",
+                "header.top-header"
+            ];
+            
+            selectors.forEach(selector => {
+                document.querySelectorAll(selector).forEach((el, index) => {
+                    el.classList.add("reveal-on-scroll");
+                    const staggerIdx = index % 3;
+                    if (staggerIdx > 0) {
+                        el.classList.add(`delay-${staggerIdx * 100}`);
+                    }
+                });
+            });
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("revealed");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.05,
+                rootMargin: "0px 0px -30px 0px"
+            });
+
+            document.querySelectorAll(".reveal-on-scroll").forEach(el => observer.observe(el));
+        });
+
+        // --- LIVE CLOCK & TRANSLATIONS ---
+        function startLiveClock() {
+            const timeEl = document.getElementById("liveTime");
+            const dayEl = document.getElementById("liveDay");
+            if (!timeEl || !dayEl) return;
+            
+            const daysId = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const daysEn = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            
+            const update = () => {
+                const now = new Date();
+                const hrs = String(now.getHours()).padStart(2, '0');
+                const mins = String(now.getMinutes()).padStart(2, '0');
+                timeEl.innerText = `${hrs}.${mins}`;
+                dayEl.innerText = daysId[now.getDay()];
+            };
+            update();
+            setInterval(update, 1000);
+        }
+
+        function updateDateDisplay() {
+            const elDate = document.getElementById("currentDateVal");
+            if (!elDate) return;
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            elDate.innerText = new Date().toLocaleDateString('id-ID', options);
+        }
+
+        function toggleSidebar() {
+            const container = document.getElementById("dashboardContainer");
+            const sidebar = document.getElementById("receptionistSidebar");
+            if (container && sidebar) {
+                container.classList.toggle("sidebar-collapsed");
+                sidebar.classList.toggle("collapsed");
+            }
+        }
+
+        document.addEventListener("click", () => {
+            const el = document.getElementById("langDropdown");
+            if (el) el.style.display = "none";
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById("toastNotify");
+            toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
+            toast.style.display = "block";
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 3000);
+        }
+
+        function updateKasirDurations() {
+            const kategori = document.getElementById("kasirKategori") ? document.getElementById("kasirKategori").value : "Member";
+            const civitas  = document.getElementById("kasirCivitas") ? document.getElementById("kasirCivitas").value : "UNY";
+            const dGroup   = document.getElementById("kasirDurationGroup");
+            const dSelect  = document.getElementById("kasirDuration");
+            if (!dGroup || !dSelect) return;
+
+            const trainerGroup = document.getElementById("kasirTrainerGroup");
+            const classGroup = document.getElementById("kasirClassGroup");
+            const equipGroup = document.getElementById("kasirEquipmentGroup");
+
+            if (kategori === "Insidental") {
+                dGroup.style.display = "none";
+                dSelect.innerHTML = `<option value="1 Hari">1 Hari</option>`;
+                if (trainerGroup) trainerGroup.style.display = "none";
+                if (classGroup) classGroup.style.display = "none";
+                if (equipGroup) equipGroup.style.display = "none";
+            } else {
+                dGroup.style.display = "block";
+                if (trainerGroup) trainerGroup.style.display = "block";
+                if (classGroup) classGroup.style.display = "block";
+                if (equipGroup) equipGroup.style.display = "block";
+                
+                let options = "";
+                const isUny = civitas === "UNY (Mahasiswa, Tendik/Dosen)";
+                const isAlumni = civitas === "Alumni UNY";
+                if (isUny) {
+                    options = `<option value="1 Bulan">1 Bulan</option><option value="3 Bulan">3 Bulan</option>`;
+                } else if (isAlumni) {
+                    options = `<option value="1 Bulan">1 Bulan</option>`;
+                } else {
+                    options = `<option value="1 Bulan">1 Bulan</option><option value="2 Bulan">2 Bulan</option><option value="3 Bulan">3 Bulan</option>`;
+                }
+                dSelect.innerHTML = options;
+            }
+            updateKasirPrice();
+        }
+
+        function loadKasirTrainerOptions() {
+            const trainers = JSON.parse(localStorage.getItem("fit_uny_trainers")) || DEFAULT_TRAINERS;
+            const sel = document.getElementById("kasirTrainer");
+            if (!sel) return;
+            const currentVal = sel.value;
+            sel.innerHTML = `<option value="Mandiri (Tanpa Pelatih)">Mandiri (Tanpa Pelatih)</option>`;
+            trainers.forEach(t => {
+                if (t.name) sel.innerHTML += `<option value="${t.id}">${t.name} - ${t.specialty_id_val || 'Spesialis'}</option>`;
+            });
+            if (currentVal && sel.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                sel.value = currentVal;
+            }
+        }
+
+        function loadBookingSelectOptions() {
+            // Trainer select for booking
+            const trainers = JSON.parse(localStorage.getItem("fit_uny_trainers")) || DEFAULT_TRAINERS;
+            const bookingTrainerSel = document.getElementById("bookingTrainer");
+            if (bookingTrainerSel) {
+                const currentVal = bookingTrainerSel.value;
+                bookingTrainerSel.innerHTML = `<option value="Mandiri (Tanpa Pelatih)">Mandiri (Tanpa Pelatih)</option>`;
+                trainers.forEach(t => {
+                    if (t.name) bookingTrainerSel.innerHTML += `<option value="${t.id}">${t.name} - ${t.specialty_id_val || 'Spesialis'}</option>`;
+                });
+                if (currentVal && bookingTrainerSel.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                    bookingTrainerSel.value = currentVal;
+                }
+            }
+            // Kelas select for booking
+            const classes = JSON.parse(localStorage.getItem("fit_uny_classes")) || DEFAULT_CLASSES;
+            const bookingKelasSel = document.getElementById("bookingKelas");
+            if (bookingKelasSel) {
+                const currentVal = bookingKelasSel.value;
+                bookingKelasSel.innerHTML = `<option value="Tanpa Kelas">Tidak memilih / Tanpa Kelas</option>`;
+                classes.forEach(c => {
+                    if (c.name_id) bookingKelasSel.innerHTML += `<option value="${c.id || c.name_id}">${c.name_id}</option>`;
+                });
+                if (currentVal && bookingKelasSel.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                    bookingKelasSel.value = currentVal;
+                }
+            }
+            // Alat select for booking
+            const equipment = JSON.parse(localStorage.getItem("fit_uny_equipment")) || DEFAULT_EQUIPMENT;
+            const bookingAlatSel = document.getElementById("bookingAlat");
+            if (bookingAlatSel) {
+                const currentVal = bookingAlatSel.value;
+                bookingAlatSel.innerHTML = `<option value="Tanpa Alat">Tidak memilih / Tanpa Alat</option>`;
+                equipment.forEach(e => {
+                    if (e.name_id) bookingAlatSel.innerHTML += `<option value="${e.id || e.name_id}">${e.name_id}</option>`;
+                });
+                if (currentVal && bookingAlatSel.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                    bookingAlatSel.value = currentVal;
+                }
+            }
+        }
+
+        function getKasirPrice() {
+            const civitas  = document.getElementById("kasirCivitas") ? document.getElementById("kasirCivitas").value : "";
+            const kategori = document.getElementById("kasirKategori") ? document.getElementById("kasirKategori").value : "";
+            const duration = document.getElementById("kasirDuration") ? document.getElementById("kasirDuration").value : "1 Bulan";
+
+            const pricing   = JSON.parse(localStorage.getItem("fit_uny_pricing")) || DEFAULT_PRICING;
+            const discounts = JSON.parse(localStorage.getItem("fit_uny_discounts")) || DEFAULT_DISCOUNTS;
+
+            let basePrice  = 0;
+            let discPct    = 0;
+            let catKey     = "public";
+
+            if (civitas === "UNY (Mahasiswa, Tendik/Dosen)") catKey = "student";
+            else if (civitas === "Alumni UNY") catKey = "alumni";
+
+            let months = 1;
+            if (kategori === "Insidental") {
+                basePrice = (pricing[catKey] && pricing[catKey].incidental) || 0;
+                discPct   = (discounts[catKey] && discounts[catKey].incidental) || 0;
+            } else {
+                months = parseInt(duration) || 1;
+                basePrice = (pricing[catKey] && pricing[catKey].member && pricing[catKey].member[months]) || 0;
+                discPct   = (discounts[catKey] && discounts[catKey].member) || 0;
+            }
+
+            // Calculate Addon charges
+            let addonsMonthly = 0;
+            const trainerSel = document.getElementById("kasirTrainer");
+            const classSel = document.getElementById("kasirClass");
+            const equipSel = document.getElementById("kasirEquipment");
+
+            if (kategori === "Member") {
+                if (trainerSel && trainerSel.value !== "Tidak memilih" && trainerSel.value !== "Mandiri (Tanpa Pelatih)") {
+                    const trainers = JSON.parse(localStorage.getItem("fit_uny_trainers")) || [];
+                    const found = trainers.find(t => t.id === trainerSel.value || t.name === trainerSel.value);
+                    if (found) addonsMonthly += (found.price || 0);
+                }
+                if (classSel && classSel.value !== "Tanpa Kelas") {
+                    const classes = JSON.parse(localStorage.getItem("fit_uny_classes")) || [];
+                    const found = classes.find(c => c.id === classSel.value);
+                    if (found) addonsMonthly += (found.price || 0);
+                }
+                if (equipSel && equipSel.value !== "Tanpa Alat") {
+                    const equipment = JSON.parse(localStorage.getItem("fit_uny_equipment")) || [];
+                    const found = equipment.find(e => e.id === equipSel.value);
+                    if (found) addonsMonthly += (found.price || 0);
+                }
+            }
+
+            const addonsTotal = addonsMonthly * months;
+            const discAmount = Math.round(basePrice * discPct / 100);
+            const finalPrice = basePrice - discAmount + addonsTotal;
+            return { basePrice: basePrice + addonsTotal, discPct, discAmount, finalPrice };
+        }
+
+        function updateKasirPrice() {
+            const { basePrice, discPct, discAmount, finalPrice } = getKasirPrice();
+            const display = document.getElementById("kasirPriceDisplay");
+            const discInfo = document.getElementById("kasirDiscountInfo");
+            if (!display) return;
+            display.innerText = "Rp " + finalPrice.toLocaleString('id-ID');
+            if (discPct > 0 && discInfo) {
+                discInfo.style.display = "block";
+                discInfo.innerText = `Hemat ${discPct}%  (Rp ${discAmount.toLocaleString('id-ID')} dari Rp ${basePrice.toLocaleString('id-ID')})`;
+            } else if (discInfo) {
+                discInfo.style.display = "none";
+            }
+        }
+
+        function handleKasirSubmit(event) {
+            event.preventDefault();
+            const name     = document.getElementById("kasirName").value.trim();
+            const phone    = document.getElementById("kasirPhone").value.trim();
+            const civitas  = document.getElementById("kasirCivitas").value;
+            const kategori = document.getElementById("kasirKategori").value;
+            const duration = kategori === "Insidental" ? "1 Hari" : document.getElementById("kasirDuration").value;
+            
+            // Get selected Trainer name/info
+            const trainerVal = document.getElementById("kasirTrainer").value;
+            let trainer = "Mandiri (Tanpa Pelatih)";
+            if (trainerVal !== "Mandiri (Tanpa Pelatih)" && trainerVal !== "Tidak memilih") {
+                const trainers = JSON.parse(localStorage.getItem("fit_uny_trainers")) || [];
+                const found = trainers.find(t => t.id === trainerVal || t.name === trainerVal);
+                if (found) trainer = found.name;
+            }
+
+            const classVal = document.getElementById("kasirClass").value;
+            let kasirClassName = "Tanpa Kelas";
+            if (classVal !== "Tanpa Kelas") {
+                const classes = JSON.parse(localStorage.getItem("fit_uny_classes")) || [];
+                const found = classes.find(c => c.id === classVal);
+                if (found) kasirClassName = found.name_id;
+            }
+
+            const equipVal = document.getElementById("kasirEquipment").value;
+            let kasirEquipName = "Tanpa Alat";
+            if (equipVal !== "Tanpa Alat") {
+                const equipment = JSON.parse(localStorage.getItem("fit_uny_equipment")) || [];
+                const found = equipment.find(e => e.id === equipVal);
+                if (found) kasirEquipName = found.name_id;
+            }
+
+            let payment  = document.getElementById("kasirPayment").value;
+            if (payment === "Transfer Bank") {
+                const subBankVal = document.getElementById("kasirBankSelect").value;
+                payment = "Transfer " + subBankVal;
+            }
+            const { finalPrice } = getKasirPrice();
+            const nim = document.getElementById("kasirNim").value.trim();
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+            // Generate Member ID
+            const allRegs = JSON.parse(localStorage.getItem("fit_uny_registrations")) || [];
+            const memberId = "FC" + String(allRegs.length + 1).padStart(4, "0");
+
+            const newReg = {
+                memberId, name, phone, status: civitas, category: kategori,
+                duration, trainer, classProgram: kasirClassName, equipmentCat: kasirEquipName,
+                bank: payment, price: finalPrice, nim: nim,
+                date: dateStr, time: timeStr, source: "kasir"
+            };
+
+            // Save to registrations
+            allRegs.push(newReg);
+            localStorage.setItem("fit_uny_registrations", JSON.stringify(allRegs));
+
+            // Save to kasir today log
+            const todayKey = "fit_uny_kasir_" + now.toDateString();
+            const todayLog = JSON.parse(localStorage.getItem(todayKey)) || [];
+            todayLog.push(newReg);
+            localStorage.setItem(todayKey, JSON.stringify(todayLog));
+
+            // Reset form
+            document.getElementById("kasirForm").reset();
+            toggleKasirBankSelect();
+            updateKasirDurations();
+            loadKasirTrainerOptions();
+            updateKasirPrice();
+            updateKasirSubmitButton();
+            renderKasirLog();
+            
+            if (kategori === "Member") {
+                showMemberCardModal(newReg);
+            } else {
+                showToast(`Kunjungan insidental untuk ${name} berhasil disimpan!`);
+            }
+        }
+
+        function renderKasirLog() {
+            const now = new Date();
+            const todayKey = "fit_uny_kasir_" + now.toDateString();
+            const todayLog = JSON.parse(localStorage.getItem(todayKey)) || [];
+
+            const tbody = document.getElementById("kasirLogBody");
+            if (!tbody) return;
+
+            // Update stats
+            const totalRev = todayLog.reduce((sum, t) => sum + (t.price || 0), 0);
+            const memberToday = todayLog.filter(t => t.category === 'Member').length;
+            const incToday    = todayLog.filter(t => t.category === 'Insidental').length;
+
+            if (document.getElementById("kasirTodayCount"))    document.getElementById("kasirTodayCount").innerText    = todayLog.length + " tiket";
+            if (document.getElementById("kasirTodayRevenue"))  document.getElementById("kasirTodayRevenue").innerText  = "Rp " + totalRev.toLocaleString('id-ID');
+            if (document.getElementById("kasirTodayMember"))   document.getElementById("kasirTodayMember").innerText   = memberToday;
+            if (document.getElementById("kasirTodayInsidental"))document.getElementById("kasirTodayInsidental").innerText = incToday;
+
+            tbody.innerHTML = "";
+            if (todayLog.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 20px;">Belum ada kunjungan hari ini.</td></tr>`;
+                return;
+            }
+            todayLog.forEach((t, i) => {
+                const catPill = t.category === 'Member'
+                    ? `<span class="status-pill status-active">${t.category}</span>`
+                    : `<span class="status-pill" style="background:rgba(245,158,11,0.1);color:#d97706;border:1px solid rgba(245,158,11,0.2);">${t.category}</span>`;
+                
+                const actionCell = t.category === 'Member'
+                    ? `<button class="btn btn-outline" style="padding: 6px 10px; font-size: 0.7rem; width: auto; height: auto; display: inline-flex; align-items: center; gap: 4px; border-color: var(--accent); color: var(--accent-light); cursor: pointer;" onclick="printMemberCard('${t.memberId}')"><i class="fa-solid fa-address-card"></i> Cetak Kartu</button>`
+                    : `<span style="color: var(--text-gray); font-size: 0.85rem; opacity: 0.6;">-</span>`;
+
+                const displayTrainer = (t.trainer && t.trainer !== "Mandiri (Tanpa Pelatih)" && t.trainer !== "Tidak memilih" && t.trainer !== "Tanpa Pelatih") ? t.trainer : "-";
+                const displayClass = (t.classProgram && t.classProgram !== "Tanpa Kelas" && t.classProgram !== "Tidak memilih / Tanpa Kelas") ? t.classProgram : "-";
+                const displayEquip = (t.equipmentCat && t.equipmentCat !== "Tanpa Alat" && t.equipmentCat !== "Tidak memilih / Tanpa Alat") ? t.equipmentCat : "-";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong>${t.name}</strong></td>
+                        <td>${catPill}</td>
+                        <td>${t.duration || '1 Hari'}</td>
+                        <td>${displayTrainer}</td>
+                        <td>${displayClass}</td>
+                        <td>${displayEquip}</td>
+                        <td>Rp ${(t.price||0).toLocaleString('id-ID')}</td>
+                        <td>${t.bank}</td>
+                        <td>${t.time || '-'}</td>
+                        <td>${actionCell}</td>
+                    </tr>
+                `;
+            });
+
+            // Render trend chart automatically
+            renderRevenueChart("revenueChartContainer");
+        }
+
+        function printKasirSummary() {
+            const now = new Date();
+            const todayKey = "fit_uny_kasir_" + now.toDateString();
+            const todayLog = JSON.parse(localStorage.getItem(todayKey)) || [];
+            const dateStr  = now.toLocaleDateString('id-ID', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+            const totalRev = todayLog.reduce((sum, t) => sum + (t.price || 0), 0);
+
+            let rows = todayLog.map((t, i) => `
+                <tr>
+                    <td>${i+1}</td>
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.category}</td>
+                    <td>${t.duration||'1 Hari'}</td>
+                    <td>Rp ${(t.price||0).toLocaleString('id-ID')}</td>
+                    <td>${t.bank}</td>
+                    <td>${t.time||'-'}</td>
+                </tr>`).join("");
+
+            // Grab the runtime logo src so Vite hashed paths load correctly in production
+            const logoImg = document.querySelector(".header-brand-logo");
+            const logoSrc = logoImg ? logoImg.src : "assets/logo.png";
+
+            const win = window.open("", "_blank");
+            win.document.write(`
+                <html>
+                <head>
+                    <title>Rekap Kasir - ${dateStr}</title>
+                    <style>
+                        * { box-sizing: border-box; }
+                        body {
+                            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                            padding: 30px;
+                            color: #1f2937;
+                            background-color: #ffffff;
+                            margin: 0;
+                        }
+                        .header-container {
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                            border-bottom: 3px solid #0da1a6;
+                            padding-bottom: 20px;
+                            margin-bottom: 25px;
+                        }
+                        .header-logo {
+                            height: 65px;
+                            border-radius: 4px;
+                        }
+                        .header-text {
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        .header-title {
+                            font-size: 1.6rem;
+                            font-weight: 900;
+                            color: #0a2540;
+                            margin: 0;
+                            letter-spacing: 0.5px;
+                        }
+                        .header-subtitle {
+                            font-size: 1.1rem;
+                            font-weight: 700;
+                            color: #0da1a6;
+                            margin: 0;
+                            letter-spacing: 1px;
+                        }
+                        .meta-title {
+                            font-size: 1.25rem;
+                            font-weight: 800;
+                            color: #0a2540;
+                            text-transform: uppercase;
+                            margin-top: 0;
+                            margin-bottom: 15px;
+                            letter-spacing: -0.3px;
+                        }
+                        .meta-info {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 20px;
+                            background-color: #f8fafc;
+                            border: 1px solid #e2e8f0;
+                            border-radius: 8px;
+                            padding: 15px;
+                            margin-bottom: 25px;
+                            font-size: 0.9rem;
+                        }
+                        .meta-item {
+                            color: #475569;
+                        }
+                        .meta-item strong {
+                            color: #0a2540;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 15px;
+                            border-radius: 8px;
+                            overflow: hidden;
+                            border: 1px solid #e2e8f0;
+                        }
+                        th {
+                            background-color: #0a2540;
+                            color: #ffffff;
+                            padding: 12px 16px;
+                            text-align: left;
+                            font-weight: 700;
+                            font-size: 0.85rem;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border: none;
+                        }
+                        td {
+                            padding: 12px 16px;
+                            border-bottom: 1px solid #e2e8f0;
+                            font-size: 0.85rem;
+                            color: #334155;
+                        }
+                        tr:last-child td {
+                            border-bottom: none;
+                        }
+                        tr:nth-child(even) td {
+                            background-color: #f8fafc;
+                        }
+                        .footer {
+                            margin-top: 40px;
+                            text-align: center;
+                            font-size: 0.8rem;
+                            color: #94a3b8;
+                            border-top: 1px dashed #cbd5e1;
+                            padding-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header-container">
+                        <img src="${logoSrc}" class="header-logo" alt="Logo">
+                        <div class="header-text">
+                            <h1 class="header-title">FITNESS CENTER</h1>
+                            <h2 class="header-subtitle">FV UNY</h2>
+                        </div>
+                    </div>
+                    
+                    <h3 class="meta-title">Rekap Kasir Harian</h3>
+                    <div class="meta-info">
+                        <div class="meta-item"><strong>Tanggal:</strong> ${dateStr}</div>
+                        <div class="meta-item"><strong>Total Tiket:</strong> ${todayLog.length}</div>
+                        <div class="meta-item"><strong>Total Pendapatan:</strong> Rp ${totalRev.toLocaleString('id-ID')}</div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama</th>
+                                <th>Kategori</th>
+                                <th>Durasi</th>
+                                <th>Harga</th>
+                                <th>Bayar Via</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rows}
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        Dicetak oleh Sistem Admin FITNESS CENTER FV UNY
+                    </div>
+                </body>
+                </html>
+            `);
+            win.document.close();
+            win.print();
+        }
+
+        // --- NEW OPTIONS & AUTOCOMPLETE HELPERS ---
+        function loadKasirClassOptions() {
+            const classes = JSON.parse(localStorage.getItem("fit_uny_classes")) || DEFAULT_CLASSES;
+            const sel = document.getElementById("kasirClass");
+            if (!sel) return;
+            const currentVal = sel.value;
+            sel.innerHTML = `<option value="Tanpa Kelas">Tidak memilih / Tanpa Kelas</option>`;
+            classes.forEach(c => {
+                if (c.name_id) {
+                    const price = c.price || 0;
+                    sel.innerHTML += `<option value="${c.id}">${c.name_id} (+Rp ${price.toLocaleString('id-ID')}/bln)</option>`;
+                }
+            });
+            if (currentVal && sel.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                sel.value = currentVal;
+            }
+        }
+
+        function loadKasirEquipmentOptions() {
+            const equipment = JSON.parse(localStorage.getItem("fit_uny_equipment")) || DEFAULT_EQUIPMENT;
+            const sel = document.getElementById("kasirEquipment");
+            if (!sel) return;
+            const currentVal = sel.value;
+            sel.innerHTML = `<option value="Tanpa Alat">Tidak memilih / Tanpa Alat</option>`;
+            equipment.forEach(e => {
+                if (e.name_id) {
+                    const price = e.price || 0;
+                    sel.innerHTML += `<option value="${e.id}">${e.name_id} (+Rp ${price.toLocaleString('id-ID')}/bln)</option>`;
+                }
+            });
+            if (currentVal && sel.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                sel.value = currentVal;
+            }
+        }
+
+        function initMemberAutocomplete(inputId, fillCallback) {
+            const inputEl = document.getElementById(inputId);
+            if (!inputEl) return;
+
+            let suggContainer = inputEl.parentNode.querySelector(".autocomplete-suggestions");
+            if (!suggContainer) {
+                suggContainer = document.createElement("div");
+                suggContainer.className = "autocomplete-suggestions";
+                suggContainer.style.display = "none";
+                inputEl.parentNode.appendChild(suggContainer);
+            }
+
+            const positionSuggestions = () => {
+                suggContainer.style.left = `${inputEl.offsetLeft}px`;
+                suggContainer.style.top = `${inputEl.offsetTop + inputEl.offsetHeight}px`;
+                suggContainer.style.width = `${inputEl.offsetWidth}px`;
+            };
+
+            inputEl.addEventListener("input", () => {
+                const query = inputEl.value.trim().toLowerCase();
+                suggContainer.innerHTML = "";
+                
+                if (query.length < 2) {
+                    suggContainer.style.display = "none";
+                    return;
+                }
+
+                const regs = JSON.parse(localStorage.getItem("fit_uny_registrations")) || [];
+                const uniqueMembersMap = new Map();
+                regs.forEach(r => {
+                    if (r.name) {
+                        uniqueMembersMap.set(r.name.toLowerCase(), r);
+                    }
+                });
+
+                const matches = [];
+                uniqueMembersMap.forEach((member, nameKey) => {
+                    if (nameKey.includes(query) || (member.phone && member.phone.includes(query))) {
+                        matches.push(member);
+                    }
+                });
+
+                if (matches.length === 0) {
+                    suggContainer.style.display = "none";
+                    return;
+                }
+
+                matches.slice(0, 5).forEach(member => {
+                    const div = document.createElement("div");
+                    div.className = "autocomplete-suggestion";
+                    div.innerHTML = `
+                        <span>
+                            <i class="fa-solid fa-user-circle" style="color: var(--accent); font-size: 1.1rem; opacity: 0.85;"></i>
+                            <strong>${member.name}</strong>
+                        </span>
+                        <span class="suggest-sub">${member.phone || ''} (${member.category || ''})</span>
+                    `;
+                    div.addEventListener("click", () => {
+                        fillCallback(member);
+                        suggContainer.style.display = "none";
+                    });
+                    suggContainer.appendChild(div);
+                });
+
+                positionSuggestions();
+                suggContainer.style.display = "block";
+            });
+
+            document.addEventListener("click", (e) => {
+                if (e.target !== inputEl && !suggContainer.contains(e.target)) {
+                    suggContainer.style.display = "none";
+                }
+            });
+        }
+
+        function handleLogout() {
+            // Create a premium full-screen loading overlay
+            const overlay = document.createElement("div");
+            overlay.style.position = "fixed";
+            overlay.style.top = "0";
+            overlay.style.left = "0";
+            overlay.style.width = "100vw";
+            overlay.style.height = "100vh";
+            overlay.style.backgroundColor = "rgba(10, 37, 64, 0.95)";
+            overlay.style.display = "flex";
+            overlay.style.flexDirection = "column";
+            overlay.style.alignItems = "center";
+            overlay.style.justifyContent = "center";
+            overlay.style.zIndex = "99999";
+            overlay.style.opacity = "0";
+            overlay.style.transition = "opacity 0.4s ease";
+            overlay.style.backdropFilter = "blur(10px)";
+            overlay.style.webkitBackdropFilter = "blur(10px)";
+            
+            overlay.innerHTML = `
+                <div style="text-align: center; color: white;">
+                    <i class="fa-solid fa-right-from-bracket" style="font-size: 3rem; color: #ff6b00; margin-bottom: 20px; display: inline-block; animation: bounceLogout 1s infinite alternate;"></i>
+                    <h3 style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px;">KELUAR SISTEM</h3>
+                    <p style="opacity: 0.7; font-size: 0.9rem;">Menghapus sesi dan mengalihkan...</p>
+                </div>
+                <style>
+                    @keyframes bounceLogout {
+                        from { transform: translateY(0); }
+                        to { transform: translateY(-10px); }
+                    }
+                </style>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // Force reflow
+            overlay.offsetWidth;
+            
+            // Fade in
+            overlay.style.opacity = "1";
+            
+            // Remove authorization
+            sessionStorage.removeItem("fit_uny_staff_authorized");
+            localStorage.removeItem("fit_uny_receptionist_logged");
+            
+            // Redirect after animation
+            setTimeout(() => {
+                window.location.href = "index.html";
+            }, 1000);
+        }
+
+        // --- SUBMIT BUTTON DYNAMIC UPDATE ---
+        function updateKasirSubmitButton() {
+            const kat = document.getElementById("kasirKategori").value;
+            const btn = document.getElementById("kasirSubmitBtn");
+            if (!btn) return;
+            if (kat === "Member") {
+                btn.innerHTML = '<i class="fa-solid fa-address-card"></i> Cetak & Simpan Kartu Member';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Kunjungan';
+            }
+        }
+
+        // --- MEMBER CARD MODAL FUNCTIONS ---
+        function parseIndonesianDate(dateStr) {
+            if (!dateStr) return new Date();
+            const months = {
+                'januari': 0, 'februari': 1, 'maret': 2, 'april': 3, 'mei': 4, 'juni': 5,
+                'juli': 6, 'agustus': 7, 'september': 8, 'oktober': 9, 'november': 10, 'desember': 11
+            };
+            const parts = dateStr.toLowerCase().split(' ');
+            if (parts.length < 3) return new Date(dateStr) || new Date();
+            const day = parseInt(parts[0]) || 1;
+            const month = months[parts[1]] !== undefined ? months[parts[1]] : 0;
+            const year = parseInt(parts[2]) || new Date().getFullYear();
+            return new Date(year, month, day);
+        }
+
+        function calculateExpiryDate(startDateStr, durationStr) {
+            const monthsToAdd = parseInt(durationStr) || 1;
+            const start = parseIndonesianDate(startDateStr);
+            const end = new Date(start);
+            end.setMonth(start.getMonth() + monthsToAdd);
+            return end.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        }
+
+        function showMemberCardModal(regData) {
+            document.getElementById("printCardMemberId").innerText = regData.memberId || "";
+            document.getElementById("printCardName").innerText = regData.name || "";
+            document.getElementById("printCardExpiry").innerText = regData.duration ? calculateExpiryDate(regData.date, regData.duration) : regData.date;
+            document.getElementById("printCardType").innerText = regData.status || "Umum";
+            document.getElementById("printCardNim").innerText = regData.nim || "-";
+            document.getElementById("memberCardModal").style.display = "flex";
+        }
+
+        function closeMemberCardModal() {
+            document.getElementById("memberCardModal").style.display = "none";
+        }
+
+        function triggerCardPrint() {
+            window.print();
+        }
+
+        function printMemberCard(memberId) {
+            const allRegs = JSON.parse(localStorage.getItem("fit_uny_registrations")) || [];
+            const found = allRegs.find(r => r.memberId === memberId);
+            if (found) {
+                showMemberCardModal(found);
+            }
+        }
+
+        // --- REVENUE CHARTS (Chart.js) ---
+        function renderReportCharts() {
+            const regs = JSON.parse(localStorage.getItem("fit_uny_registrations")) || [];
+            const sales = JSON.parse(localStorage.getItem("fit_uny_product_sales")) || [];
+            const manualTxs = JSON.parse(localStorage.getItem("fit_uny_manual_transactions")) || [];
+
+            // Group income by Date & Category
+            const dailyData = {};
+
+            function getOrCreateDateBucket(dateStr) {
+                if (!dateStr) return null;
+                const key = dateStr.trim();
+                if (!dailyData[key]) {
+                    dailyData[key] = { regs: 0, sales: 0, manual: 0 };
+                }
+                return dailyData[key];
+            }
+
+            regs.forEach(r => {
+                const bucket = getOrCreateDateBucket(r.date);
+                if (bucket) bucket.regs += (r.price || 0);
+            });
+
+            sales.forEach(s => {
+                const bucket = getOrCreateDateBucket(s.date);
+                if (bucket) bucket.sales += (s.price || 0);
+            });
+
+            manualTxs.forEach(t => {
+                if (t.type === 'income') {
+                    const bucket = getOrCreateDateBucket(t.date);
+                    if (bucket) bucket.manual += (t.amount || 0);
+                }
+            });
+
+            // Convert to array and sort chronologically
+            const sortedDates = Object.keys(dailyData).map(dateStr => {
+                return {
+                    dateStr: dateStr,
+                    dateObj: parseIndonesianDate(dateStr),
+                    data: dailyData[dateStr]
+                };
+            }).sort((a, b) => a.dateObj - b.dateObj);
+
+            // Take last 7 days/periods
+            const chartPeriods = sortedDates.slice(-7);
+
+            const labels = chartPeriods.map(d => d.dateStr.split(' ').slice(0, 2).join(' '));
+            const regsIncome = chartPeriods.map(d => d.data.regs);
+            const salesIncome = chartPeriods.map(d => d.data.sales);
+            const manualIncome = chartPeriods.map(d => d.data.manual);
+
+            // Cumulative trend
+            let cumulativeSum = 0;
+            const cumulativeTrend = chartPeriods.map(d => {
+                const dayTotal = d.data.regs + d.data.sales + d.data.manual;
+                cumulativeSum += dayTotal;
+                return cumulativeSum;
+            });
+
+            // Render Bar Chart
+            const barCtx = document.getElementById('reportBarChart');
+            if (barCtx) {
+                if (window.reportBarChartInstance) {
+                    window.reportBarChartInstance.destroy();
+                }
+                window.reportBarChartInstance = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Registrasi Member',
+                                data: regsIncome,
+                                backgroundColor: '#6366f1',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Penjualan Produk',
+                                data: salesIncome,
+                                backgroundColor: '#10b981',
+                                borderRadius: 4
+                            },
+                            {
+                                label: 'Transaksi Manual',
+                                data: manualIncome,
+                                backgroundColor: '#f59e0b',
+                                borderRadius: 4
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { boxWidth: 12, font: { size: 10 } }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': Rp ' + context.raw.toLocaleString('id-ID');
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { stacked: true },
+                            y: {
+                                stacked: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + (value >= 1000 ? (value / 1000) + 'k' : value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Render Line Chart
+            const lineCtx = document.getElementById('reportLineChart');
+            if (lineCtx) {
+                if (window.reportLineChartInstance) {
+                    window.reportLineChartInstance.destroy();
+                }
+                window.reportLineChartInstance = new Chart(lineCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Pemasukan Kumulatif',
+                            data: cumulativeTrend,
+                            borderColor: '#ec4899',
+                            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#ec4899',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { boxWidth: 12, font: { size: 10 } }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Total Akumulasi: Rp ' + context.raw.toLocaleString('id-ID');
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: function(value) {
+                                        return 'Rp ' + (value >= 1000 ? (value / 1000) + 'k' : value);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // --- TOGGLE KASIR NIM FIELD ---
+        function toggleKasirNimField() {
+            const civitas = document.getElementById("kasirCivitas").value;
+            const nimGroup = document.getElementById("kasirNimGroup");
+            const nimInput = document.getElementById("kasirNim");
+            if (!nimGroup) return;
+            if (civitas === "UNY (Mahasiswa, Tendik/Dosen)") {
+                nimGroup.style.display = "block";
+            } else {
+                nimGroup.style.display = "none";
+                nimInput.value = "";
+            }
+        }
+
+        // --- SIDEBAR NAVIGATION ENGINE ---
+        function switchPanel(panelId) {
+            const panels = ['kasir', 'booking', 'products', 'reports'];
+            panels.forEach(p => {
+                const el = document.getElementById('panel_' + p);
+                const nav = document.getElementById('nav_' + p);
+                if (el) el.style.display = (p === panelId) ? 'block' : 'none';
+                if (nav) {
+                    if (p === panelId) nav.classList.add('active');
+                    else nav.classList.remove('active');
+                }
+            });
+
+            // ── SYNC FROM ADMIN: Always reload latest admin data when switching panels ──
+            syncFromAdmin(false);
+
+            if (panelId === 'booking') {
+                loadBookingSelectOptions();
+                renderBookingsLog();
+            } else if (panelId === 'products') {
+                loadProductsDropdown();
+                renderProductSalesLog();
+                updateProductSalePrice();
+            } else if (panelId === 'reports') {
+                renderReportsPanel();
+            } else if (panelId === 'kasir') {
+                loadKasirTrainerOptions();
+                loadKasirClassOptions();
+                loadKasirEquipmentOptions();
+                updateKasirDurations();
+                updateKasirPrice();
+                renderKasirLog();
+            }
+        }
+
+        // --- BOOKING ENGINE ---
+        let editingBookingIndex = -1;
+        let currentCalendarDate = new Date();
+        let selectedCalendarDate = null;
+
+        function parseDateSafe(dateStr) {
+            if (!dateStr) return new Date();
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                return isNaN(d.getTime()) ? new Date() : d;
+            }
+            const d = new Date(dateStr);
+            return isNaN(d.getTime()) ? new Date() : d;
+        }
+
+        function toggleCustomCalendar(event) {
+            const ev = event || window.event;
+            if (ev) ev.stopPropagation();
+            const cal = document.getElementById("customCalendarWidget");
+            if (cal) {
+                const isHidden = cal.style.display === "none";
+                document.querySelectorAll(".custom-calendar-widget").forEach(c => c.style.display = "none");
+                if (isHidden) {
+                    cal.style.display = "block";
+                    renderCustomCalendar();
+                }
+            }
+        }
+
+        // Close calendar when clicking outside
+        document.addEventListener("click", (e) => {
+            const cal = document.getElementById("customCalendarWidget");
+            const wrapper = document.querySelector(".custom-date-input-wrapper");
+            if (cal && wrapper && !cal.contains(e.target) && !wrapper.contains(e.target)) {
+                cal.style.display = "none";
+            }
+        });
+
+        function changeCalendarMonth(offset) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + offset);
+            renderCustomCalendar();
+        }
+
+        function onCalendarSelectChange() {
+            const monthSelect = document.getElementById("calendarMonthSelect");
+            const yearSelect = document.getElementById("calendarYearSelect");
+            if (monthSelect && yearSelect) {
+                const month = parseInt(monthSelect.value);
+                const year = parseInt(yearSelect.value);
+                currentCalendarDate.setFullYear(year);
+                currentCalendarDate.setMonth(month);
+                renderCustomCalendar();
+            }
+        }
+
+        const MONTH_NAMES_ID = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+        const DAY_NAMES_ID = [
+            "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
+        ];
+
+        function renderCustomCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            // Populate Month Select
+            const monthSelect = document.getElementById("calendarMonthSelect");
+            if (monthSelect) {
+                monthSelect.innerHTML = "";
+                MONTH_NAMES_ID.forEach((name, idx) => {
+                    const opt = document.createElement("option");
+                    opt.value = idx;
+                    opt.text = name;
+                    if (idx === month) opt.selected = true;
+                    monthSelect.appendChild(opt);
+                });
+            }
+
+            // Populate Year Select
+            const yearSelect = document.getElementById("calendarYearSelect");
+            if (yearSelect) {
+                yearSelect.innerHTML = "";
+                const currentYear = new Date().getFullYear();
+                for (let y = currentYear - 5; y <= currentYear + 10; y++) {
+                    const opt = document.createElement("option");
+                    opt.value = y;
+                    opt.text = y;
+                    if (y === year) opt.selected = true;
+                    yearSelect.appendChild(opt);
+                }
+            }
+
+            const grid = document.getElementById("calendarDaysGrid");
+            if (!grid) return;
+            grid.innerHTML = "";
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+
+            // Get booked dates
+            const bookings = JSON.parse(localStorage.getItem("fit_uny_bookings")) || [];
+            const bookedDatesSet = new Set(bookings.map(b => b.date));
+
+            for (let i = 0; i < firstDay; i++) {
+                const cell = document.createElement("div");
+                cell.className = "calendar-day-item empty";
+                grid.appendChild(cell);
+            }
+
+            const today = new Date();
+
+            for (let d = 1; d <= totalDays; d++) {
+                const cell = document.createElement("div");
+                cell.className = "calendar-day-item";
+                cell.innerText = d;
+
+                const thisDateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+                if (bookedDatesSet.has(thisDateStr)) {
+                    cell.classList.add("has-bookings");
+                }
+
+                if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === d) {
+                    cell.classList.add("today");
+                }
+
+                if (selectedCalendarDate && selectedCalendarDate.getFullYear() === year && selectedCalendarDate.getMonth() === month && selectedCalendarDate.getDate() === d) {
+                    cell.classList.add("active");
+                }
+
+                cell.onclick = (e) => {
+                    e.stopPropagation();
+                    selectedCalendarDate = new Date(year, month, d);
+                    
+                    const formattedDate = thisDateStr;
+                    document.getElementById("bookingDate").value = formattedDate;
+
+                    const dayIndex = selectedCalendarDate.getDay();
+                    const dayNameId = DAY_NAMES_ID[dayIndex];
+                    const daySelect = document.getElementById("bookingDay");
+                    if (daySelect) {
+                        daySelect.value = dayNameId;
+                    }
+
+                    document.getElementById("customCalendarWidget").style.display = "none";
+                };
+
+                grid.appendChild(cell);
+            }
+        }
+
+        function handleNewBooking(event) {
+            event.preventDefault();
+            const name = document.getElementById("bookingMemberName").value.trim();
+            const bDate = document.getElementById("bookingDate").value;
+            const bDay = document.getElementById("bookingDay").value;
+            const bTime = document.getElementById("bookingTime").value;
+            const bTrainer = document.getElementById("bookingTrainer") ? document.getElementById("bookingTrainer").value : "Mandiri (Tanpa Pelatih)";
+            const bKelas = document.getElementById("bookingKelas") ? document.getElementById("bookingKelas").value : "Tanpa Kelas";
+            const bAlat = document.getElementById("bookingAlat") ? document.getElementById("bookingAlat").value : "Tanpa Alat";
+
+            const bookings = JSON.parse(localStorage.getItem("fit_uny_bookings")) || [];
+
+            if (editingBookingIndex > -1) {
+                bookings[editingBookingIndex] = { name, date: bDate, day: bDay, time: bTime, trainer: bTrainer, kelas: bKelas, alat: bAlat };
+                editingBookingIndex = -1;
+                showToast("Jadwal Booking berhasil diperbarui!");
+            } else {
+                bookings.push({ name, date: bDate, day: bDay, time: bTime, trainer: bTrainer, kelas: bKelas, alat: bAlat });
+                showToast("Jadwal Booking berhasil dibuat!");
+            }
+
+            localStorage.setItem("fit_uny_bookings", JSON.stringify(bookings));
+
+            document.getElementById("bookingForm").reset();
+            selectedCalendarDate = null;
+            
+            // Restore UI titles
+            const title = document.querySelector("#panel_booking .editor-section-title");
+            if (title) title.innerHTML = `<i class="fa-solid fa-calendar-plus"></i> Buat Jadwal Baru`;
+            
+            const submitBtn = document.querySelector("#bookingForm button[type='submit']");
+            if (submitBtn) submitBtn.innerHTML = `<i class="fa-solid fa-calendar-check"></i> Simpan Jadwal Booking`;
+
+            // Re-init selects to default after reset
+            loadBookingSelectOptions();
+
+            renderBookingsLog();
+        }
+
+        function editBooking(idx) {
+            const bookings = JSON.parse(localStorage.getItem("fit_uny_bookings")) || [];
+            const b = bookings[idx];
+            if (!b) return;
+
+            editingBookingIndex = idx;
+            document.getElementById("bookingMemberName").value = b.name;
+            document.getElementById("bookingDate").value = b.date;
+            document.getElementById("bookingDay").value = b.day;
+            document.getElementById("bookingTime").value = b.time;
+            if (document.getElementById("bookingTrainer")) document.getElementById("bookingTrainer").value = b.trainer || "Mandiri (Tanpa Pelatih)";
+            if (document.getElementById("bookingKelas")) document.getElementById("bookingKelas").value = b.kelas || "Tanpa Kelas";
+            if (document.getElementById("bookingAlat")) document.getElementById("bookingAlat").value = b.alat || "Tanpa Alat";
+
+            if (b.date) {
+                currentCalendarDate = parseDateSafe(b.date);
+                selectedCalendarDate = parseDateSafe(b.date);
+            }
+
+            const title = document.querySelector("#panel_booking .editor-section-title");
+            if (title) title.innerHTML = `<i class="fa-solid fa-edit"></i> Edit Jadwal Booking`;
+            
+            const submitBtn = document.querySelector("#bookingForm button[type='submit']");
+            if (submitBtn) submitBtn.innerHTML = `<i class="fa-solid fa-save"></i> Perbarui Jadwal Booking`;
+
+            document.getElementById("bookingForm").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderBookingsLog() {
+            const bookings = JSON.parse(localStorage.getItem("fit_uny_bookings")) || [];
+            const tbody = document.getElementById("bookingLogBody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            if (bookings.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px; color: var(--text-gray);">Belum ada jadwal booking latihan.</td></tr>`;
+                return;
+            }
+
+            const trainers = JSON.parse(localStorage.getItem("fit_uny_trainers")) || DEFAULT_TRAINERS;
+            const classes = JSON.parse(localStorage.getItem("fit_uny_classes")) || DEFAULT_CLASSES;
+            const equipment = JSON.parse(localStorage.getItem("fit_uny_equipment")) || DEFAULT_EQUIPMENT;
+
+            bookings.forEach((b, idx) => {
+                // Resolve trainer name from ID/name
+                let trainerLabel = '<span style="color:var(--text-light);font-style:italic;">Mandiri</span>';
+                if (b.trainer && b.trainer !== "Mandiri (Tanpa Pelatih)") {
+                    const foundTrainer = trainers.find(t => t.id === b.trainer || t.name === b.trainer);
+                    trainerLabel = foundTrainer ? foundTrainer.name : b.trainer;
+                }
+                
+                // Resolve class name
+                let kelasLabel = '<span style="color:var(--text-light);font-style:italic;">-</span>';
+                if (b.kelas && b.kelas !== "Tanpa Kelas") {
+                    const foundClass = classes.find(c => c.id === b.kelas || c.name_id === b.kelas);
+                    kelasLabel = foundClass ? foundClass.name_id : b.kelas;
+                }
+
+                // Resolve equipment name
+                let alatLabel = '<span style="color:var(--text-light);font-style:italic;">-</span>';
+                if (b.alat && b.alat !== "Tanpa Alat") {
+                    const foundEquip = equipment.find(e => e.id === b.alat || e.name_id === b.alat);
+                    alatLabel = foundEquip ? foundEquip.name_id : b.alat;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${b.name}</strong></td>
+                        <td>${b.date}</td>
+                        <td>${b.day}</td>
+                        <td>${b.time}</td>
+                        <td>${trainerLabel}</td>
+                        <td>${kelasLabel}</td>
+                        <td>${alatLabel}</td>
+                        <td>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.75rem; border-color: var(--accent); color: var(--accent); cursor: pointer;" onclick="editBooking(${idx})"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.75rem; border-color: var(--danger); color: var(--danger); cursor: pointer;" onclick="deleteBooking(${idx})"><i class="fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteBooking(idx) {
+            if (confirm("Hapus jadwal booking ini?")) {
+                const bookings = JSON.parse(localStorage.getItem("fit_uny_bookings")) || [];
+                bookings.splice(idx, 1);
+                localStorage.setItem("fit_uny_bookings", JSON.stringify(bookings));
+                
+                if (editingBookingIndex === idx) {
+                    editingBookingIndex = -1;
+                    document.getElementById("bookingForm").reset();
+                    selectedCalendarDate = null;
+                    const title = document.querySelector("#panel_booking .editor-section-title");
+                    if (title) title.innerHTML = `<i class="fa-solid fa-calendar-plus"></i> Buat Jadwal Baru`;
+                    const submitBtn = document.querySelector("#bookingForm button[type='submit']");
+                    if (submitBtn) submitBtn.innerHTML = `<i class="fa-solid fa-calendar-check"></i> Simpan Jadwal Booking`;
+                }
+
+                renderBookingsLog();
+                showToast("Jadwal booking berhasil dihapus!");
+            }
+        }
+
+        // --- PRODUCT SALES ENGINE ---
+        function loadProductsDropdown() {
+            // Read from localStorage (seeded with defaults on startup)
+            const products = JSON.parse(localStorage.getItem("fit_uny_products")) || DEFAULT_PRODUCTS;
+            const select = document.getElementById("saleProductSelect");
+            if (!select) return;
+            const currentVal = select.value;
+            select.innerHTML = "";
+            if (products.length === 0) {
+                select.innerHTML = `<option value="" disabled selected>Belum ada produk — tambahkan di panel Admin</option>`;
+                const displayEl = document.getElementById("salePriceDisplay");
+                if (displayEl) displayEl.innerText = "Rp 0";
+                return;
+            }
+            products.forEach(p => {
+                if (p.name_id) {
+                    const stock = p.stock !== undefined ? p.stock : 0;
+                    const stockLabel = stock === 0 ? " [HABIS]" : ` - Stok: ${stock}`;
+                    select.innerHTML += `<option value="${p.id}" data-price="${p.price || 0}">${p.name_id} (Rp ${(p.price || 0).toLocaleString('id-ID')})${stockLabel}</option>`;
+                }
+            });
+            if (currentVal && select.querySelector(`option[value="${CSS.escape(currentVal)}"]`)) {
+                select.value = currentVal;
+            }
+            updateProductSalePrice();
+        }
+
+        function updateProductSalePrice() {
+            const select = document.getElementById("saleProductSelect");
+            if (!select || select.options.length === 0) return;
+            const selectedOpt = select.options[select.selectedIndex];
+            const price = parseFloat(selectedOpt.getAttribute("data-price")) || 0;
+            const qty = parseInt(document.getElementById("saleQty").value) || 1;
+            const total = price * qty;
+            document.getElementById("salePriceDisplay").innerText = "Rp " + total.toLocaleString('id-ID');
+        }
+
+        function handleProductSaleSubmit(event) {
+            event.preventDefault();
+            const buyer = document.getElementById("saleBuyerName").value.trim();
+            const select = document.getElementById("saleProductSelect");
+            if (!select || select.options.length === 0) return;
+            const selectedOpt = select.options[select.selectedIndex];
+            const productId = select.value;
+            const productName = selectedOpt.text.split(' (')[0];
+            const price = parseFloat(selectedOpt.getAttribute("data-price")) || 0;
+            const qty = parseInt(document.getElementById("saleQty").value) || 1;
+            let payment = document.getElementById("salePayment").value;
+            if (payment === "Transfer Bank") {
+                const subBankVal = document.getElementById("saleBankSelect").value;
+                payment = "Transfer " + subBankVal;
+            }
+            const total = price * qty;
+
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+            // Decrease stock
+            const products = JSON.parse(localStorage.getItem("fit_uny_products")) || [];
+            const prodIdx = products.findIndex(p => p.id === productId);
+            if (prodIdx !== -1) {
+                if (products[prodIdx].stock < qty) {
+                    showToast(`Stok tidak mencukupi! Sisa stok: ${products[prodIdx].stock}`);
+                    return;
+                }
+                products[prodIdx].stock -= qty;
+                localStorage.setItem("fit_uny_products", JSON.stringify(products));
+            }
+
+            // Save product sale
+            const sales = JSON.parse(localStorage.getItem("fit_uny_product_sales")) || [];
+            sales.push({
+                invoiceId: "INV-" + String(sales.length + 1).padStart(4, "0"),
+                buyer, productId, productName, price: total, qty, bank: payment, date: dateStr, time: timeStr
+            });
+            localStorage.setItem("fit_uny_product_sales", JSON.stringify(sales));
+
+            document.getElementById("productSaleForm").reset();
+            toggleSaleBankSelect();
+            loadProductsDropdown();
+            renderProductSalesLog();
+            updateProductSalePrice();
+            showToast("Penjualan produk berhasil diproses!");
+        }
+
+        function renderProductSalesLog() {
+            const sales = JSON.parse(localStorage.getItem("fit_uny_product_sales")) || [];
+            const tbody = document.getElementById("productSalesLogBody");
+            if (!tbody) return;
+            tbody.innerHTML = "";
+            if (sales.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 20px; color: var(--text-gray);">Belum ada log penjualan produk.</td></tr>`;
+                return;
+            }
+            sales.forEach((s, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${s.date} ${s.time}</td>
+                        <td><strong>${s.buyer}</strong></td>
+                        <td>${s.productName}</td>
+                        <td>${s.qty}</td>
+                        <td>Rp ${s.price.toLocaleString('id-ID')}</td>
+                        <td>${s.bank}</td>
+                        <td>
+                            <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.75rem; border-color: var(--danger); color: var(--danger); cursor: pointer;" onclick="deleteProductSale(${idx})"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteProductSale(idx) {
+            if (confirm("Batalkan penjualan produk ini?")) {
+                const sales = JSON.parse(localStorage.getItem("fit_uny_product_sales")) || [];
+                const canceledSale = sales[idx];
+                
+                // Return stock
+                const products = JSON.parse(localStorage.getItem("fit_uny_products")) || [];
+                const prodIdx = products.findIndex(p => p.id === canceledSale.productId);
+                if (prodIdx !== -1) {
+                    products[prodIdx].stock += canceledSale.qty;
+                    localStorage.setItem("fit_uny_products", JSON.stringify(products));
+                }
+
+                sales.splice(idx, 1);
+                localStorage.setItem("fit_uny_product_sales", JSON.stringify(sales));
+                renderProductSalesLog();
+                loadProductsDropdown();
+                updateProductSalePrice();
+                showToast("Penjualan produk berhasil dibatalkan!");
+            }
+        }
+
+        // --- REPORTS ENGINE ---
+        function renderReportsPanel() {
+            const regs = JSON.parse(localStorage.getItem("fit_uny_registrations")) || [];
+            const sales = JSON.parse(localStorage.getItem("fit_uny_product_sales")) || [];
+
+            const regTotal = regs.reduce((sum, r) => sum + (r.price || 0), 0);
+            const prodTotal = sales.reduce((sum, s) => sum + (s.price || 0), 0);
+            const netTotal = regTotal + prodTotal;
+            const prodQtyTotal = sales.reduce((sum, s) => sum + (s.qty || 0), 0);
+
+            document.getElementById("reportTotalRegIncome").innerText = "Rp " + regTotal.toLocaleString('id-ID');
+            document.getElementById("reportTotalProdIncome").innerText = "Rp " + prodTotal.toLocaleString('id-ID');
+            document.getElementById("reportTotalNetIncome").innerText = "Rp " + netTotal.toLocaleString('id-ID');
+            document.getElementById("reportTotalProdQty").innerText = prodQtyTotal + " unit";
+
+            renderReportCharts();
+
+            // Render Regs list table
+            const regBody = document.getElementById("reportRegsTableBody");
+            if (regBody) {
+                regBody.innerHTML = "";
+                if (regs.length === 0) {
+                    regBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 15px; color: var(--text-gray);">Belum ada data pendaftaran.</td></tr>`;
+                } else {
+                    regs.slice(-10).reverse().forEach(r => {
+                        regBody.innerHTML += `
+                            <tr>
+                                <td>${r.date}</td>
+                                <td><strong>${r.name}</strong></td>
+                                <td>${r.category}</td>
+                                <td>Rp ${r.price.toLocaleString('id-ID')}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+
+            // Render Products list table
+            const prodBody = document.getElementById("reportProductsTableBody");
+            if (prodBody) {
+                prodBody.innerHTML = "";
+                if (sales.length === 0) {
+                    prodBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 15px; color: var(--text-gray);">Belum ada data produk terjual.</td></tr>`;
+                } else {
+                    sales.slice(-10).reverse().forEach(s => {
+                        prodBody.innerHTML += `
+                            <tr>
+                                <td>${s.date}</td>
+                                <td><strong>${s.productName}</strong></td>
+                                <td>${s.qty} unit</td>
+                                <td>Rp ${s.price.toLocaleString('id-ID')}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+        }
+
+        // Expose new functions globally
+        window.switchPanel = switchPanel;
+        window.toggleKasirNimField = toggleKasirNimField;
+        window.handleNewBooking = handleNewBooking;
+        window.editBooking = editBooking;
+        window.deleteBooking = deleteBooking;
+        window.toggleCustomCalendar = toggleCustomCalendar;
+        window.changeCalendarMonth = changeCalendarMonth;
+        window.onCalendarSelectChange = onCalendarSelectChange;
+        window.loadProductsDropdown = loadProductsDropdown;
+        window.updateProductSalePrice = updateProductSalePrice;
+        window.handleProductSaleSubmit = handleProductSaleSubmit;
+        window.deleteProductSale = deleteProductSale;
+        window.renderReportsPanel = renderReportsPanel;
+        window.syncFromAdmin = syncFromAdmin;
+        window.loadPaymentMethodsFromAdmin = loadPaymentMethodsFromAdmin;
+        window.showAdminSyncToast = showAdminSyncToast;
+    </script>
+</body>
+</html>
