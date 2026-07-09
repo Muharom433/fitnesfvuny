@@ -77,7 +77,7 @@ const panelLabelMap: Record<string, string> = {
   dashboard: 'Overview & Statistik',
   registrations: 'Log Pendaftaran & Booking',
   finance: 'Laporan Keuangan',
-  members: 'Kelola Member',
+  members: 'Kelola User & Member',
   trainers: 'Kelola Pelatih',
   classes: 'Kelola Kelas',
   equipment: 'Kelola Alat',
@@ -102,7 +102,7 @@ const menuSections = [
       { id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-chart-pie' },
       { id: 'registrations', label: 'Registrasi & Booking', icon: 'fa-solid fa-clipboard-list' },
       { id: 'finance', label: 'Keuangan', icon: 'fa-solid fa-sack-dollar' },
-      { id: 'members', label: 'Member', icon: 'fa-solid fa-users' },
+      { id: 'members', label: 'Kelola User & Member', icon: 'fa-solid fa-users' },
     ],
   },
   {

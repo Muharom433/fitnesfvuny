@@ -82,3 +82,35 @@ alter table public.equipment disable row level security;
 alter table public.equipment_items disable row level security;
 alter table public.bookings disable row level security;
 
+-- 10. Tambahkan trigger untuk mengenkripsi password secara otomatis saat insert atau update
+create or replace function public.encrypt_user_password()
+returns trigger as $$
+begin
+  -- Jika password NULL atau kosong, biarkan saja
+  if new.password is null or new.password = '' then
+    return new;
+  end if;
+
+  -- Jika operasi UPDATE dan password tidak berubah, jangan enkripsi ulang
+  if tg_op = 'UPDATE' and new.password = old.password then
+    return new;
+  end if;
+
+  -- Hanya enkripsi jika password bukan merupakan hash bcrypt yang valid
+  if length(new.password) = 60 and left(new.password, 2) = '$2' then
+    return new;
+  else
+    new.password := extensions.crypt(new.password, extensions.gen_salt('bf'));
+  end if;
+
+  return new;
+end;
+$$ language plpgsql security definer;
+
+drop trigger if exists trg_encrypt_user_password on public.users;
+create trigger trg_encrypt_user_password
+before insert or update on public.users
+for each row
+execute function public.encrypt_user_password();
+
+
