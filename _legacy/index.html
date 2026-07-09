@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LOGIN RESEPSIONIS - FITNESS CENTER FV UNY</title>
+    <title>Login Manajemen - FITNESS CENTER FV UNY</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -536,52 +536,166 @@
             font-size: 0.9rem;
             border-bottom: 3px solid var(--accent);
         }
-
-        /* Back Link hover effect */
-        .back-link {
-            display: inline-flex;
+        /* Portal Selection Cards Styling */
+        .portal-select-card {
+            display: flex;
             align-items: center;
-            gap: 8px;
-            color: var(--text-gray) !important;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: none;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
+            gap: 20px;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1.5px solid var(--border-color);
+            background: #ffffff;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.3, 1);
             position: relative;
-            padding-bottom: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(10, 37, 64, 0.02);
+            cursor: pointer;
+            margin-bottom: 20px;
         }
-        
-        .back-link i {
-            transition: transform 0.3s ease;
-        }
-        
-        .back-link::after {
+
+        .portal-select-card::before {
             content: '';
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
-            width: 100%;
-            height: 2px;
+            width: 5px;
+            height: 100%;
+            transition: transform 0.4s ease;
+            transform: scaleY(0);
+            transform-origin: center;
+        }
+
+        .card-admin::before {
+            background-color: var(--primary);
+        }
+
+        .card-recep::before {
             background-color: var(--accent);
-            transform: scaleX(0);
-            transform-origin: right;
-            transition: transform 0.3s ease;
         }
-        
-        .back-link:hover {
-            color: var(--accent) !important;
-            letter-spacing: 1.5px;
+
+        .portal-select-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(10, 37, 64, 0.15);
+            box-shadow: 0 15px 30px rgba(10, 37, 64, 0.08);
         }
-        
-        .back-link:hover i {
-            transform: translateX(-5px);
+
+        .portal-select-card:hover::before {
+            transform: scaleY(1);
         }
-        
-        .back-link:hover::after {
-            transform: scaleX(1);
-            transform-origin: left;
+
+        .portal-card-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-admin .portal-card-icon {
+            background: rgba(10, 37, 64, 0.06);
+            color: var(--primary);
+        }
+
+        .card-recep .portal-card-icon {
+            background: rgba(255, 107, 0, 0.08);
+            color: var(--accent);
+        }
+
+        .portal-select-card:hover .portal-card-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .card-admin:hover .portal-card-icon {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .card-recep:hover .portal-card-icon {
+            background: var(--accent);
+            color: #ffffff;
+        }
+
+        .portal-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .portal-card-title {
+            font-family: var(--font-heading);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: 0.5px;
+            transition: color 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .portal-card-desc {
+            font-family: var(--font-body);
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-gray);
+            line-height: 1.35;
+            text-transform: uppercase;
+        }
+
+        .portal-card-arrow {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .portal-select-card:hover .portal-card-arrow {
+            transform: translateX(5px);
+            color: var(--primary);
+        }
+        .card-recep:hover .portal-card-arrow {
+            color: var(--accent);
+        }
+
+        /* Form styling */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: var(--font-subheading);
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: var(--font-accent);
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: 0.2s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
+            background-color: #ffffff;
         }
     </style>
 </head>
@@ -626,19 +740,19 @@
                     <img src="assets/logo.png" alt="Logo Fitness Center FV UNY" style="height: 50px; border-radius: 4px;">
                     <div style="display: flex; flex-direction: column; text-align: left;">
                         <span class="logo-bold">FITNESS CENTER</span>
-                        <span class="logo-accent">FV UNY RECEPTIONIST</span>
+                        <span class="logo-accent">FV UNY MANAGEMENT</span>
                     </div>
                 </div>
 
                 <!-- LOGIN FORM -->
                 <div>
-                    <h2 class="login-title" style="font-size: 1.75rem; margin-bottom: 8px;">SELAMAT DATANG RESEPSIONIS</h2>
-                    <p style="color: var(--accent); font-size: 0.95rem; font-weight: 600; margin-bottom: 28px;">MASUK KE SISTEM MANAJEMEN RESEPSIONIS</p>
+                    <h2 class="login-title" style="font-size: 1.75rem; margin-bottom: 8px;">MASUK SISTEM MANAJEMEN</h2>
+                    <p style="color: var(--accent); font-size: 0.95rem; font-weight: 600; margin-bottom: 28px; text-transform: uppercase;">MASUK SEBAGAI STAF (ADMIN/RESEPSIONIS)</p>
                     
                     <form onsubmit="handleLogin(event)">
                         <div class="form-group">
                             <label for="loginEmail">ALAMAT EMAIL / USERNAME</label>
-                            <input type="email" id="loginEmail" required placeholder="CONTOH: resepsionis@uny.ac.id">
+                            <input type="email" id="loginEmail" required placeholder="CONTOH: admin@uny.ac.id">
                         </div>
                         <div class="form-group">
                             <label for="loginPassword">KATA SANDI</label>
@@ -648,14 +762,7 @@
                         <button type="submit" class="btn">MASUK <i class="fa-solid fa-right-to-bracket"></i></button>
                         <p class="error-msg" id="loginError" style="display: none;"></p>
                     </form>
-
-                    <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px; text-align: center;">
-                        <a href="index.html" class="back-link">
-                            <i class="fa-solid fa-arrow-left"></i> KEMBALI KE PORTAL UTAMA
-                        </a>
-                    </div>
                 </div>
-            </div>
         </div>
     </div>
 
@@ -667,6 +774,16 @@
             sessionStorage.removeItem("fit_uny_staff_authorized");
             localStorage.removeItem("fit_uny_admin_logged");
             localStorage.removeItem("fit_uny_receptionist_logged");
+
+            // Initialize default admin accounts if none exists
+            if (!localStorage.getItem("fit_uny_admin_accounts")) {
+                const defaultAdmins = [{
+                    email: "admin@uny.ac.id",
+                    password: "admin123",
+                    name: "Admin Utama"
+                }];
+                localStorage.setItem("fit_uny_admin_accounts", JSON.stringify(defaultAdmins));
+            }
 
             // Initialize default receptionist accounts if none exists
             if (!localStorage.getItem("fit_uny_receptionist_accounts")) {
@@ -752,6 +869,7 @@
 
         function showToast(message) {
             const toast = document.getElementById("toastNotify");
+            if (!toast) return;
             toast.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${message}`;
             toast.style.display = "block";
             setTimeout(() => {
@@ -782,26 +900,56 @@
                         throw error;
                     }
 
-                    // Get user profile to verify they are a staff member
+                    // Get user profile to check role
                     const { data: profile, error: profileError } = await supabase
-                        .from('profiles')
-                        .select('is_admin')
+                        .from('users')
+                        .select('role')
                         .eq('id', data.user.id)
                         .single();
 
                     if (profileError) throw profileError;
 
-                    // Any authenticated user that is not restricted can login as receptionist
-                    sessionStorage.setItem("fit_uny_staff_authorized", "true");
-                    localStorage.setItem("fit_uny_receptionist_logged", "true");
-                    showToast("LOGIN RESEPSIONIS BERHASIL! MENGALIHKAN...");
-                    setTimeout(() => {
-                        window.location.href = "resepsionis.html";
-                    }, 1000);
-                    return;
+                    if (profile) {
+                        if (profile.role === 'admin') {
+                            sessionStorage.setItem("fit_uny_staff_authorized", "true");
+                            localStorage.setItem("fit_uny_admin_logged", "true");
+                            showToast("LOGIN ADMIN BERHASIL! MENGALIHKAN...");
+                            setTimeout(() => {
+                                window.location.href = "admin.html";
+                            }, 1000);
+                            return;
+                        } else if (profile.role === 'receptionist') {
+                            sessionStorage.setItem("fit_uny_staff_authorized", "true");
+                            localStorage.setItem("fit_uny_receptionist_logged", "true");
+                            showToast("LOGIN RESEPSIONIS BERHASIL! MENGALIHKAN...");
+                            setTimeout(() => {
+                                window.location.href = "resepsionis.html";
+                            }, 1000);
+                            return;
+                        } else {
+                            errorMsg.innerText = "AKSES TERBATAS: ANDA BUKAN STAFF/ADMIN!";
+                            errorMsg.style.display = "block";
+                            await supabase.auth.signOut();
+                            return;
+                        }
+                    }
                 } catch (err) {
                     console.warn("Supabase Auth failed, checking local database fallback...", err.message);
                 }
+            }
+
+            // Check Admin accounts in localStorage
+            let adminAccounts = JSON.parse(localStorage.getItem("fit_uny_admin_accounts")) || [];
+            const adminMatch = adminAccounts.find(acc => acc.email === email && acc.password === pass);
+
+            if (adminMatch) {
+                sessionStorage.setItem("fit_uny_staff_authorized", "true");
+                localStorage.setItem("fit_uny_admin_logged", "true");
+                showToast("LOGIN ADMIN BERHASIL! MENGALIHKAN...");
+                setTimeout(() => {
+                    window.location.href = "admin.html";
+                }, 1000);
+                return;
             }
 
             // Check Receptionist accounts in localStorage
@@ -818,13 +966,33 @@
                 return;
             }
 
-            errorMsg.innerText = "EMAIL, USERNAME, ATAU KATA SANDI RESEPSIONIS SALAH!";
+            // Fallback for standard admin passcodes
+            if ((email === "admin@uny.ac.id" && pass === "admin123") || pass === "FCUNY2026") {
+                sessionStorage.setItem("fit_uny_staff_authorized", "true");
+                localStorage.setItem("fit_uny_admin_logged", "true");
+                showToast("LOGIN OTORISASI ADMIN BERHASIL! MENGALIHKAN...");
+                setTimeout(() => {
+                    window.location.href = "admin.html";
+                }, 1000);
+                return;
+            }
+
+            // Fallback for standard receptionist passcodes
+            if (email === "resepsionis@uny.ac.id" && pass === "resepsionis123") {
+                sessionStorage.setItem("fit_uny_staff_authorized", "true");
+                localStorage.setItem("fit_uny_receptionist_logged", "true");
+                showToast("LOGIN OTORISASI RESEPSIONIS BERHASIL! MENGALIHKAN...");
+                setTimeout(() => {
+                    window.location.href = "resepsionis.html";
+                }, 1000);
+                return;
+            }
+
+            errorMsg.innerText = "EMAIL, USERNAME, ATAU KATA SANDI SALAH!";
             errorMsg.style.display = "block";
         }
 
-        // Expose handleLogin to global scope for the inline HTML form handler
         window.handleLogin = handleLogin;
     </script>
 </body>
-
 </html>

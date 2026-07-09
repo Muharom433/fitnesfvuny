@@ -130,9 +130,9 @@ create table public.equipment_items (
 );
 
 -- ----------------------------------------------------------------------------
--- 8. TABLE: PROFILES (User personal data synced with Supabase Auth auth.users)
+-- 8. TABLE: USERS (User personal data synced with Supabase Auth auth.users)
 -- ----------------------------------------------------------------------------
-create table public.profiles (
+create table public.users (
     id uuid primary key references auth.users(id) on delete cascade,
     name text not null,
     email text unique not null,
@@ -142,7 +142,7 @@ create table public.profiles (
     identity_type text,
     identity_number text,
     address text,
-    is_admin boolean not null default false,
+    role text not null default 'member' check (role in ('admin', 'receptionist', 'member')),
     created_at timestamp with time zone default now()
 );
 
@@ -151,7 +151,7 @@ create table public.profiles (
 -- ----------------------------------------------------------------------------
 create table public.bookings (
     id uuid primary key default gen_random_uuid(),
-    user_id uuid references public.profiles(id) on delete set null,
+    user_id uuid references public.users(id) on delete set null,
     name text not null,
     phone text not null,
     status_civitas text not null,
@@ -179,7 +179,7 @@ alter table public.amenities enable row level security;
 alter table public.products enable row level security;
 alter table public.equipment enable row level security;
 alter table public.equipment_items enable row level security;
-alter table public.profiles enable row level security;
+alter table public.users enable row level security;
 alter table public.bookings enable row level security;
 
 -- Helper function to check if the current user is an admin
@@ -187,8 +187,8 @@ create or replace function public.is_admin()
 returns boolean security definer as $$
 begin
     return exists (
-        select 1 from public.profiles
-        where id = auth.uid() and is_admin = true
+        select 1 from public.users
+        where id = auth.uid() and role = 'admin'
     );
 end;
 $$ language plpgsql;
@@ -213,10 +213,10 @@ create policy "Allow admin write access for products" on public.products for all
 create policy "Allow admin write access for equipment" on public.equipment for all using (public.is_admin());
 create policy "Allow admin write access for equipment items" on public.equipment_items for all using (public.is_admin());
 
--- 3. Profiles Policies
-create policy "Allow users to read their own profile" on public.profiles for select using (auth.uid() = id or public.is_admin());
-create policy "Allow users to update their own profile" on public.profiles for update using (auth.uid() = id or public.is_admin());
-create policy "Allow admin to manage all profiles" on public.profiles for all using (public.is_admin());
+-- 3. Users Policies
+create policy "Allow users to read their own profile" on public.users for select using (auth.uid() = id or public.is_admin());
+create policy "Allow users to update their own profile" on public.users for update using (auth.uid() = id or public.is_admin());
+create policy "Allow admin to manage all profiles" on public.users for all using (public.is_admin());
 
 -- 4. Bookings Policies
 create policy "Allow users to read their own bookings" on public.bookings for select using (auth.uid() = user_id or public.is_admin());
@@ -230,7 +230,7 @@ create policy "Allow admin to manage all bookings" on public.bookings for all us
 create or replace function public.handle_new_user()
 returns trigger security definer as $$
 begin
-  insert into public.profiles (id, name, email, phone, gender, birthdate, identity_type, identity_number, address, is_admin)
+  insert into public.users (id, name, email, phone, gender, birthdate, identity_type, identity_number, address, role)
   values (
     new.id,
     coalesce(new.raw_user_meta_data->>'name', 'Anggota Baru'),
@@ -241,7 +241,7 @@ begin
     new.raw_user_meta_data->>'identity_type',
     new.raw_user_meta_data->>'identity_number',
     new.raw_user_meta_data->>'address',
-    false -- defaults to non-admin
+    'member' -- defaults to member role
   );
   return new;
 end;
