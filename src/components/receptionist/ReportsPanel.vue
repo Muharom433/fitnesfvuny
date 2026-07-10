@@ -135,14 +135,70 @@
         </div>
       </div>
     </div>
+
+    <!-- Ekspor Rekapan Excel Section -->
+    <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-card">
+      <div class="flex items-center gap-3 mb-5 pb-3 border-b border-slate-100">
+        <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <i class="fa-solid fa-file-excel text-sm"></i>
+        </div>
+        <div>
+          <h3 class="font-extrabold text-primary-900 text-sm">Ekspor Rekapan Transaksi (Excel / Spreadsheet)</h3>
+          <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Unduh data laporan kunjungan, member, & penjualan produk untuk pembukuan</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <!-- Pilihan Periode -->
+        <div class="space-y-1.5">
+          <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Periode Laporan</label>
+          <select v-model="exportPeriod" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all cursor-pointer">
+            <option value="harian">Laporan Harian (Per Tanggal)</option>
+            <option value="bulanan">Laporan Bulanan (Per Bulan)</option>
+            <option value="tahunan">Laporan Tahunan (Per Tahun)</option>
+          </select>
+        </div>
+
+        <!-- Pemilih Detail (Dinamis berdasarkan Periode) -->
+        <div class="space-y-1.5">
+          <!-- Harian -->
+          <div v-if="exportPeriod === 'harian'" class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Tanggal</label>
+            <input type="date" v-model="selectedDate" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all" />
+          </div>
+          <!-- Bulanan -->
+          <div v-if="exportPeriod === 'bulanan'" class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Bulan & Tahun</label>
+            <input type="month" v-model="selectedMonth" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all" />
+          </div>
+          <!-- Tahunan -->
+          <div v-if="exportPeriod === 'tahunan'" class="space-y-1.5">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Tahun</label>
+            <select v-model="selectedYear" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all cursor-pointer">
+              <option v-for="y in [2024, 2025, 2026, 2027, 2028]" :key="y" :value="y">{{ y }}</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tombol Download -->
+        <div>
+          <button @click="exportToExcel" class="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/10 active:scale-[0.98] transition-all cursor-pointer">
+            <i class="fa-solid fa-download"></i> Unduh File Excel (.xlsx)
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useReceptionistStore } from '@/stores/receptionist.store'
+import { useToast } from '@/composables/useToast'
+import * as XLSX from 'xlsx'
 
 const recStore = useReceptionistStore()
+const toast = useToast()
 
 const visitTransactions = computed(() =>
   recStore.transactions.filter(t => t.type === 'visit')
@@ -328,4 +384,197 @@ onMounted(() => {
     })
   }
 })
+
+// State variables for export form
+const exportPeriod = ref<'harian' | 'bulanan' | 'tahunan'>('harian')
+const selectedDate = ref(new Date().toISOString().split('T')[0])
+const selectedMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM
+const selectedYear = ref(new Date().getFullYear())
+
+// Robust helper to parse dates formatted in YYYY-MM-DD or DD/MM/YYYY
+function parseDateParts(dateStr: string) {
+  const separators = /[-/]/
+  const parts = dateStr.split(separators)
+  if (parts.length < 3) return { year: '', month: '', day: '' }
+  
+  if (parts[0].length === 4) {
+    // YYYY-MM-DD
+    return {
+      year: parts[0],
+      month: parts[1].padStart(2, '0'),
+      day: parts[2].padStart(2, '0')
+    }
+  } else {
+    // DD/MM/YYYY or D/M/YYYY
+    return {
+      year: parts[2],
+      month: parts[1].padStart(2, '0'),
+      day: parts[0].padStart(2, '0')
+    }
+  }
+}
+
+function exportToExcel() {
+  let visitsToExport = []
+  let productsToExport = []
+  let filename = ''
+  let reportPeriodLabel = ''
+
+  if (exportPeriod.value === 'harian') {
+    const targetDate = selectedDate.value
+    const targetParts = parseDateParts(targetDate)
+    
+    visitsToExport = recStore.transactions.filter(t => {
+      const p = parseDateParts(t.date)
+      return p.year === targetParts.year && p.month === targetParts.month && p.day === targetParts.day && t.type === 'visit'
+    })
+    
+    productsToExport = recStore.productSales.filter(p => {
+      const pts = parseDateParts(p.date)
+      return pts.year === targetParts.year && pts.month === targetParts.month && pts.day === targetParts.day
+    })
+
+    filename = `Laporan_Harian_${targetDate}.xlsx`
+    reportPeriodLabel = `HARIAN - ${targetDate}`
+  } else if (exportPeriod.value === 'bulanan') {
+    const [year, month] = selectedMonth.value.split('-')
+    
+    visitsToExport = recStore.transactions.filter(t => {
+      const p = parseDateParts(t.date)
+      return p.year === year && p.month === month && t.type === 'visit'
+    })
+    
+    productsToExport = recStore.productSales.filter(p => {
+      const pts = parseDateParts(p.date)
+      return pts.year === year && pts.month === month
+    })
+
+    filename = `Laporan_Bulanan_${year}_${month}.xlsx`
+    reportPeriodLabel = `BULANAN - ${month}/${year}`
+  } else {
+    const targetYear = selectedYear.value.toString()
+    
+    visitsToExport = recStore.transactions.filter(t => {
+      const p = parseDateParts(t.date)
+      return p.year === targetYear && t.type === 'visit'
+    })
+    
+    productsToExport = recStore.productSales.filter(p => {
+      const pts = parseDateParts(p.date)
+      return pts.year === targetYear
+    })
+
+    filename = `Laporan_Tahunan_${targetYear}.xlsx`
+    reportPeriodLabel = `TAHUNAN - TAHUN ${targetYear}`
+  }
+
+  // 1. Sheet: Ringkasan
+  const totalVisitRevenue = visitsToExport.reduce((sum, t) => sum + t.amount, 0)
+  const totalProductRevenue = productsToExport.reduce((sum, p) => sum + p.total, 0)
+  const grandTotal = totalVisitRevenue + totalProductRevenue
+  const totalQtySold = productsToExport.reduce((sum, p) => sum + p.qty, 0)
+
+  const summaryData = [
+    ['FITNESS CENTER FV UNY WATES'],
+    ['LAPORAN REKAPAN TRANSAKSI KEUANGAN'],
+    ['================================================'],
+    ['Jenis Laporan:', reportPeriodLabel],
+    ['Tanggal Ekspor:', new Date().toLocaleString('id-ID')],
+    ['Petugas:', 'Resepsionis Fitness Center'],
+    ['================================================'],
+    [],
+    ['RINGKASAN TOTAL PEMASUKAN:'],
+    ['------------------------------------------------'],
+    ['Pemasukan Registrasi / Member:', `Rp ${totalVisitRevenue.toLocaleString('id-ID')}`],
+    ['Pemasukan Penjualan Produk:', `Rp ${totalProductRevenue.toLocaleString('id-ID')}`],
+    ['Total Produk Terjual (Unit):', `${totalQtySold} unit`],
+    ['------------------------------------------------'],
+    ['GRAND TOTAL PENDAPATAN:', `Rp ${grandTotal.toLocaleString('id-ID')}`],
+    ['================================================']
+  ]
+
+  // 2. Sheet: Registrasi & Kunjungan
+  const visitHeaders = [
+    ['LAPORAN DETAIL PEMASUKAN REGISTRASI & MEMBER'],
+    [`Periode: ${reportPeriodLabel}`],
+    [],
+    ['No', 'Tanggal', 'Waktu', 'Nama Pengunjung', 'Civitas', 'Kategori', 'Durasi', 'Pelatih', 'Kelas', 'Alat', 'Total Bayar', 'Metode Bayar']
+  ]
+  const visitRows = visitsToExport.map((t, idx) => [
+    idx + 1,
+    t.date,
+    t.time,
+    t.name,
+    t.civitas,
+    t.category,
+    t.duration || '-',
+    t.trainer || '-',
+    t.kelas || '-',
+    t.alat || '-',
+    t.amount,
+    t.paymentMethod
+  ])
+  const visitTotalRow = ['', '', '', '', '', '', '', '', '', 'Total:', totalVisitRevenue, '']
+  const visitSheetData = [...visitHeaders, ...visitRows, [], visitTotalRow]
+
+  // 3. Sheet: Penjualan Produk
+  const productHeaders = [
+    ['LAPORAN DETAIL PENJUALAN PRODUK'],
+    [`Periode: ${reportPeriodLabel}`],
+    [],
+    ['No', 'Tanggal', 'Nama Produk', 'Qty', 'Harga Satuan', 'Total Bayar', 'Metode Bayar']
+  ]
+  const productRows = productsToExport.map((p, idx) => [
+    idx + 1,
+    p.date,
+    p.productName,
+    p.qty,
+    p.price,
+    p.total,
+    p.paymentMethod
+  ])
+  const productTotalRow = ['', '', '', '', 'Total:', totalProductRevenue, '']
+  const productSheetData = [...productHeaders, ...productRows, [], productTotalRow]
+
+  // Initialize Workbook
+  const wb = XLSX.utils.book_new()
+  const wsSummary = XLSX.utils.aoa_to_sheet(summaryData)
+  const wsVisits = XLSX.utils.aoa_to_sheet(visitSheetData)
+  const wsProducts = XLSX.utils.aoa_to_sheet(productSheetData)
+
+  // Align Column Widths beautifully
+  wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }]
+  wsVisits['!cols'] = [
+    { wch: 5 },  // No
+    { wch: 12 }, // Tanggal
+    { wch: 8 },  // Waktu
+    { wch: 25 }, // Nama Pengunjung
+    { wch: 25 }, // Civitas
+    { wch: 12 }, // Kategori
+    { wch: 10 }, // Durasi
+    { wch: 20 }, // Pelatih
+    { wch: 20 }, // Kelas
+    { wch: 20 }, // Alat
+    { wch: 15 }, // Total Bayar
+    { wch: 15 }  // Metode Bayar
+  ]
+  wsProducts['!cols'] = [
+    { wch: 5 },  // No
+    { wch: 12 }, // Tanggal
+    { wch: 25 }, // Nama Produk
+    { wch: 8 },  // Qty
+    { wch: 15 }, // Harga Satuan
+    { wch: 15 }, // Total Bayar
+    { wch: 15 }  // Metode Bayar
+  ]
+
+  // Append Sheets
+  XLSX.utils.book_append_sheet(wb, wsSummary, 'Ringkasan Laporan')
+  XLSX.utils.book_append_sheet(wb, wsVisits, 'Registrasi & Kunjungan')
+  XLSX.utils.book_append_sheet(wb, wsProducts, 'Penjualan Produk')
+
+  // Save Workbook
+  XLSX.writeFile(wb, filename)
+  toast.success(`Laporan ${filename} berhasil diunduh!`)
+}
 </script>
