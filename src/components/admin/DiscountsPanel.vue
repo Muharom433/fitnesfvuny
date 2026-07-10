@@ -60,8 +60,8 @@
           <div class="mt-4 border-t border-slate-200/60 pt-3 space-y-2 bg-slate-100/50 p-2.5 rounded-lg border" v-if="newEvent[p.id]">
             <input v-model="newEvent[p.id].name" placeholder="Nama event/promo..." class="input-field-small bg-white" />
             <div class="flex gap-2">
-              <input type="number" v-model.number="newEvent[p.id].percentage" min="1" max="100" placeholder="%" class="input-field-small w-16 bg-white" />
-              <button type="button" @click="addCustomDiscount(p.id)" class="flex-1 py-1.5 bg-primary-800 text-white rounded-lg font-bold text-[11px] hover:bg-primary-900 transition-colors">
+              <input type="number" v-model.number="newEvent[p.id].percentage" min="1" max="100" placeholder="%" class="input-field-small bg-white" style="width: 70px; flex-shrink: 0;" />
+              <button type="button" @click="addCustomDiscount(p.id)" class="flex-1 py-1.5 bg-primary-800 text-white rounded-lg font-bold text-[11px] hover:bg-primary-900 transition-colors" style="flex-shrink: 0; min-width: 0; white-space: nowrap;">
                 + Tambah
               </button>
             </div>

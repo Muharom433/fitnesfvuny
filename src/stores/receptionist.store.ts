@@ -41,15 +41,19 @@ export const useReceptionistStore = defineStore('receptionist', () => {
     transactions.value.unshift(tx)
     saveToLocalStorage()
     // Also sync to Supabase bookings if possible
+    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+    const d = new Date(tx.date)
+    const dayName = isNaN(d.getTime()) ? '' : dayNames[d.getDay()]
+
     supabase.from('bookings').insert({
       name: tx.name,
-      phone: tx.phone,
-      status_civitas: tx.civitas,
-      category: tx.category,
-      duration: tx.duration,
-      preferred_time: tx.time,
-      estimated_price: tx.amount,
-      status: 'Approved',
+      booking_date: tx.date,
+      booking_day: dayName,
+      booking_time: tx.time,
+      trainer: tx.trainer || 'Mandiri (Tanpa Pelatih)',
+      kelas: tx.kelas || 'Tanpa Kelas',
+      alat: tx.alat || 'Tanpa Alat',
+      user_id: null
     }).then(() => {})
   }
 
@@ -60,6 +64,11 @@ export const useReceptionistStore = defineStore('receptionist', () => {
 
   function removeTransaction(id: string) {
     transactions.value = transactions.value.filter(t => t.id !== id)
+    saveToLocalStorage()
+  }
+
+  function removeProductSale(id: string) {
+    productSales.value = productSales.value.filter(s => s.id !== id)
     saveToLocalStorage()
   }
 
@@ -87,6 +96,7 @@ export const useReceptionistStore = defineStore('receptionist', () => {
     addTransaction,
     addProductSale,
     removeTransaction,
+    removeProductSale,
     fetchBookings,
   }
 })

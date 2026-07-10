@@ -122,9 +122,14 @@
           <p class="text-2xl font-black text-white mt-1.5">Rp {{ form.amount.toLocaleString('id-ID') }}</p>
         </div>
 
-        <button type="submit" class="w-full py-3 bg-accent-500 text-white font-bold text-sm rounded-xl hover:bg-accent-600 transition-colors shadow-sm mt-2">
-          <i class="fa-solid fa-circle-check mr-2"></i>Catat Kunjungan
-        </button>
+        <div class="grid grid-cols-2 gap-3 mt-2">
+          <button type="submit" class="py-3 bg-accent-500 text-white font-bold text-xs rounded-xl hover:bg-accent-600 active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-circle-check"></i> Proses Pembayaran
+          </button>
+          <button type="button" @click="printLastTransaction" :disabled="!lastTransaction" class="py-3 bg-emerald-600 text-white font-bold text-xs rounded-xl hover:bg-emerald-700 active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-1.5 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-print"></i> Cetak Struk
+          </button>
+        </div>
       </form>
     </div>
 
@@ -178,7 +183,7 @@
                 <th class="px-4 py-3 font-bold text-slate-500 uppercase tracking-wider">Harga</th>
                 <th class="px-4 py-3 font-bold text-slate-500 uppercase tracking-wider">Metode</th>
                 <th class="px-4 py-3 font-bold text-slate-500 uppercase tracking-wider">Waktu</th>
-                <th class="px-4 py-3 text-center font-bold text-slate-500 uppercase tracking-wider">Aksi</th>
+                <th class="px-4 py-3 text-center font-bold text-slate-500 uppercase tracking-wider sticky right-0 bg-slate-50 shadow-[-4px_0_8px_rgba(0,0,0,0.04)] z-10">Aksi</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -200,12 +205,12 @@
                 <td class="px-4 py-3 font-bold text-primary-900">Rp {{ tx.amount.toLocaleString('id-ID') }}</td>
                 <td class="px-4 py-3 text-slate-600 truncate max-w-[100px]">{{ tx.paymentMethod }}</td>
                 <td class="px-4 py-3 text-slate-400">{{ tx.time }}</td>
-                <td class="px-4 py-3">
+                <td class="px-4 py-3 sticky right-0 bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.04)] z-10">
                   <div class="flex items-center justify-center gap-2">
                     <button v-if="tx.category === 'Member'" @click="openCardModal(tx)" class="flex items-center gap-1 text-[10px] font-bold px-2 py-1 border border-accent-500 text-accent-500 rounded-lg hover:bg-accent-50 transition-colors">
                       <i class="fa-solid fa-address-card"></i> Cetak Kartu
                     </button>
-                    <button @click="recStore.removeTransaction(tx.id)" class="text-red-400 hover:text-red-600 transition-colors p-1">
+                    <button @click="recStore.removeTransaction(tx.id)" class="text-red-400 hover:text-red-600 transition-colors p-1" title="Hapus Kunjungan">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </div>
@@ -234,49 +239,50 @@
         </div>
 
         <!-- The Membership Card (Visual Mockup) -->
-        <div id="visual-member-card" class="bg-gradient-to-br from-primary-900 to-primary-950 text-white rounded-2xl p-5 shadow-lg relative border border-primary-800 flex flex-col justify-between overflow-hidden" style="aspect-ratio: 85/55; width: 100%;">
-          <!-- Card Decorative Wave -->
-          <div class="absolute top-0 right-0 w-32 h-32 bg-accent-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div id="visual-member-card" class="bg-gradient-to-tr from-[#132742] via-[#e55e0d] to-[#ffaa2b] text-white rounded-2xl p-4 shadow-xl relative border border-white/20 flex flex-col justify-between overflow-hidden" style="aspect-ratio: 85/55; width: 100%;">
+          <!-- Card Decorative Shapes -->
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+          <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-black/25 rounded-full blur-lg pointer-events-none"></div>
 
           <!-- Card Top -->
-          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+          <div class="flex items-center justify-between pb-1.5 border-b border-white/15">
             <div class="flex items-center gap-2">
-              <i class="fa-solid fa-dumbbell text-accent-500 text-lg"></i>
+              <i class="fa-solid fa-dumbbell text-[#ffcc80] text-base animate-pulse"></i>
               <div>
-                <h5 class="text-[11px] font-extrabold tracking-wider leading-none">FITNESS CENTER</h5>
-                <span class="text-[8px] font-bold text-accent-500 leading-none">FAKULTAS VOKASI UNY</span>
+                <h5 class="text-[10px] font-black tracking-widest leading-none">FITNESS CENTER</h5>
+                <span class="text-[7px] font-bold text-[#ffcc80] leading-none uppercase tracking-wider">FV UNY VOKASI</span>
               </div>
             </div>
-            <span class="text-[8px] bg-accent-500/20 text-accent-400 px-2 py-0.5 rounded border border-accent-500/30 uppercase tracking-widest font-extrabold">MEMBER</span>
+            <span class="text-[8px] bg-white/20 text-white px-2 py-0.5 rounded-full border border-white/35 uppercase tracking-widest font-black">MEMBER</span>
           </div>
 
-          <!-- Card Content -->
-          <div class="flex gap-4 my-2.5 items-center">
+          <!-- Card Content (Frosted glass area) -->
+          <div class="bg-white/12 backdrop-blur-md border border-white/15 rounded-xl p-2.5 my-2 flex gap-3 items-center shadow-inner">
             <!-- Left: Avatar Photo -->
-            <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/10 flex-shrink-0">
-              <i class="fa-solid fa-user text-2xl text-accent-500"></i>
+            <div class="w-11 h-11 rounded-lg bg-white/15 flex items-center justify-center border border-white/25 flex-shrink-0 text-[#ffb74d]">
+              <i class="fa-solid fa-user text-xl"></i>
             </div>
             <!-- Right: Details -->
-            <div class="min-w-0 space-y-0.5">
-              <p class="text-xs font-extrabold uppercase truncate text-white leading-tight">{{ activeCard?.name }}</p>
-              <p class="text-[8px] text-slate-300 font-bold uppercase">{{ activeCard?.civitas }}</p>
-              <p v-if="activeCard?.nim" class="text-[9px] font-mono text-accent-500 tracking-wider">ID: {{ activeCard?.nim }}</p>
-              <p v-else class="text-[9px] font-mono text-accent-500 tracking-wider">ID: MEM-{{ activeCard?.id.slice(-5) }}</p>
+            <div class="min-w-0 space-y-0.5 text-left">
+              <p class="text-xs font-black uppercase truncate text-white leading-tight tracking-wide">{{ activeCard?.name }}</p>
+              <p class="text-[8px] text-[#ffe0b2] font-black uppercase tracking-wider">{{ activeCard?.civitas }}</p>
+              <p v-if="activeCard?.nim" class="text-[8.5px] font-mono text-white/90 tracking-wider">ID: {{ activeCard?.nim }}</p>
+              <p v-else class="text-[8.5px] font-mono text-white/90 tracking-wider">ID: MEM-{{ activeCard?.id.slice(-5) }}</p>
             </div>
           </div>
 
           <!-- Card Bottom -->
-          <div class="flex items-end justify-between pt-1 border-t border-white/10">
-            <div class="space-y-0.5">
-              <p class="text-[7px] text-slate-400 uppercase tracking-wider font-bold">Masa Berlaku</p>
-              <p class="text-[9px] font-extrabold text-white">{{ activeCardExpiry }}</p>
+          <div class="flex items-end justify-between pt-1 border-t border-white/15">
+            <div class="space-y-0.5 text-left">
+              <p class="text-[6.5px] text-white/70 uppercase tracking-widest font-bold">Masa Berlaku</p>
+              <p class="text-[9.5px] font-black text-white">{{ activeCardExpiry }}</p>
             </div>
             <!-- Dummy Barcode -->
             <div class="flex flex-col items-center">
-              <div class="flex gap-0.5 h-4 items-center bg-white/10 px-1 rounded">
-                <div v-for="w in [1,2,1,3,1,2,1,1,2,1]" :key="w" :class="['bg-white h-3', w === 1 ? 'w-[0.5px]' : w === 2 ? 'w-[1px]' : 'w-[2px]']"></div>
+              <div class="flex gap-0.5 h-3.5 items-center bg-white/15 px-1 rounded">
+                <div v-for="w in [1,2,1,3,1,2,1,1,2,1]" :key="w" :class="['bg-white h-2.5', w === 1 ? 'w-[0.5px]' : w === 2 ? 'w-[1px]' : 'w-[2px]']"></div>
               </div>
-              <span class="text-[6px] font-mono mt-0.5 text-slate-400">UNY-GYM-{{ activeCard?.id.slice(-4) }}</span>
+              <span class="text-[5.5px] font-mono mt-0.5 text-white/60">UNY-GYM-{{ activeCard?.id.slice(-4) }}</span>
             </div>
           </div>
         </div>
@@ -289,101 +295,201 @@
   </div>
 
   <!-- Hidden Print Layout Container (Activated only on Ctrl+P or window.print()) -->
-  <div id="print-container" class="hidden print:block font-sans text-black bg-white">
+  <div id="print-container" class="print-only font-sans text-black bg-white">
     <!-- Card Print Layout -->
-    <div v-if="printType === 'card' && activeCard" class="w-[85mm] h-[55mm] border border-slate-300 rounded-xl p-5 bg-slate-900 text-white relative flex flex-col justify-between overflow-hidden mx-auto my-12" style="page-break-inside: avoid;">
+    <div v-if="printType === 'card' && activeCard" class="w-[85mm] h-[55mm] border border-white/20 rounded-2xl p-5 bg-gradient-to-tr from-[#132742] via-[#e55e0d] to-[#ffaa2b] text-white relative flex flex-col justify-between overflow-hidden mx-auto my-12" style="page-break-inside: avoid; aspect-ratio: 85/55; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <!-- Card Decorative Shapes -->
+      <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+      <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-black/25 rounded-full blur-lg pointer-events-none"></div>
+
+      <!-- Card Top -->
       <div class="flex items-center justify-between pb-2 border-b border-white/20">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-black tracking-wider leading-none">FITNESS CENTER</span>
-          <span class="text-[7px] font-bold text-orange-400">FV UNY</span>
+          <i class="fa-solid fa-dumbbell text-[#ffcc80] text-lg"></i>
+          <div>
+            <h5 class="text-[11px] font-extrabold tracking-widest leading-none text-white">FITNESS CENTER</h5>
+            <span class="text-[8px] font-bold text-[#ffcc80] leading-none uppercase tracking-wider">FV UNY VOKASI</span>
+          </div>
         </div>
-        <span class="text-[8px] bg-orange-500 text-white px-2 py-0.5 rounded font-black tracking-widest uppercase">MEMBER</span>
+        <span class="text-[8px] bg-white/25 text-white px-2 py-0.5 rounded-full border border-white/40 uppercase tracking-widest font-black">MEMBER</span>
       </div>
 
-      <div class="flex gap-4 my-auto items-center">
-        <div class="w-14 h-14 rounded-lg bg-white/10 flex items-center justify-center border border-white/20">
-          <span class="text-3xl text-orange-400">&#x1F464;</span>
+      <!-- Card Content (Frosted glass area) -->
+      <div class="bg-white/12 border border-white/20 rounded-xl p-3 my-auto flex gap-4 items-center" style="backdrop-filter: blur(8px);">
+        <!-- Left: Avatar Photo -->
+        <div class="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center border border-white/30 text-[#ffb74d] text-2xl">
+          <i class="fa-solid fa-user"></i>
         </div>
-        <div class="space-y-0.5">
-          <p class="text-sm font-extrabold uppercase leading-tight text-white">{{ activeCard.name }}</p>
-          <p class="text-[8px] text-slate-300 font-bold uppercase">{{ activeCard.civitas }}</p>
-          <p v-if="activeCard.nim" class="text-[9px] font-mono text-orange-400 tracking-wider">ID: {{ activeCard.nim }}</p>
-          <p v-else class="text-[9px] font-mono text-orange-400 tracking-wider">ID: MEM-{{ activeCard.id.slice(-5) }}</p>
+        <!-- Right: Details -->
+        <div class="min-w-0 space-y-0.5 text-left">
+          <p class="text-sm font-black uppercase truncate text-white leading-tight tracking-wide">{{ activeCard.name }}</p>
+          <p class="text-[9px] text-[#ffe0b2] font-black uppercase tracking-wider">{{ activeCard.civitas }}</p>
+          <p v-if="activeCard.nim" class="text-[9.5px] font-mono text-white/90 tracking-wider">ID: {{ activeCard.nim }}</p>
+          <p v-else class="text-[9.5px] font-mono text-white/90 tracking-wider">ID: MEM-{{ activeCard.id.slice(-5) }}</p>
         </div>
       </div>
 
+      <!-- Card Bottom -->
       <div class="flex items-end justify-between pt-1 border-t border-white/20">
-        <div class="space-y-0.5">
-          <p class="text-[7px] text-slate-400 uppercase tracking-wider font-bold">Masa Berlaku</p>
-          <p class="text-[9px] font-extrabold text-white">{{ activeCardExpiry }}</p>
+        <div class="space-y-0.5 text-left">
+          <p class="text-[7px] text-slate-300 uppercase tracking-wider font-bold">Masa Berlaku</p>
+          <p class="text-[10px] font-extrabold text-white">{{ activeCardExpiry }}</p>
         </div>
         <div class="flex flex-col items-center">
           <div class="flex gap-0.5 h-4 items-center bg-white/20 px-1 rounded">
             <div v-for="w in [1,2,1,3,1,2,1,1,2,1]" :key="w" :class="['bg-white h-3', w === 1 ? 'w-[0.5px]' : w === 2 ? 'w-[1px]' : 'w-[2px]']"></div>
           </div>
-          <span class="text-[6px] font-mono mt-0.5 text-slate-400">UNY-GYM-{{ activeCard.id.slice(-4) }}</span>
+          <span class="text-[6px] font-mono mt-0.5 text-white/60">UNY-GYM-{{ activeCard.id.slice(-4) }}</span>
         </div>
       </div>
     </div>
 
     <!-- Rekap Print Layout -->
-    <div v-if="printType === 'rekap'" class="p-8 space-y-6">
-      <div class="text-center pb-4 border-b-2 border-slate-800">
-        <h2 class="text-xl font-black tracking-wide uppercase">FITNESS CENTER FAKULTAS VOKASI UNY</h2>
-        <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Laporan Rekap Kunjungan & Penjualan Tiket Harian</p>
-        <p class="text-xs text-slate-400 mt-1">Tanggal: {{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</p>
+    <div v-if="printType === 'rekap'" class="p-8 space-y-6 max-w-4xl mx-auto">
+      <div class="flex items-center justify-between pb-4 border-b-2 border-slate-800">
+        <div class="text-left space-y-1">
+          <h2 class="text-2xl font-black tracking-wide text-slate-900 uppercase">FITNESS CENTER FV UNY</h2>
+          <p class="text-xs text-slate-500 font-bold uppercase tracking-widest">SISTEM MANAJEMEN INTERNAL</p>
+          <p class="text-xs text-slate-400">Kampus Wates Vokasi, Universitas Negeri Yogyakarta</p>
+        </div>
+        <div class="text-right text-xs text-slate-500 space-y-1">
+          <p class="font-bold text-slate-800 uppercase tracking-wider">Laporan Rekap Kunjungan</p>
+          <p>Tanggal: <span class="font-bold text-slate-800">{{ new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) }}</span></p>
+        </div>
       </div>
 
-      <!-- Summary Stats -->
-      <div class="grid grid-cols-2 gap-4 pb-4">
-        <div class="border border-slate-200 rounded-xl p-4 text-center">
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Pengunjung</p>
-          <p class="text-2xl font-black text-slate-900 mt-1">{{ recStore.todayVisitors }} Orang</p>
+      <!-- Summary Stats Cards -->
+      <div class="grid grid-cols-2 gap-6 pb-4">
+        <div class="border border-slate-200 rounded-2xl p-5 text-center bg-slate-50">
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Pengunjung Hari Ini</p>
+          <p class="text-3xl font-black text-slate-950 mt-1.5">{{ recStore.todayVisitors }} Orang</p>
         </div>
-        <div class="border border-slate-200 rounded-xl p-4 text-center">
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Pendapatan Tiket</p>
-          <p class="text-2xl font-black text-slate-900 mt-1">Rp {{ recStore.todayRevenue.toLocaleString('id-ID') }}</p>
+        <div class="border border-slate-200 rounded-2xl p-5 text-center bg-slate-50">
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Total Pendapatan Tiket</p>
+          <p class="text-3xl font-black text-emerald-700 mt-1.5">Rp {{ recStore.todayRevenue.toLocaleString('id-ID') }}</p>
         </div>
       </div>
 
       <!-- Table Logs -->
-      <table class="w-full text-xs border-collapse">
-        <thead>
-          <tr class="border-b-2 border-slate-800 text-left bg-slate-50">
-            <th class="py-2.5 px-2 font-bold uppercase">No</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Nama</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Civitas</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Kategori</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Durasi</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Harga</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Metode</th>
-            <th class="py-2.5 px-2 font-bold uppercase">Waktu</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-200">
-          <tr v-for="(tx, idx) in todayTransactions" :key="tx.id">
-            <td class="py-2 px-2 text-slate-400 font-semibold">{{ idx + 1 }}</td>
-            <td class="py-2 px-2 font-bold">{{ tx.name }}</td>
-            <td class="py-2 px-2 text-slate-600">{{ tx.civitas }}</td>
-            <td class="py-2 px-2 font-bold text-slate-800">{{ tx.category }}</td>
-            <td class="py-2 px-2 text-slate-500">{{ tx.duration || '-' }}</td>
-            <td class="py-2 px-2 font-bold text-slate-900">Rp {{ tx.amount.toLocaleString('id-ID') }}</td>
-            <td class="py-2 px-2 text-slate-600">{{ tx.paymentMethod }}</td>
-            <td class="py-2 px-2 text-slate-500">{{ tx.time }}</td>
-          </tr>
-          <tr v-if="todayTransactions.length === 0">
-            <td colspan="8" class="text-center py-6 text-slate-400">Tidak ada transaksi terdaftar hari ini.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="space-y-3">
+        <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest border-b border-slate-200 pb-1">Rincian Tiket Pengunjung</h3>
+        <table class="w-full text-xs text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 font-bold border-b-2 border-slate-400">
+              <th class="py-3 px-3">No</th>
+              <th class="py-3 px-3">Nama Pengunjung</th>
+              <th class="py-3 px-3">Civitas</th>
+              <th class="py-3 px-3">Kategori</th>
+              <th class="py-3 px-3">Durasi</th>
+              <th class="py-3 px-3">Fasilitas Tambahan</th>
+              <th class="py-3 px-3 text-right">Harga</th>
+              <th class="py-3 px-3">Bayar Via</th>
+              <th class="py-3 px-3">Waktu</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-slate-800">
+            <tr v-for="(tx, idx) in todayTransactions" :key="tx.id" class="hover:bg-slate-50/50">
+              <td class="py-2.5 px-3 text-slate-400 font-semibold">{{ idx + 1 }}</td>
+              <td class="py-2.5 px-3 font-bold text-slate-900">{{ tx.name }}</td>
+              <td class="py-2.5 px-3 text-slate-600">{{ tx.civitas }}</td>
+              <td class="py-2.5 px-3 font-bold">{{ tx.category }}</td>
+              <td class="py-2.5 px-3 text-slate-500">{{ tx.duration || '-' }}</td>
+              <td class="py-2.5 px-3 text-[10px] text-slate-500 leading-tight">
+                <div v-if="tx.trainer && tx.trainer !== '-'">PT: {{ tx.trainer }}</div>
+                <div v-if="tx.kelas && tx.kelas !== '-'">Kelas: {{ tx.kelas }}</div>
+                <div v-if="tx.alat && tx.alat !== '-'">Alat: {{ tx.alat }}</div>
+                <div v-if="(!tx.trainer || tx.trainer === '-') && (!tx.kelas || tx.kelas === '-') && (!tx.alat || tx.alat === '-')">-</div>
+              </td>
+              <td class="py-2.5 px-3 font-bold text-slate-900 text-right">Rp {{ tx.amount.toLocaleString('id-ID') }}</td>
+              <td class="py-2.5 px-3 text-slate-600">{{ tx.paymentMethod }}</td>
+              <td class="py-2.5 px-3 text-slate-500 font-mono">{{ tx.time }}</td>
+            </tr>
+            <tr v-if="todayTransactions.length === 0">
+              <td colspan="9" class="text-center py-10 text-slate-400 font-medium">Tidak ada transaksi terdaftar hari ini.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Signatures -->
-      <div class="pt-12 flex justify-end">
+      <div class="pt-16 flex justify-between items-center text-xs">
         <div class="text-center w-48 space-y-12">
-          <p class="text-xs font-bold uppercase">Petugas Resepsionis</p>
-          <div class="h-[2px] bg-slate-800 w-full"></div>
-          <p class="text-[10px] text-slate-400 font-medium">FV UNY Fitness Center</p>
+          <p class="font-bold uppercase tracking-wider text-slate-500">Pemeriksa (Admin)</p>
+          <div class="h-[1px] bg-slate-400 w-full mx-auto"></div>
+          <p class="font-medium text-slate-400">NIP. .........................</p>
         </div>
+        <div class="text-center w-48 space-y-12">
+          <p class="font-bold uppercase tracking-wider text-slate-500">Petugas Resepsionis</p>
+          <div class="h-[1px] bg-slate-400 w-full mx-auto"></div>
+          <p class="font-medium text-slate-400">FV UNY Fitness Center</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Individual Thermal Receipt Print Layout -->
+    <div v-if="printType === 'struk' && activeStruk" class="w-[58mm] text-[10px] font-mono text-black bg-white p-2 mx-auto space-y-3" style="page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div class="flex items-center gap-2 pb-2 border-b border-dashed border-slate-300 mb-2">
+        <img src="/assets/logo.png" class="w-8 h-8 object-contain flex-shrink-0" />
+        <div class="text-left leading-tight">
+          <h4 class="font-bold text-[11px] tracking-wide text-primary-900">FITNESS CENTER FV UNY</h4>
+          <p class="text-[8px] text-slate-500 font-semibold mt-0.5">Kampus Vokasi Wates</p>
+        </div>
+      </div>
+      
+      <div class="space-y-0.5 text-[8.5px] text-left">
+        <div class="flex justify-between"><span>No. Struk:</span><span>{{ activeStruk.id.slice(-6).toUpperCase() }}</span></div>
+        <div class="flex justify-between"><span>Tanggal:</span><span>{{ activeStruk.date }}</span></div>
+        <div class="flex justify-between"><span>Waktu:</span><span>{{ activeStruk.time }}</span></div>
+        <div class="flex justify-between"><span>Nama:</span><span class="font-bold">{{ activeStruk.name }}</span></div>
+        <div class="flex justify-between"><span>Civitas:</span><span>{{ activeStruk.civitas }}</span></div>
+        <div class="flex justify-between"><span>Bayar Via:</span><span>{{ activeStruk.paymentMethod }}</span></div>
+      </div>
+      
+      <p class="text-center text-[8px] my-1">--------------------------------</p>
+      
+      <div class="space-y-1 text-[8.5px] text-left">
+        <div class="flex justify-between font-bold">
+          <span>Kategori Kunjungan:</span>
+          <span>Rp {{ getBasePrice(activeStruk).toLocaleString('id-ID') }}</span>
+        </div>
+        <div class="pl-2 text-[8px] text-slate-700">
+          <span>- {{ activeStruk.category }} {{ activeStruk.duration ? `(${activeStruk.duration})` : '' }}</span>
+        </div>
+        
+        <!-- Add-ons -->
+        <div v-if="activeStruk.trainer && activeStruk.trainer !== '-'" class="flex justify-between">
+          <span>- PT: {{ activeStruk.trainer }}</span>
+          <span>Rp {{ getTrainerPrice(activeStruk.trainer).toLocaleString('id-ID') }}</span>
+        </div>
+        <div v-if="activeStruk.kelas && activeStruk.kelas !== '-'" class="flex justify-between">
+          <span>- Kelas: {{ activeStruk.kelas }}</span>
+          <span>Rp {{ getClassPrice(activeStruk.kelas).toLocaleString('id-ID') }}</span>
+        </div>
+        <div v-if="activeStruk.alat && activeStruk.alat !== '-'" class="flex justify-between">
+          <span>- Alat: {{ activeStruk.alat }}</span>
+          <span>Rp {{ getEquipmentPrice(activeStruk.alat).toLocaleString('id-ID') }}</span>
+        </div>
+      </div>
+      
+      <p class="text-center text-[8px] my-1">--------------------------------</p>
+      
+      <div class="space-y-0.5 text-[8.5px] font-bold text-left">
+        <div v-if="getDiscountAmount(activeStruk) > 0" class="flex justify-between text-red-600">
+          <span>Diskon / Potongan:</span>
+          <span>-Rp {{ getDiscountAmount(activeStruk).toLocaleString('id-ID') }}</span>
+        </div>
+        <div class="flex justify-between text-[11px] pt-1">
+          <span>TOTAL BAYAR:</span>
+          <span>Rp {{ activeStruk.amount.toLocaleString('id-ID') }}</span>
+        </div>
+      </div>
+      
+      <p class="text-center text-[8px] my-1">================================</p>
+      
+      <div class="text-center text-[8px] leading-tight space-y-0.5 pt-1 text-center">
+        <p class="font-bold text-center">TERIMA KASIH</p>
+        <p class="text-center">SEHAT & BUGAR BERSAMA KAMI</p>
+        <p class="text-center">*** LUNAS ***</p>
       </div>
     </div>
   </div>
@@ -396,6 +502,7 @@ import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { KasirTransaction } from '@/types/booking'
 
+
 const recStore = useReceptionistStore()
 const adminStore = useAdminStore()
 const toast = useToast()
@@ -403,9 +510,73 @@ const toast = useToast()
 const liveTime = ref('')
 let timer: ReturnType<typeof setInterval>
 
+const activeStruk = ref<KasirTransaction | null>(null)
+const lastTransaction = ref<KasirTransaction | null>(null)
+
+function triggerPrintStruk(tx: KasirTransaction) {
+  activeStruk.value = tx
+  printType.value = 'struk'
+  setTimeout(() => {
+    window.print()
+  }, 100)
+}
+
+function printLastTransaction() {
+  if (lastTransaction.value) {
+    triggerPrintStruk(lastTransaction.value)
+  }
+}
+
+function getBasePrice(tx: KasirTransaction) {
+  const civitasId = getCategoryIdFromLabel(tx.civitas)
+  const pricing = adminStore.pricing.find(p => p.id === civitasId)
+  if (!pricing) return 0
+  if (tx.category === 'Insidental') {
+    return Number(pricing.incidental_fee)
+  } else {
+    const durKey = tx.duration === '3 Bulan' ? '3' : '1'
+    return Number(pricing.membership_tariffs[durKey] ?? 0)
+  }
+}
+
+function getTrainerPrice(trainerName?: string) {
+  if (!trainerName || trainerName === '-') return 0
+  return adminStore.trainers.find(t => t.name === trainerName)?.price || 0
+}
+
+function getClassPrice(className?: string) {
+  if (!className || className === '-') return 0
+  return adminStore.classes.find(c => c.name_id === className)?.price || 0
+}
+
+function getEquipmentPrice(equipName?: string) {
+  if (!equipName || equipName === '-') return 0
+  return adminStore.equipment.find(e => e.name_id === equipName)?.price || 0
+}
+
+function getDiscountAmount(tx: KasirTransaction) {
+  const base = getBasePrice(tx)
+  const PT = getTrainerPrice(tx.trainer)
+  const cls = getClassPrice(tx.kelas)
+  const eq = getEquipmentPrice(tx.alat)
+  const subtotal = base + PT + cls + eq
+  const diff = subtotal - tx.amount
+  return diff > 0 ? diff : 0
+}
+
+function getCategoryIdFromLabel(label?: string) {
+  if (!label) return ''
+  const l = label.toLowerCase()
+  if (l.includes('mahasiswa') || l === 'student') return 'student'
+  if (l.includes('alumni') || l === 'alumni') return 'alumni'
+  if (l.includes('umum') || l.includes('masyarakat') || l === 'public') return 'public'
+  const match = adminStore.pricing.find(p => p.id.toLowerCase() === l || getCategoryLabel(p.id).toLowerCase() === l)
+  return match ? match.id : label.toLowerCase().trim().replace(/\s+/g, '_')
+}
+
 const showCardModal = ref(false)
 const activeCard = ref<KasirTransaction | null>(null)
-const printType = ref<'card' | 'rekap'>('card')
+const printType = ref<'card' | 'rekap' | 'struk'>('card')
 
 const bankList = ref<{ key: string; name: string; number: string }[]>([])
 
@@ -590,6 +761,7 @@ function submitKasir() {
   }
 
   recStore.addTransaction(tx)
+  lastTransaction.value = tx
   toast.success(`Kunjungan ${form.name} berhasil dicatat!`)
   
   // Reset form
@@ -639,15 +811,18 @@ function triggerPrintRekap() {
 </script>
 
 <style>
-/* CSS Scoped Media Query for standard print pages */
-@media print {
-  body > * {
+@media screen {
+  .print-only {
     display: none !important;
   }
-  #print-container, #print-container * {
-    display: block !important;
+}
+@media print {
+  /* Hide all screen components */
+  aside, header, main, nav, button, .no-print, #app > div > div:not(#print-container) {
+    display: none !important;
   }
   #print-container {
+    display: block !important;
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;

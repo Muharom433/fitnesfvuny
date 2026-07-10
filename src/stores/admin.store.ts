@@ -29,11 +29,51 @@ export const useAdminStore = defineStore('admin', () => {
         // Map equipment_items to items
         equipment.value = (e.data as any[]).map(row => ({
           ...row,
-          items: row.equipment_items ?? [],
+          items: (row.equipment_items ?? []).map((it: any) => ({
+            id: it.id,
+            parent_id: it.equipment_id,
+            name_id: it.name_id,
+            name_en: it.name_en,
+            icon: it.icon,
+            created_at: it.created_at
+          })),
         })) as Equipment[]
       }
       if (p.data) products.value = p.data as Product[]
-      if (b.data) bookings.value = b.data as Booking[]
+      if (b.data) {
+        bookings.value = (b.data as any[]).map(dbRow => {
+          const preferred_time = `${dbRow.booking_date || ''}|${dbRow.booking_day || ''}|${dbRow.booking_time || ''}`
+          
+          // Map names back to IDs if they match
+          const trainer_id = trainers.value.find(t => t.name === dbRow.trainer)?.id || null
+          const class_id = classes.value.find(c => c.name_id === dbRow.kelas)?.id || null
+          const equipment_id = equipment.value.find(e => e.name_id === dbRow.alat)?.id || null
+
+          // Calculate estimated price based on add-ons
+          const tPrice = trainers.value.find(t => t.name === dbRow.trainer)?.price || 0
+          const cPrice = classes.value.find(c => c.name_id === dbRow.kelas)?.price || 0
+          const ePrice = equipment.value.find(e => e.name_id === dbRow.alat)?.price || 0
+          const basePrice = 20000 
+          const estimated_price = Number(tPrice) + Number(cPrice) + Number(ePrice) + basePrice
+
+          return {
+            id: dbRow.id,
+            user_id: dbRow.user_id,
+            name: dbRow.name,
+            phone: '-',
+            status_civitas: 'Masyarakat Umum',
+            category: 'Insidental',
+            duration: null,
+            trainer_id,
+            class_id,
+            equipment_id,
+            preferred_time,
+            estimated_price,
+            status: 'Approved',
+            created_at: dbRow.created_at
+          }
+        })
+      }
       if (pr.data) {
         pricing.value = (pr.data as any[]).map(row => ({
           id: row.profile,
@@ -197,11 +237,18 @@ export const useAdminStore = defineStore('admin', () => {
       oldVal = { ...bookings.value[idx] }
       bookings.value[idx] = { ...bookings.value[idx], status }
     }
-    const { data, error } = await supabase.from('bookings').update({ status }).eq('id', id).select().single()
-    if (error) {
-      if (idx !== -1 && oldVal) bookings.value[idx] = oldVal
-      console.error('updateBookingStatus db error:', error)
+    
+    let error = null
+    let data = null
+
+    if (status === 'Cancelled') {
+      const res = await supabase.from('bookings').delete().eq('id', id)
+      error = res.error
+      if (error && idx !== -1 && oldVal) {
+        bookings.value[idx] = oldVal
+      }
     }
+    
     return { data, error }
   }
 
@@ -257,13 +304,27 @@ export const useAdminStore = defineStore('admin', () => {
       if (!cat.items) cat.items = []
       cat.items.push({ id: tempId, name_id: item.name_id, name_en: item.name_en, icon: item.icon, parent_id: item.parent_id })
     }
-    const { data, error } = await supabase.from('equipment_items').insert(item).select().single()
+    const dbPayload = {
+      equipment_id: item.parent_id,
+      name_id: item.name_id,
+      name_en: item.name_en,
+      icon: item.icon
+    }
+    const { data, error } = await supabase.from('equipment_items').insert(dbPayload).select().single()
     if (error) {
       if (cat && cat.items) cat.items = cat.items.filter(i => i.id !== tempId)
       console.error('addEquipmentItem db error:', error)
     } else if (data && cat && cat.items) {
       const idx = cat.items.findIndex(i => i.id === tempId)
-      if (idx !== -1) cat.items[idx] = data as EquipmentItem
+      if (idx !== -1) {
+        cat.items[idx] = {
+          id: data.id,
+          parent_id: data.equipment_id,
+          name_id: data.name_id,
+          name_en: data.name_en,
+          icon: data.icon
+        } as EquipmentItem
+      }
     }
     return { data, error }
   }

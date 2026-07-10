@@ -215,7 +215,7 @@ onMounted(async () => {
 async function fetchAllMembers() {
   const [usersRes, bookingsRes] = await Promise.all([
     supabase.from('users').select('*').order('created_at', { ascending: false }),
-    supabase.from('bookings').select('*').eq('category', 'Member').order('created_at', { ascending: false })
+    supabase.from('bookings').select('*').order('created_at', { ascending: false })
   ])
   
   const list: (User & { password?: string })[] = []

@@ -270,7 +270,7 @@
   </div>
 
   <!-- Hidden Print Container for Booking Laporan -->
-  <div id="print-booking-layout" class="hidden print:block font-sans text-black bg-white p-8">
+  <div id="print-booking-layout" class="print-only font-sans text-black bg-white p-8">
     <div class="text-center pb-4 border-b-2 border-slate-800">
       <h2 class="text-xl font-black uppercase tracking-wide">FITNESS CENTER FAKULTAS VOKASI UNY</h2>
       <p class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Laporan Rekap Jadwal & Booking Latihan</p>
@@ -474,7 +474,32 @@ onMounted(async () => {
 
 async function refreshBookings() {
   const data = await recStore.fetchBookings()
-  if (data) bookings.value = data as Booking[]
+  if (data) {
+    bookings.value = (data as any[]).map(dbRow => {
+      const preferred_time = `${dbRow.booking_date || ''}|${dbRow.booking_day || ''}|${dbRow.booking_time || ''}`
+      
+      const trainer_id = adminStore.trainers.find(t => t.name === dbRow.trainer)?.id || null
+      const class_id = adminStore.classes.find(c => c.name_id === dbRow.kelas)?.id || null
+      const equipment_id = adminStore.equipment.find(e => e.name_id === dbRow.alat)?.id || null
+
+      return {
+        id: dbRow.id,
+        user_id: dbRow.user_id,
+        name: dbRow.name,
+        phone: '-',
+        status_civitas: 'Masyarakat Umum',
+        category: 'Insidental',
+        duration: null,
+        trainer_id,
+        class_id,
+        equipment_id,
+        preferred_time,
+        estimated_price: 0,
+        status: 'Approved',
+        created_at: dbRow.created_at
+      }
+    })
+  }
 }
 
 const isSlotBooked = (dateStr: string, slotStr: string) => {
@@ -575,18 +600,19 @@ async function submitBooking() {
 
   const finalTime = `${form.date}|${form.day}|${form.timeSlot}`
 
+  const selectedTrainer = adminStore.trainers.find(t => t.id === form.trainerId)?.name || 'Mandiri (Tanpa Pelatih)'
+  const selectedClass = adminStore.classes.find(c => c.id === form.classId)?.name_id || 'Tanpa Kelas'
+  const selectedEquipment = adminStore.equipment.find(e => e.id === form.equipmentId)?.name_id || 'Tanpa Alat'
+
   const payload = {
     name: form.name,
-    phone: '-',
-    status_civitas: getCategoryLabel(form.civitas),
-    category: (bookingType.value === 'member' ? 'Member' : 'Insidental') as any,
-    duration: bookingType.value === 'member' ? form.duration || null : null,
-    trainer_id: form.trainerId || null,
-    class_id: form.classId || null,
-    equipment_id: form.equipmentId || null,
-    preferred_time: finalTime,
-    estimated_price: computedAmount.value,
-    status: 'Approved' as const
+    booking_date: form.date,
+    booking_day: form.day,
+    booking_time: form.timeSlot,
+    trainer: selectedTrainer,
+    kelas: selectedClass,
+    alat: selectedEquipment,
+    user_id: null
   }
 
   try {
@@ -704,14 +730,18 @@ function getCategoryIdFromLabel(label?: string) {
 </script>
 
 <style>
-@media print {
-  body > * {
+@media screen {
+  .print-only {
     display: none !important;
   }
-  #print-booking-layout, #print-booking-layout * {
-    display: block !important;
+}
+@media print {
+  /* Hide all screen components */
+  aside, header, main, nav, button, .no-print, #app > div > div:not(#print-booking-layout) {
+    display: none !important;
   }
   #print-booking-layout {
+    display: block !important;
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;

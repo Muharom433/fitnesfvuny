@@ -97,39 +97,7 @@
             </div>
           </div>
 
-          <!-- Tambah Kategori Baru Form Box -->
-          <div class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-5 space-y-4 max-w-xl mt-6">
-            <h4 class="text-xs font-bold text-primary-900 uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-plus text-accent-500"></i> Tambah Kategori Civitas Baru
-            </h4>
-            <div class="space-y-3">
-              <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Nama Kategori (contoh: VIP, Karyawan)</label>
-                <input type="text" v-model="newCategoryForm.name" placeholder="Nama Kategori..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-primary-900 focus:outline-none bg-white" />
-              </div>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pendaftaran Member (Rp)</label>
-                  <input type="number" v-model.number="newCategoryForm.registration_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
-                </div>
-                <div class="space-y-1">
-                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Insidental Harian (Rp)</label>
-                  <input type="number" v-model.number="newCategoryForm.incidental_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
-                </div>
-                <div class="space-y-1">
-                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Member 1 Bulan (Rp)</label>
-                  <input type="number" v-model.number="newCategoryForm.member_1_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
-                </div>
-                <div class="space-y-1">
-                  <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Member 3 Bulan (Rp)</label>
-                  <input type="number" v-model.number="newCategoryForm.member_3_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
-                </div>
-              </div>
-              <button type="button" @click="createCategory" class="w-full py-2.5 bg-primary-800 text-white rounded-xl text-xs font-bold hover:bg-primary-900 transition-colors shadow-sm">
-                + Tambah Kategori
-              </button>
-            </div>
-          </div>
+
 
           <div class="flex justify-end pt-2 max-w-xl">
             <button
@@ -280,42 +248,7 @@ onMounted(async () => {
   }
 })
 
-const newCategoryForm = reactive({
-  name: '',
-  registration_fee: 0,
-  incidental_fee: 0,
-  member_1_month_fee: 0,
-  member_3_month_fee: 0,
-})
 
-
-
-async function createCategory() {
-  const name = newCategoryForm.name.trim()
-  if (!name) {
-    toast.error('Masukkan nama kategori terlebih dahulu!')
-    return
-  }
-  const payload = {
-    registration_fee: Number(newCategoryForm.registration_fee || 0),
-    incidental_fee: Number(newCategoryForm.incidental_fee || 0),
-    member_1_month_fee: Number(newCategoryForm.member_1_month_fee || 0),
-    member_3_month_fee: Number(newCategoryForm.member_3_month_fee || 0),
-  }
-  const { error } = await admin.addPricingCategory(name, payload)
-  if (!error) {
-    toast.success('Kategori baru berhasil ditambahkan!')
-    Object.assign(newCategoryForm, {
-      name: '',
-      registration_fee: 0,
-      incidental_fee: 0,
-      member_1_month_fee: 0,
-      member_3_month_fee: 0,
-    })
-  } else {
-    toast.error('Gagal menambahkan kategori baru ke database.')
-  }
-}
 
 async function deleteCategory(id?: string) {
   if (!id) return

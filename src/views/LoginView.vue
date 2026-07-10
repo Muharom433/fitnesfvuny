@@ -183,11 +183,11 @@ const bookingCount = ref('—')
 
 onMounted(async () => {
   try {
-    // Count unique members (category = 'Member') from bookings
+    // Count unique members from users table with role 'member'
     const { data: memberData } = await supabase
-      .from('bookings')
+      .from('users')
       .select('name')
-      .eq('category', 'Member')
+      .eq('role', 'member')
 
     if (memberData) {
       const uniqueNames = new Set(memberData.map((b: any) => b.name?.toLowerCase().trim()).filter(Boolean))
