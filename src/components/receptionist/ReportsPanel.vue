@@ -152,7 +152,7 @@
         <!-- Pilihan Periode -->
         <div class="space-y-1.5">
           <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Periode Laporan</label>
-          <select v-model="exportPeriod" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all cursor-pointer">
+          <select v-model="exportPeriod" class="input-field bg-white text-sm font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all cursor-pointer shadow-sm">
             <option value="harian">Laporan Harian (Per Tanggal)</option>
             <option value="bulanan">Laporan Bulanan (Per Bulan)</option>
             <option value="tahunan">Laporan Tahunan (Per Tahun)</option>
@@ -164,17 +164,17 @@
           <!-- Harian -->
           <div v-if="exportPeriod === 'harian'" class="space-y-1.5">
             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Tanggal</label>
-            <input type="date" v-model="selectedDate" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all" />
+            <input type="date" v-model="selectedDate" class="input-field bg-white text-sm font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all shadow-sm" />
           </div>
           <!-- Bulanan -->
           <div v-if="exportPeriod === 'bulanan'" class="space-y-1.5">
             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Bulan & Tahun</label>
-            <input type="month" v-model="selectedMonth" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all" />
+            <input type="month" v-model="selectedMonth" class="input-field bg-white text-sm font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all shadow-sm" />
           </div>
           <!-- Tahunan -->
           <div v-if="exportPeriod === 'tahunan'" class="space-y-1.5">
             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Tahun</label>
-            <select v-model="selectedYear" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/20 focus:border-accent-500 transition-all cursor-pointer">
+            <select v-model="selectedYear" class="input-field bg-white text-sm font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all cursor-pointer shadow-sm">
               <option v-for="y in [2024, 2025, 2026, 2027, 2028]" :key="y" :value="y">{{ y }}</option>
             </select>
           </div>
@@ -182,7 +182,7 @@
 
         <!-- Tombol Download -->
         <div>
-          <button @click="exportToExcel" class="w-full flex items-center justify-center gap-2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/10 active:scale-[0.98] transition-all cursor-pointer">
+          <button @click="exportToExcel" class="w-full flex items-center justify-center gap-2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg shadow-emerald-600/10 active:scale-[0.98] transition-all cursor-pointer h-[44px]">
             <i class="fa-solid fa-download"></i> Unduh File Excel (.xlsx)
           </button>
         </div>
