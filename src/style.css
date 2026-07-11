@@ -120,3 +120,91 @@ table {
   max-height: calc(100vh - 68px);
 }
 
+/* ===== Interactive Micro-Animations for Admin & Receptionist Panels ===== */
+
+/* Global button and interactive element scale effects on hover & touch */
+button, 
+.btn, 
+[role="button"],
+a[href] {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.2s ease, 
+              border-color 0.2s ease, 
+              box-shadow 0.2s ease;
+}
+
+button:hover:not(:disabled),
+.btn:hover,
+[role="button"]:hover {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 4px 12px rgba(10, 37, 64, 0.05);
+}
+
+button:active:not(:disabled),
+.btn:active,
+[role="button"]:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Sidebar navigation item sliding */
+nav button {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+nav button:hover:not(:disabled) {
+  transform: translateX(4px) scale(1) !important;
+}
+
+/* Card and dashboard stats lift */
+.bg-white.rounded-2xl, 
+.bg-white.rounded-xl,
+.card,
+.panel-card {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.3s ease;
+}
+
+.bg-white.rounded-2xl:hover, 
+.bg-white.rounded-xl:hover,
+.card:hover,
+.panel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(10, 37, 64, 0.08) !important;
+}
+
+/* Table row interactive transition */
+tbody tr {
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+tbody tr:hover {
+  background-color: rgba(241, 245, 249, 0.6) !important;
+  transform: scale(1.002);
+}
+
+/* Input elements focus scale & smooth transition */
+input, 
+select, 
+textarea {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+input:focus, 
+select:focus, 
+textarea:focus {
+  transform: scale(1.005);
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.15) !important;
+}
+
+/* Stat numbers and chart icons subtle zoom */
+.stat-value,
+.stat-icon {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.bg-white.rounded-2xl:hover .stat-value,
+.bg-white.rounded-xl:hover .stat-value {
+  transform: scale(1.03);
+}
+.bg-white.rounded-2xl:hover .stat-icon,
+.bg-white.rounded-xl:hover .stat-icon {
+  transform: scale(1.1) rotate(3deg);
+}
+

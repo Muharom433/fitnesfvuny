@@ -16,12 +16,6 @@
           <!-- Dark overlay transitioning into light background -->
           <div class="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-900/60 to-slate-50"></div>
 
-          <!-- Top RESMI badge (Pojok Kiri Atas) -->
-          <div class="absolute top-8 left-8 z-10 anim-badge">
-            <span class="inline-flex items-center gap-2 bg-accent-500 text-white text-[10px] font-bold uppercase tracking-[2px] px-4 py-2 rounded-full shadow-lg">
-              <i class="fa-solid fa-dumbbell"></i> RESMI
-            </span>
-          </div>
 
           <!-- Distinct Profile Login Button (Pojok Kanan Atas) -->
           <div
@@ -170,13 +164,13 @@
                   <div class="space-y-4">
                     <h4 class="font-bold text-sm text-accent-600 uppercase tracking-wide">Jam Operasional Resmi</h4>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                      Fitness Center FV UNY Wates beroperasi setiap hari dari pagi hingga malam untuk memfasilitasi kebugaran Anda.
+                      Fitness Center FV UNY Wates beroperasi setiap Senin hingga Sabtu untuk memfasilitasi kebugaran Anda.
                     </p>
                     <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                       <i class="fa-solid fa-clock text-accent-500 text-2xl"></i>
                       <div>
-                        <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Senin - Minggu</span>
-                        <span class="text-base font-extrabold text-slate-800">07.00 WIB – 21.00 WIB</span>
+                        <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Senin - Sabtu</span>
+                        <span class="text-base font-extrabold text-slate-800">07.00 – 21.00 WIB</span>
                       </div>
                     </div>
                   </div>
