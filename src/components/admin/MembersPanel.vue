@@ -54,7 +54,7 @@
                 <div class="flex flex-col">
                   <span>Bergabung: {{ m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID') : '—' }}</span>
                   <span v-if="m.role === 'member' && getMembershipInfo(m)" class="text-[9.5px] text-slate-400 font-semibold mt-0.5">
-                    Masa Aktif: s.d. {{ getMembershipInfo(m).endDateText }} ({{ getMembershipInfo(m).duration }})
+                    Masa Aktif: s.d. {{ getMembershipInfo(m)?.endDateText }} ({{ getMembershipInfo(m)?.duration }})
                   </span>
                 </div>
               </td>

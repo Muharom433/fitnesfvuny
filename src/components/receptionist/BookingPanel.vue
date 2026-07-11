@@ -185,7 +185,19 @@
           <select v-model="form.paymentMethod" required class="input-field">
             <option value="Tunai">Tunai</option>
             <option value="Transfer Bank">Transfer Bank</option>
-            <option value="Qris">QRIS</option>
+            <option value="QRIS">QRIS</option>
+          </select>
+        </div>
+
+        <!-- Bank Select (if Transfer Bank) -->
+        <div v-if="bookingType === 'umum' && form.paymentMethod === 'Transfer Bank'" class="space-y-1.5">
+          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Bank</label>
+          <select v-model="form.selectedBank" required class="input-field">
+            <option value="">-- Pilih Bank --</option>
+            <option v-for="b in bankList" :key="b.key" :value="`${b.name} (${b.number})`">
+              {{ b.name }} - {{ b.number }}
+            </option>
+            <option v-if="bankList.length === 0" disabled>Belum ada bank diatur admin</option>
           </select>
         </div>
 
@@ -354,6 +366,8 @@ const timeSlots = [
   'Malam (18:00 - 21:00)'
 ]
 
+const bankList = ref<{ key: string; name: string; number: string }[]>([])
+
 const form = reactive({
   name: '',
   civitas: '',
@@ -365,7 +379,8 @@ const form = reactive({
   trainerId: '',
   classId: '',
   equipmentId: '',
-  paymentMethod: 'Tunai'
+  paymentMethod: 'Tunai',
+  selectedBank: ''
 })
 
 // Generate padding days for first week of current month
@@ -483,6 +498,16 @@ watch(selectedMember, (member) => {
 onMounted(async () => {
   adminStore.fetchAll()
   await refreshBookings()
+
+  // Load banks list
+  const stored = localStorage.getItem('fit_uny_banks')
+  if (stored) {
+    try {
+      bankList.value = JSON.parse(stored)
+    } catch {
+      bankList.value = []
+    }
+  }
 })
 
 async function refreshBookings() {
@@ -636,6 +661,10 @@ async function submitBooking() {
         
         // SYNC TRANSACTION ON EDIT (Only general public pays here)
         if (bookingType.value === 'umum') {
+          const finalMethod = form.paymentMethod === 'Transfer Bank' && form.selectedBank
+            ? `Transfer Bank - ${form.selectedBank}`
+            : form.paymentMethod
+
           recStore.removeTransaction('tx_book_' + editingId.value)
           recStore.addTransaction({
             id: 'tx_book_' + editingId.value,
@@ -647,10 +676,12 @@ async function submitBooking() {
             kelas: selectedClass,
             alat: selectedEquipment,
             amount: computedAmount.value,
-            paymentMethod: form.paymentMethod || 'Tunai',
+            paymentMethod: finalMethod,
             date: form.date,
             time: form.timeSlot,
-            type: 'visit'
+            type: 'visit',
+            phone: '-',
+            status: 'Lunas'
           })
         } else {
           // If updated to Member, ensure the old general public transaction is removed
@@ -669,6 +700,10 @@ async function submitBooking() {
         
         // SYNC TRANSACTION ON CREATE
         if (bookingType.value === 'umum' && data) {
+          const finalMethod = form.paymentMethod === 'Transfer Bank' && form.selectedBank
+            ? `Transfer Bank - ${form.selectedBank}`
+            : form.paymentMethod
+
           recStore.addTransaction({
             id: 'tx_book_' + data.id,
             name: form.name,
@@ -679,10 +714,12 @@ async function submitBooking() {
             kelas: selectedClass,
             alat: selectedEquipment,
             amount: computedAmount.value,
-            paymentMethod: form.paymentMethod || 'Tunai',
+            paymentMethod: finalMethod,
             date: form.date,
             time: form.timeSlot,
-            type: 'visit'
+            type: 'visit',
+            phone: '-',
+            status: 'Lunas'
           })
         }
 
@@ -708,9 +745,16 @@ function startEdit(b: Booking) {
 
   const linkedTx = recStore.transactions.find(t => t.id === 'tx_book_' + b.id)
   if (linkedTx) {
-    form.paymentMethod = linkedTx.paymentMethod
+    if (linkedTx.paymentMethod.startsWith('Transfer Bank - ')) {
+      form.paymentMethod = 'Transfer Bank'
+      form.selectedBank = linkedTx.paymentMethod.replace('Transfer Bank - ', '')
+    } else {
+      form.paymentMethod = linkedTx.paymentMethod
+      form.selectedBank = ''
+    }
   } else {
     form.paymentMethod = 'Tunai'
+    form.selectedBank = ''
   }
 
   if (b.category === 'Member') {
@@ -770,7 +814,8 @@ function resetForm() {
     trainerId: '',
     classId: '',
     equipmentId: '',
-    paymentMethod: 'Tunai'
+    paymentMethod: 'Tunai',
+    selectedBank: ''
   })
 }
 

@@ -249,7 +249,7 @@
                         </div>
                         <div>
                           <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ c.name_id }}</h5>
-                          <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ c.duration }} | {{ c.intensity_id }}</span>
+                          <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ c.duration }} | {{ c.level }}</span>
                         </div>
                       </div>
                       <p class="text-[11px] text-slate-600 leading-relaxed line-clamp-3">{{ c.desc_id }}</p>
@@ -275,7 +275,7 @@
                     </div>
                     <div>
                       <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ t.name }}</h5>
-                      <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">{{ t.specialization }}</p>
+                      <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">{{ t.specialty_id_val }}</p>
                     </div>
                     <div class="pt-2 border-t border-slate-100 text-[11px]">
                       <span class="text-slate-400 block text-[9px] uppercase">Tarif Pelatih</span>
