@@ -157,10 +157,10 @@
       <!-- Log Kunjungan Hari Ini Card -->
       <div class="bg-white rounded-2xl border border-slate-200/80 shadow-card overflow-hidden">
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <h3 class="font-extrabold text-primary-900 text-sm">Log Kunjungan Hari Ini</h3>
+          <h3 class="font-extrabold text-primary-900 text-sm">Daftar Transaksi Kunjungan</h3>
           <div class="flex items-center gap-2">
             <span class="bg-primary-800 text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
-              {{ todayTransactions.length }} Tiket
+              {{ todayTransactions.length }} Transaksi
             </span>
             <button @click="triggerPrintRekap" class="flex items-center gap-1.5 px-3 py-1.5 border border-primary-200 text-primary-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition-all">
               <i class="fa-solid fa-print"></i> Cetak Rekap
@@ -641,7 +641,9 @@ onUnmounted(() => clearInterval(timer))
 
 const today = computed(() => new Date().toISOString().split('T')[0])
 const todayTransactions = computed(() =>
-  recStore.transactions.filter(t => t.date === today.value && t.type === 'visit')
+  recStore.transactions
+    .filter(t => t.type === 'visit')
+    .sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time))
 )
 
 // Computed expiry date for member card

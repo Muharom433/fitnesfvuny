@@ -36,7 +36,14 @@
           </thead>
           <tbody class="divide-y divide-slate-100">
             <tr v-for="m in filteredMembers" :key="m.id" class="hover:bg-slate-50/60 transition-colors">
-              <td class="px-5 py-3 font-semibold text-primary-900 text-xs">{{ m.name }}</td>
+              <td class="px-5 py-3 font-semibold text-primary-900 text-xs">
+                <div class="flex flex-col">
+                  <span class="font-bold text-primary-900">{{ m.name }}</span>
+                  <span v-if="m.role === 'member' && getMembershipStatus(m)" :class="['text-[9px] font-semibold mt-1 px-2 py-0.5 rounded-md w-fit border', getMembershipStatusClass(m)]">
+                    {{ getMembershipStatus(m) }}
+                  </span>
+                </div>
+              </td>
               <td class="px-5 py-3 text-xs text-slate-400">{{ m.email }}</td>
               <td class="px-5 py-3">
                 <span :class="['text-[10px] font-bold px-2 py-0.5 rounded-full border capitalize', roleClass(m.role)]">
@@ -44,7 +51,12 @@
                 </span>
               </td>
               <td class="px-5 py-3 text-xs text-slate-400">
-                {{ m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID') : '—' }}
+                <div class="flex flex-col">
+                  <span>Bergabung: {{ m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID') : '—' }}</span>
+                  <span v-if="m.role === 'member' && getMembershipInfo(m)" class="text-[9.5px] text-slate-400 font-semibold mt-0.5">
+                    Masa Aktif: s.d. {{ getMembershipInfo(m).endDateText }} ({{ getMembershipInfo(m).duration }})
+                  </span>
+                </div>
               </td>
               <td class="px-5 py-3 text-right">
                 <div class="flex items-center justify-end gap-2">
@@ -173,9 +185,11 @@
 import { ref, computed, onMounted, reactive } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/composables/useToast'
+import { useReceptionistStore } from '@/stores/receptionist.store'
 import type { User, Role } from '@/types/user'
 
 const toast = useToast()
+const recStore = useReceptionistStore()
 
 const members = ref<(User & { password?: string })[]>([])
 const search = ref('')
@@ -208,7 +222,68 @@ function roleClass(role: string) {
   }
 }
 
+function getMembershipInfo(m: any) {
+  if (m.role !== 'member') return null
+  
+  // Find transaction matching cashier member registration
+  const tx = recStore.transactions.find(t => t.name.toLowerCase() === m.name.toLowerCase() && t.category === 'Member')
+  
+  let startDate = m.created_at ? new Date(m.created_at) : new Date()
+  let duration = '1 Bulan'
+  
+  if (tx) {
+    if (tx.date) startDate = new Date(tx.date)
+    duration = tx.duration || '1 Bulan'
+  }
+  
+  const months = duration === '3 Bulan' ? 3 : 1
+  const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, startDate.getDate())
+  const today = new Date()
+  today.setHours(0,0,0,0)
+  endDate.setHours(0,0,0,0)
+  
+  const diffTime = endDate.getTime() - today.getTime()
+  const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+  const endDateText = endDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+  
+  return {
+    daysRemaining,
+    endDateText,
+    duration
+  }
+}
+
+function getMembershipStatus(m: any) {
+  const info = getMembershipInfo(m)
+  if (!info) return null
+  
+  if (info.daysRemaining < 0) {
+    return 'Nonaktif (Masa Aktif Habis)'
+  } else if (info.daysRemaining === 0) {
+    return 'Hari Ini Berakhir'
+  } else if (info.daysRemaining <= 7) {
+    return `⚠️ Segera Habis (H-${info.daysRemaining} hari)`
+  } else {
+    return `Aktif (Sisa ${info.daysRemaining} hari)`
+  }
+}
+
+function getMembershipStatusClass(m: any) {
+  const info = getMembershipInfo(m)
+  if (!info) return ''
+  
+  if (info.daysRemaining < 0) {
+    return 'bg-red-50 text-red-600 border-red-200'
+  } else if (info.daysRemaining <= 7) {
+    return 'bg-amber-50 text-amber-600 border-amber-200'
+  } else {
+    return 'bg-emerald-50 text-emerald-600 border-emerald-200'
+  }
+}
+
 onMounted(async () => {
+  recStore.loadFromLocalStorage()
   await fetchAllMembers()
 })
 

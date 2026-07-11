@@ -6,7 +6,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Card 1 -->
       <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-card text-center">
-        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Pemasukan Tiket/Member</p>
+        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Pemasukan Member/Insidental</p>
         <p class="text-xl font-extrabold text-primary-900 mt-2">Rp {{ visitRevenue.toLocaleString('id-ID') }}</p>
       </div>
       <!-- Card 2 -->

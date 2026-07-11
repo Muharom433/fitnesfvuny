@@ -179,9 +179,21 @@
           </select>
         </div>
 
-        <!-- Estimasi Harga (Auto Calculated) -->
+        <!-- Metode Pembayaran (Only for Umum) -->
+        <div v-if="bookingType === 'umum'" class="space-y-1.5">
+          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Metode Pembayaran</label>
+          <select v-model="form.paymentMethod" required class="input-field">
+            <option value="Tunai">Tunai</option>
+            <option value="Transfer Bank">Transfer Bank</option>
+            <option value="Qris">QRIS</option>
+          </select>
+        </div>
+
+        <!-- Total Pembayaran / Estimasi (Auto Calculated) -->
         <div class="bg-slate-50 rounded-xl px-4 py-3 border border-slate-200">
-          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Estimasi Harga Tambahan</p>
+          <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            {{ bookingType === 'umum' ? 'Total Pembayaran' : 'Estimasi Harga Tambahan' }}
+          </p>
           <p class="text-lg font-extrabold text-primary-900">Rp {{ computedAmount.toLocaleString('id-ID') }}</p>
         </div>
 
@@ -352,7 +364,8 @@ const form = reactive({
   timeSlot: '',
   trainerId: '',
   classId: '',
-  equipmentId: ''
+  equipmentId: '',
+  paymentMethod: 'Tunai'
 })
 
 // Generate padding days for first week of current month
@@ -620,14 +633,59 @@ async function submitBooking() {
       const { error } = await supabase.from('bookings').update(payload).eq('id', editingId.value)
       if (!error) {
         toast.success('Jadwal booking berhasil diperbarui!')
+        
+        // SYNC TRANSACTION ON EDIT (Only general public pays here)
+        if (bookingType.value === 'umum') {
+          recStore.removeTransaction('tx_book_' + editingId.value)
+          recStore.addTransaction({
+            id: 'tx_book_' + editingId.value,
+            name: form.name,
+            civitas: getCategoryLabel(form.civitas),
+            category: 'Insidental',
+            duration: '-',
+            trainer: selectedTrainer,
+            kelas: selectedClass,
+            alat: selectedEquipment,
+            amount: computedAmount.value,
+            paymentMethod: form.paymentMethod || 'Tunai',
+            date: form.date,
+            time: form.timeSlot,
+            type: 'visit'
+          })
+        } else {
+          // If updated to Member, ensure the old general public transaction is removed
+          recStore.removeTransaction('tx_book_' + editingId.value)
+        }
+
         resetForm()
       } else {
         toast.error('Gagal memperbarui: ' + error.message)
       }
     } else {
-      const { error } = await supabase.from('bookings').insert(payload)
+      // Create new booking
+      const { data, error } = await supabase.from('bookings').insert(payload).select().single()
       if (!error) {
         toast.success('Jadwal booking berhasil disimpan!')
+        
+        // SYNC TRANSACTION ON CREATE
+        if (bookingType.value === 'umum' && data) {
+          recStore.addTransaction({
+            id: 'tx_book_' + data.id,
+            name: form.name,
+            civitas: getCategoryLabel(form.civitas),
+            category: 'Insidental',
+            duration: '-',
+            trainer: selectedTrainer,
+            kelas: selectedClass,
+            alat: selectedEquipment,
+            amount: computedAmount.value,
+            paymentMethod: form.paymentMethod || 'Tunai',
+            date: form.date,
+            time: form.timeSlot,
+            type: 'visit'
+          })
+        }
+
         resetForm()
       } else {
         toast.error('Gagal membuat booking: ' + error.message)
@@ -647,6 +705,13 @@ function startEdit(b: Booking) {
   form.trainerId = b.trainer_id || ''
   form.classId = b.class_id || ''
   form.equipmentId = b.equipment_id || ''
+
+  const linkedTx = recStore.transactions.find(t => t.id === 'tx_book_' + b.id)
+  if (linkedTx) {
+    form.paymentMethod = linkedTx.paymentMethod
+  } else {
+    form.paymentMethod = 'Tunai'
+  }
 
   if (b.category === 'Member') {
     bookingType.value = 'member'
@@ -681,6 +746,8 @@ async function deleteBooking(id: string) {
   const { error } = await supabase.from('bookings').delete().eq('id', id)
   if (!error) {
     toast.success('Jadwal booking berhasil dihapus!')
+    // Delete corresponding linked transaction
+    recStore.removeTransaction('tx_book_' + id)
     await refreshBookings()
     if (editingId.value === id) resetForm()
   } else {
@@ -702,7 +769,8 @@ function resetForm() {
     timeSlot: '',
     trainerId: '',
     classId: '',
-    equipmentId: ''
+    equipmentId: '',
+    paymentMethod: 'Tunai'
   })
 }
 
