@@ -175,7 +175,7 @@
           <div v-if="exportPeriod === 'tahunan'" class="space-y-1.5">
             <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Tahun</label>
             <select v-model="selectedYear" class="input-field bg-white text-sm font-semibold text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all cursor-pointer shadow-sm">
-              <option v-for="y in [2024, 2025, 2026, 2027, 2028]" :key="y" :value="y">{{ y }}</option>
+              <option v-for="y in yearsList" :key="y" :value="y">{{ y }}</option>
             </select>
           </div>
         </div>
@@ -390,6 +390,17 @@ const exportPeriod = ref<'harian' | 'bulanan' | 'tahunan'>('harian')
 const selectedDate = ref(new Date().toISOString().split('T')[0])
 const selectedMonth = ref(new Date().toISOString().slice(0, 7)) // YYYY-MM
 const selectedYear = ref(new Date().getFullYear())
+
+const yearsList = computed(() => {
+  const startYear = 2024
+  const currentYear = new Date().getFullYear()
+  const maxYear = Math.max(currentYear, 2028)
+  const list = []
+  for (let y = startYear; y <= maxYear; y++) {
+    list.push(y)
+  }
+  return list
+})
 
 // Robust helper to parse dates formatted in YYYY-MM-DD or DD/MM/YYYY
 function parseDateParts(dateStr: string) {

@@ -25,7 +25,7 @@
             <h3 class="font-extrabold text-primary-900">Pendapatan Bulanan</h3>
             <p class="text-slate-400 text-xs mt-0.5">Estimasi pendapatan 6 bulan terakhir</p>
           </div>
-          <span class="bg-accent-50 text-accent-600 text-xs font-bold px-2.5 py-1 rounded-full border border-accent-200">2025</span>
+          <span class="bg-accent-50 text-accent-600 text-xs font-bold px-2.5 py-1 rounded-full border border-accent-200">{{ new Date().getFullYear() }}</span>
         </div>
         <canvas id="revenueChart" height="220"></canvas>
       </div>
@@ -102,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watch } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 
@@ -174,18 +174,52 @@ async function cancelBooking(id: string) {
   else toast.error('Gagal membatalkan booking.')
 }
 
-onMounted(() => {
-  // Simple bar chart using Chart.js (loaded globally via CDN)
+const monthlyRevenue = computed(() => {
+  const monthsName = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+  const data: number[] = []
+  const labels: string[] = []
+  
+  const now = new Date()
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+    const monthIdx = d.getMonth()
+    const year = d.getFullYear()
+    
+    const monthBookings = admin.bookings.filter(b => {
+      if (b.status !== 'Approved' || !b.created_at) return false
+      const bDate = new Date(b.created_at)
+      return bDate.getMonth() === monthIdx && bDate.getFullYear() === year
+    })
+    
+    const sum = monthBookings.reduce((s, b) => s + (b.estimated_price ?? 0), 0)
+    
+    labels.push(`${monthsName[monthIdx]} ${year}`)
+    data.push(sum)
+  }
+  
+  return { labels, data }
+})
+
+let chartInstance: any = null
+
+function renderChart() {
   try {
     const ctx = document.getElementById('revenueChart') as HTMLCanvasElement | null
     if (!ctx || !(window as any).Chart) return
-    new (window as any).Chart(ctx, {
+    
+    if (chartInstance) {
+      chartInstance.destroy()
+    }
+    
+    const { labels, data } = monthlyRevenue.value
+    
+    chartInstance = new (window as any).Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
+        labels,
         datasets: [{
           label: 'Pendapatan (Rp)',
-          data: [4200000, 5100000, 3800000, 6200000, 7500000, 5900000],
+          data,
           backgroundColor: 'rgba(255,107,0,0.12)',
           borderColor: '#ff6b00',
           borderWidth: 2,
@@ -197,8 +231,13 @@ onMounted(() => {
         plugins: { legend: { display: false } },
         scales: {
           y: {
+            beginAtZero: true,
             ticks: {
-              callback: (v: number) => 'Rp' + (v / 1000000).toFixed(1) + 'jt',
+              callback: (v: number) => {
+                if (v >= 1000000) return 'Rp ' + (v / 1000000).toFixed(1) + 'jt'
+                if (v >= 1000) return 'Rp ' + (v / 1000).toFixed(0) + 'rb'
+                return 'Rp ' + v
+              },
               font: { size: 10 },
             },
             grid: { color: 'rgba(0,0,0,0.04)' },
@@ -208,7 +247,15 @@ onMounted(() => {
       },
     })
   } catch (e) {
-    console.warn('Chart.js not loaded or error:', e)
+    console.warn('Chart.js error:', e)
   }
+}
+
+onMounted(() => {
+  renderChart()
 })
+
+watch(monthlyRevenue, () => {
+  renderChart()
+}, { deep: true })
 </script>

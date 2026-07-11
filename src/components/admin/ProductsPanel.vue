@@ -19,11 +19,6 @@
             </div>
             <form @submit.prevent="save" class="p-6 space-y-4">
               <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">ID Unik</label>
-                <input v-model="form.id" type="text" placeholder="product_suplemen_a" :disabled="!!editing"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all disabled:bg-slate-100 disabled:text-slate-400" />
-              </div>
-              <div class="space-y-1.5">
                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Produk</label>
                 <input v-model="form.name_id" type="text" placeholder="Suplemen Protein" required
                   class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
@@ -48,11 +43,6 @@
                   <option value="Aksesoris">Aksesoris</option>
                   <option value="Minuman">Minuman</option>
                 </select>
-              </div>
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">URL Gambar (opsional)</label>
-                <input v-model="form.image" type="text" placeholder="assets/produk.png"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
               </div>
               <div class="flex gap-3 pt-2">
                 <button type="button" @click="showModal = false" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors">Batal</button>

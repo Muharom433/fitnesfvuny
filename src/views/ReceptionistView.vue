@@ -64,7 +64,7 @@ const panelLabelMap: Record<string, string> = {
   kasir: 'Kasir Kunjungan Harian',
   booking: 'Booking & Jadwal',
   products: 'Kasir Produk',
-  reports: 'Kas & Laporan',
+  reports: 'Kas & Laporan Rekapan',
 }
 const panelLabel = computed(() => panelLabelMap[activePanel.value] ?? '')
 
@@ -85,7 +85,7 @@ const menuSections = [
   {
     label: 'Laporan',
     items: [
-      { id: 'reports', label: 'Kas & Laporan', icon: 'fa-solid fa-chart-line' },
+      { id: 'reports', label: 'Kas & Laporan Rekapan', icon: 'fa-solid fa-chart-line' },
     ],
   },
 ]
