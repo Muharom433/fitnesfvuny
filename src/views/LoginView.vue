@@ -3,7 +3,7 @@
     
     <!-- VIEW 1: LANDING PAGE -->
     <Transition name="fade" mode="out-in">
-      <div v-if="!showLoginForm" class="min-h-screen w-screen relative overflow-y-auto scroll-smooth bg-slate-950">
+      <div v-if="!showLoginForm" class="min-h-screen w-screen relative overflow-y-auto scroll-smooth bg-slate-50 text-slate-800">
         
         <!-- Hero Section (Fold 1) -->
         <div class="h-screen w-full relative flex flex-col items-center justify-center p-4 flex-shrink-0">
@@ -13,8 +13,8 @@
             alt="Fitness Center FV UNY"
             class="absolute inset-0 w-full h-full object-cover scale-100 hover:scale-105 transition-transform duration-[3s]"
           />
-          <!-- Dark overlay -->
-          <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-black/45 to-black/85"></div>
+          <!-- Dark overlay transitioning into light background -->
+          <div class="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-900/60 to-slate-50"></div>
 
           <!-- Top RESMI badge (Pojok Kiri Atas) -->
           <div class="absolute top-8 left-8 z-10 anim-badge">
@@ -26,14 +26,14 @@
           <!-- Distinct Profile Login Button (Pojok Kanan Atas) -->
           <div
             @click="showLoginForm = true"
-            class="fixed top-8 right-8 z-30 flex items-center justify-center bg-white text-slate-900 border-2 border-accent-500 rounded-full w-12 h-12 shadow-2xl hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            class="fixed top-8 right-8 z-30 flex items-center justify-center bg-white text-slate-900 border-2 border-accent-500 rounded-full w-12 h-12 shadow-2xl hover:bg-slate-100 hover:scale-110 active:scale-95 hover:shadow-accent-500/20 transition-all cursor-pointer duration-300"
             title="Login Ke Sistem"
           >
             <i class="fa-solid fa-user-shield text-accent-500 text-lg"></i>
           </div>
 
-          <!-- Landscape Branding Card -->
-          <div class="card-float max-w-[800px] w-full bg-[#0d1f3a]/82 backdrop-blur-md border border-white/10 rounded-2xl px-8 py-7 shadow-2xl z-10 mx-4">
+          <!-- Landscape Branding Card (Frosted Light Glassmorphism) -->
+          <div class="card-float max-w-[800px] w-full bg-white/80 border border-white/40 shadow-2xl backdrop-blur-md rounded-2xl px-8 py-7 z-10 mx-4">
             <!-- Shine sweep -->
             <div class="absolute inset-0 rounded-2xl overflow-hidden pointer-events-none">
               <div class="shine-sweep"></div>
@@ -43,143 +43,155 @@
             <div class="anim-line w-8 h-[3px] bg-accent-500 mb-5 rounded-full"></div>
 
             <!-- Title -->
-            <h2 class="anim-title1 text-white font-extrabold text-3xl leading-none tracking-tight mb-0.5">
+            <h2 class="anim-title1 text-slate-900 font-extrabold text-3xl leading-none tracking-tight mb-0.5">
               FITNESS CENTER
             </h2>
-            <h2 class="anim-title2 text-accent-400 font-extrabold text-3xl leading-none tracking-tight mb-5">
+            <h2 class="anim-title2 text-accent-500 font-extrabold text-3xl leading-none tracking-tight mb-5">
               VOKASI UNY
             </h2>
 
-            <!-- Subtitle row -->
+            <!-- Subtitle row - Removed "SISTEM MANAJEMEN INTERNAL" -->
             <div class="anim-badge-row flex items-center gap-2 mb-6">
-              <span class="w-2 h-2 rounded-full bg-accent-500 animate-pulse"></span>
-              <span class="w-2 h-2 rounded-full bg-accent-400 animate-pulse" style="animation-delay:0.3s"></span>
-              <p class="text-white/70 text-[11px] font-bold uppercase tracking-[2.5px] ml-1">SISTEM MANAJEMEN INTERNAL</p>
+              <span class="w-2.5 h-2.5 rounded-full bg-accent-500 animate-pulse"></span>
+              <p class="text-slate-600 text-[10px] font-extrabold uppercase tracking-[2px] ml-1">Layanan Informasi</p>
             </div>
 
             <!-- 4 Styled Info Cards (Membership, Intensitas, Program, Fasilitas) -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <!-- Card 1: Membership -->
-              <a href="#membership-info" class="stat-card anim-stat1 bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center hover:bg-white/20 transition-all block">
-                <i class="fa-solid fa-id-card-clip text-accent-400 text-lg block mb-1.5 animate-pulse"></i>
-                <p class="text-white font-extrabold text-sm uppercase tracking-wide">Membership</p>
-                <p class="text-white/70 text-[10px] font-bold mt-1 uppercase">{{ memberCount }} Member Aktif</p>
+              <a href="#membership-info" class="stat-card anim-stat1 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
+                <i class="fa-solid fa-id-card-clip text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
+                <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Membership</p>
+                <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">{{ memberCount }} Member Aktif</p>
               </a>
               <!-- Card 2: Intensitas (Keramaian) -->
-              <a href="#intensity-info" class="stat-card anim-stat2 bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center hover:bg-white/20 transition-all block">
-                <i class="fa-solid fa-chart-simple text-accent-400 text-lg block mb-1.5 animate-pulse"></i>
-                <p class="text-white font-extrabold text-sm uppercase tracking-wide">Intensitas</p>
-                <p class="text-white/70 text-[10px] font-bold mt-1 uppercase">{{ bookingCount }} Booking</p>
+              <a href="#intensity-info" class="stat-card anim-stat2 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
+                <i class="fa-solid fa-chart-simple text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
+                <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Intensitas</p>
+                <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">{{ bookingCount }} Booking</p>
               </a>
               <!-- Card 3: Program -->
-              <a href="#program-info" class="stat-card anim-stat3 bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center hover:bg-white/20 transition-all block">
-                <i class="fa-solid fa-calendar-days text-accent-400 text-lg block mb-1.5 animate-pulse"></i>
-                <p class="text-white font-extrabold text-sm uppercase tracking-wide">Program</p>
-                <p class="text-white/70 text-[10px] font-bold mt-1 uppercase">Kelas & PT</p>
+              <a href="#program-info" class="stat-card anim-stat3 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
+                <i class="fa-solid fa-calendar-days text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
+                <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Program</p>
+                <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">Kelas & PT</p>
               </a>
               <!-- Card 4: Fasilitas -->
-              <a href="#facility-info" class="stat-card anim-stat4 bg-white/10 border border-white/15 rounded-xl px-4 py-3 text-center hover:bg-white/20 transition-all block">
-                <i class="fa-solid fa-dumbbell text-accent-400 text-lg block mb-1.5 animate-pulse"></i>
-                <p class="text-white font-extrabold text-sm uppercase tracking-wide">Fasilitas</p>
-                <p class="text-white/70 text-[10px] font-bold mt-1 uppercase">Alat Lengkap</p>
+              <a href="#facility-info" class="stat-card anim-stat4 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
+                <i class="fa-solid fa-dumbbell text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
+                <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Fasilitas</p>
+                <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">Alat Lengkap</p>
               </a>
             </div>
 
             <!-- Scroll Indicator -->
-            <div class="mt-8 flex flex-col items-center justify-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
-              <span class="text-[9px] font-bold tracking-widest text-white/50 uppercase">Scroll untuk info detail</span>
-              <i class="fa-solid fa-chevron-down text-accent-400 animate-bounce text-xs"></i>
+            <div class="mt-8 flex flex-col items-center justify-center gap-1 opacity-70 hover:opacity-100 transition-opacity duration-300">
+              <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Scroll untuk info detail</span>
+              <i class="fa-solid fa-chevron-down text-accent-500 animate-bounce text-xs"></i>
             </div>
           </div>
         </div>
 
         <!-- SECTIONS CONTENT (SCROLLABLE FOLDS) -->
-        <div class="max-w-6xl mx-auto px-6 py-16 space-y-24">
+        <div class="max-w-6xl mx-auto px-6 py-16 space-y-16">
           
           <!-- SECTION 1: MEMBERSHIP (Tiers & Tariffs) -->
           <section id="membership-info" class="space-y-8 scroll-mt-20">
             <div class="text-center space-y-2">
-              <h3 class="text-2xl font-black text-white tracking-wide uppercase">Pilihan Paket Membership</h3>
-              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Tarif pendaftaran dan iuran bulanan fitness</p>
+              <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Pilihan Paket Membership</h3>
+              <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Tarif pendaftaran dan iuran bulanan fitness</p>
               <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div v-for="p in adminStore.pricing" :key="p.id" class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 hover:border-accent-500/50 transition-all hover:translate-y-[-4px] shadow-lg flex flex-col justify-between">
+              <div v-for="p in adminStore.pricing" :key="p.id" class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
                 <div class="space-y-4">
-                  <div class="flex items-center justify-between pb-3 border-b border-slate-700">
-                    <h4 class="font-extrabold text-sm text-accent-400 uppercase tracking-wider">{{ p.category_name_id }}</h4>
-                    <span class="text-[9px] bg-accent-500/10 text-accent-400 font-bold px-2 py-0.5 rounded border border-accent-500/30 uppercase">Tarif Khusus</span>
+                  <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <h4 class="font-extrabold text-sm text-accent-600 uppercase tracking-wider">{{ p.category_name_id }}</h4>
+                    <span class="text-[9px] bg-accent-500/10 text-accent-600 font-bold px-2 py-0.5 rounded border border-accent-500/20 uppercase">Tarif Khusus</span>
                   </div>
 
                   <div class="space-y-3">
                     <div>
                       <span class="text-[10px] text-slate-400 block font-bold uppercase">Registrasi Pertama</span>
-                      <span class="text-lg font-black text-white">Rp {{ p.registration_fee.toLocaleString('id-ID') }}</span>
+                      <span class="text-lg font-black text-slate-800">Rp {{ p.registration_fee.toLocaleString('id-ID') }}</span>
                     </div>
                     <div>
                       <span class="text-[10px] text-slate-400 block font-bold uppercase">Insidental (Per Kedatangan)</span>
-                      <span class="text-lg font-black text-white">Rp {{ p.incidental_fee.toLocaleString('id-ID') }}</span>
+                      <span class="text-lg font-black text-slate-800">Rp {{ p.incidental_fee.toLocaleString('id-ID') }}</span>
                     </div>
                   </div>
                 </div>
 
-                <div class="mt-6 pt-5 border-t border-slate-700 space-y-3 bg-slate-900/40 p-4 rounded-xl">
-                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Tarif Member Bulanan:</span>
-                  <div class="flex justify-between items-center text-xs">
+                <div class="mt-6 pt-5 border-t border-slate-100 space-y-3 bg-slate-50 p-4 rounded-xl">
+                  <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Tarif Member Bulanan:</span>
+                  <div class="flex justify-between items-center text-xs text-slate-700">
                     <span>1 Bulan:</span>
-                    <span class="font-bold text-white">Rp {{ p.membership_tariffs['1'].toLocaleString('id-ID') }}</span>
+                    <span class="font-bold text-slate-800">Rp {{ p.membership_tariffs['1'].toLocaleString('id-ID') }}</span>
                   </div>
-                  <div class="flex justify-between items-center text-xs">
+                  <div class="flex justify-between items-center text-xs text-slate-700">
                     <span>3 Bulan:</span>
-                    <span class="font-bold text-white">Rp {{ p.membership_tariffs['3'].toLocaleString('id-ID') }}</span>
+                    <span class="font-bold text-slate-800">Rp {{ p.membership_tariffs['3'].toLocaleString('id-ID') }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
+          <!-- CATEGORY DIVIDER 1 -->
+          <div class="relative py-10 group-divider">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 via-accent-500/35 via-slate-200 to-transparent"></div>
+            </div>
+            <div class="relative flex justify-center">
+              <span class="bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-full text-slate-400 group-hover:text-accent-500 group-hover:border-accent-500/50 group-hover:shadow-lg group-hover:shadow-accent-500/10 transition-all duration-300 cursor-pointer text-xs flex items-center gap-2">
+                <i class="fa-solid fa-chart-line divider-icon duration-500"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-accent-600 transition-colors duration-300">Intensitas &amp; Operasional</span>
+              </span>
+            </div>
+          </div>
+
           <!-- SECTION 2: INTENSITAS (Keramaian & Jam Operasional) -->
           <section id="intensity-info" class="space-y-8 scroll-mt-20">
             <div class="text-center space-y-2">
-              <h3 class="text-2xl font-black text-white tracking-wide uppercase">Intensitas & Keramaian Latihan</h3>
-              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Pantau keramaian dan jam aktif operasional gym</p>
+              <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Intensitas &amp; Keramaian Latihan</h3>
+              <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Pantau keramaian dan jam aktif operasional gym</p>
               <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <!-- Left: Stats & Operational Hours -->
-              <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 space-y-6 flex flex-col justify-between">
+              <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 flex flex-col justify-between hover:shadow-xl hover:border-accent-500/50 hover:translate-y-[-6px] shadow-md transition-all duration-300">
                 <div class="space-y-4">
-                  <h4 class="font-bold text-sm text-accent-400 uppercase tracking-wide">Jam Operasional Resmi</h4>
-                  <p class="text-xs text-slate-300 leading-relaxed">
+                  <h4 class="font-bold text-sm text-accent-600 uppercase tracking-wide">Jam Operasional Resmi</h4>
+                  <p class="text-xs text-slate-600 leading-relaxed">
                     Fitness Center FV UNY Wates beroperasi setiap hari dari pagi hingga malam untuk memfasilitasi kebugaran Anda.
                   </p>
-                  <div class="flex items-center gap-4 bg-slate-900/60 p-4 rounded-xl border border-slate-700/60">
+                  <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
                     <i class="fa-solid fa-clock text-accent-500 text-2xl"></i>
                     <div>
                       <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider">Senin - Minggu</span>
-                      <span class="text-base font-extrabold text-white">07.00 WIB – 21.00 WIB</span>
+                      <span class="text-base font-extrabold text-slate-800">07.00 WIB – 21.00 WIB</span>
                     </div>
                   </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                  <div class="bg-slate-900/60 p-4 rounded-xl text-center border border-slate-700/60">
+                  <div class="bg-slate-50 p-4 rounded-xl text-center border border-slate-100">
                     <span class="text-[9px] text-slate-400 font-bold block uppercase">Member Aktif Saat Ini</span>
-                    <span class="text-xl font-extrabold text-accent-400">{{ memberCount }} Orang</span>
+                    <span class="text-xl font-extrabold text-accent-600">{{ memberCount }} Orang</span>
                   </div>
-                  <div class="bg-slate-900/60 p-4 rounded-xl text-center border border-slate-700/60">
+                  <div class="bg-slate-50 p-4 rounded-xl text-center border border-slate-100">
                     <span class="text-[9px] text-slate-400 font-bold block uppercase">Total Booking Jadwal</span>
-                    <span class="text-xl font-extrabold text-accent-400">{{ bookingCount }} Transaksi</span>
+                    <span class="text-xl font-extrabold text-accent-600">{{ bookingCount }} Transaksi</span>
                   </div>
                 </div>
               </div>
 
               <!-- Right: Peak Hours info -->
-              <div class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 space-y-4">
-                <h4 class="font-bold text-sm text-accent-400 uppercase tracking-wide">Grafik Perkiraan Jam Ramai</h4>
-                <p class="text-xs text-slate-300">Gunakan acuan ini untuk merencanakan waktu latihan yang nyaman:</p>
+              <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 hover:shadow-xl hover:border-accent-500/50 hover:translate-y-[-6px] shadow-md transition-all duration-300">
+                <h4 class="font-bold text-sm text-accent-600 uppercase tracking-wide">Grafik Perkiraan Jam Ramai</h4>
+                <p class="text-xs text-slate-600">Gunakan acuan ini untuk merencanakan waktu latihan yang nyaman:</p>
                 
                 <div class="space-y-3">
                   <div v-for="item in [
@@ -188,12 +200,12 @@
                     { time: '14.00 - 17.00 (Sore)', label: 'Cukup Ramai', pct: '75%', color: 'bg-orange-500' },
                     { time: '17.00 - 21.00 (Malam)', label: 'Sangat Ramai (Peak Hour)', pct: '100%', color: 'bg-red-500' }
                   ]" :key="item.time" class="space-y-1">
-                    <div class="flex justify-between text-xs font-semibold">
+                    <div class="flex justify-between text-xs font-semibold text-slate-700">
                       <span>{{ item.time }}</span>
-                      <span class="text-slate-400">{{ item.label }}</span>
+                      <span class="text-slate-500 text-[11px] font-bold">{{ item.label }}</span>
                     </div>
-                    <div class="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
-                      <div :class="[item.color, 'h-full rounded-full']" :style="{ width: item.pct }"></div>
+                    <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                      <div :class="[item.color, 'h-full rounded-full transition-all duration-1000']" :style="{ width: item.pct }"></div>
                     </div>
                   </div>
                 </div>
@@ -201,37 +213,50 @@
             </div>
           </section>
 
+          <!-- CATEGORY DIVIDER 2 -->
+          <div class="relative py-10 group-divider">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 via-accent-500/35 via-slate-200 to-transparent"></div>
+            </div>
+            <div class="relative flex justify-center">
+              <span class="bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-full text-slate-400 group-hover:text-accent-500 group-hover:border-accent-500/50 group-hover:shadow-lg group-hover:shadow-accent-500/10 transition-all duration-300 cursor-pointer text-xs flex items-center gap-2">
+                <i class="fa-solid fa-calendar-days divider-icon duration-500"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-accent-600 transition-colors duration-300">Program &amp; Instruktur</span>
+              </span>
+            </div>
+          </div>
+
           <!-- SECTION 3: PROGRAM KELAS & TRAINER (Programs) -->
           <section id="program-info" class="space-y-8 scroll-mt-20">
             <div class="text-center space-y-2">
-              <h3 class="text-2xl font-black text-white tracking-wide uppercase">Program Kelas & Instruktur</h3>
-              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Pilihan kelas kebugaran terpandu dan instruktur handal</p>
+              <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Program Kelas &amp; Instruktur</h3>
+              <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Pilihan kelas kebugaran terpandu dan instruktur handal</p>
               <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
             </div>
 
             <!-- Classes Grid -->
             <div class="space-y-4">
-              <h4 class="font-extrabold text-sm text-slate-400 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Daftar Program Kelas</h4>
+              <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Daftar Program Kelas</h4>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div v-for="c in adminStore.classes" :key="c.id" class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 hover:border-accent-500/50 transition-all flex flex-col justify-between">
+                <div v-for="c in adminStore.classes" :key="c.id" class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
                   <div class="space-y-3">
                     <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-xl bg-accent-500/10 border border-accent-500/25 flex items-center justify-center text-accent-400 text-lg">
+                      <div class="w-10 h-10 rounded-xl bg-accent-55/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                         <i :class="['fa-solid', c.icon || 'fa-heart-pulse']"></i>
                       </div>
                       <div>
-                        <h5 class="font-extrabold text-sm text-white leading-tight">{{ c.name_id }}</h5>
+                        <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ c.name_id }}</h5>
                         <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ c.duration }} | {{ c.intensity_id }}</span>
                       </div>
                     </div>
-                    <p class="text-[11px] text-slate-300 leading-relaxed line-clamp-3">{{ c.desc_id }}</p>
+                    <p class="text-[11px] text-slate-600 leading-relaxed line-clamp-3">{{ c.desc_id }}</p>
                   </div>
-                  <div class="mt-4 pt-3 border-t border-slate-700/50 flex justify-between items-center text-xs">
+                  <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
                     <span class="text-slate-400">Tarif Tambahan:</span>
-                    <span class="font-extrabold text-accent-400">Rp {{ c.price.toLocaleString('id-ID') }}</span>
+                    <span class="font-extrabold text-accent-600">Rp {{ c.price.toLocaleString('id-ID') }}</span>
                   </div>
                 </div>
-                <div v-if="adminStore.classes.length === 0" class="col-span-full text-center py-6 text-slate-500 text-xs">
+                <div v-if="adminStore.classes.length === 0" class="col-span-full text-center py-6 text-slate-400 text-xs">
                   Belum ada kelas terdaftar.
                 </div>
               </div>
@@ -239,56 +264,69 @@
 
             <!-- Personal Trainers Grid -->
             <div class="space-y-4 pt-6">
-              <h4 class="font-extrabold text-sm text-slate-400 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Personal Trainer Terbaik Kami</h4>
+              <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Personal Trainer Terbaik Kami</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                <div v-for="t in adminStore.trainers" :key="t.id" class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-5 text-center hover:border-accent-500/50 transition-all space-y-3">
-                  <div class="w-16 h-16 rounded-full bg-slate-900 mx-auto flex items-center justify-center border-2 border-accent-500/30 text-accent-400 text-2xl">
+                <div v-for="t in adminStore.trainers" :key="t.id" class="bg-white border border-slate-200 rounded-2xl p-5 text-center hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md transition-all duration-300 space-y-3 group">
+                  <div class="w-16 h-16 rounded-full bg-slate-50 mx-auto flex items-center justify-center border-2 border-slate-100 text-accent-500 text-2xl group-hover:scale-110 duration-300 transition-transform">
                     <i class="fa-solid fa-user-ninja"></i>
                   </div>
                   <div>
-                    <h5 class="font-extrabold text-sm text-white leading-tight">{{ t.name }}</h5>
+                    <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ t.name }}</h5>
                     <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">{{ t.specialization }}</p>
                   </div>
-                  <div class="pt-2 border-t border-slate-700/50 text-[11px]">
+                  <div class="pt-2 border-t border-slate-100 text-[11px]">
                     <span class="text-slate-400 block text-[9px] uppercase">Tarif Pelatih</span>
-                    <span class="font-extrabold text-accent-400">Rp {{ t.price.toLocaleString('id-ID') }} / sesi</span>
+                    <span class="font-extrabold text-accent-600">Rp {{ t.price.toLocaleString('id-ID') }} / sesi</span>
                   </div>
                 </div>
-                <div v-if="adminStore.trainers.length === 0" class="col-span-full text-center py-6 text-slate-500 text-xs">
+                <div v-if="adminStore.trainers.length === 0" class="col-span-full text-center py-6 text-slate-400 text-xs">
                   Belum ada trainer terdaftar.
                 </div>
               </div>
             </div>
           </section>
 
+          <!-- CATEGORY DIVIDER 3 -->
+          <div class="relative py-10 group-divider">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+              <div class="w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 via-accent-500/35 via-slate-200 to-transparent"></div>
+            </div>
+            <div class="relative flex justify-center">
+              <span class="bg-slate-50 border border-slate-200/80 px-4 py-2 rounded-full text-slate-400 group-hover:text-accent-500 group-hover:border-accent-500/50 group-hover:shadow-lg group-hover:shadow-accent-500/10 transition-all duration-300 cursor-pointer text-xs flex items-center gap-2">
+                <i class="fa-solid fa-dumbbell divider-icon duration-500"></i>
+                <span class="text-[9px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-accent-600 transition-colors duration-300">Fasilitas &amp; Peralatan</span>
+              </span>
+            </div>
+          </div>
+
           <!-- SECTION 4: FASILITAS & ALAT (Facilities) -->
           <section id="facility-info" class="space-y-8 scroll-mt-20">
             <div class="text-center space-y-2">
-              <h3 class="text-2xl font-black text-white tracking-wide uppercase">Fasilitas & Paket Peralatan</h3>
-              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Perangkat alat penunjang kebugaran terlengkap</p>
+              <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Fasilitas &amp; Paket Peralatan</h3>
+              <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Perangkat alat penunjang kebugaran terlengkap</p>
               <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div v-for="e in adminStore.equipment" :key="e.id" class="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-6 hover:border-accent-500/50 transition-all flex flex-col justify-between">
+              <div v-for="e in adminStore.equipment" :key="e.id" class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
                 <div class="space-y-4">
-                  <div class="flex items-center gap-3 pb-3 border-b border-slate-700/50">
-                    <div class="w-10 h-10 rounded-xl bg-accent-500/10 border border-accent-500/25 flex items-center justify-center text-accent-400 text-lg">
+                  <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
+                    <div class="w-10 h-10 rounded-xl bg-accent-50/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                       <i :class="['fa-solid', e.icon || 'fa-dumbbell']"></i>
                     </div>
                     <div>
-                      <h4 class="font-extrabold text-sm text-white leading-tight uppercase">{{ e.name_id }}</h4>
+                      <h4 class="font-extrabold text-sm text-slate-800 leading-tight uppercase">{{ e.name_id }}</h4>
                       <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Paket Akses Tambahan</span>
                     </div>
                   </div>
 
-                  <p class="text-xs text-slate-300 leading-relaxed">{{ e.desc_id }}</p>
+                  <p class="text-xs text-slate-600 leading-relaxed">{{ e.desc_id }}</p>
 
                   <!-- Nested Equipment Items -->
                   <div v-if="e.items && e.items.length > 0" class="space-y-2">
                     <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Daftar Alat/Zona:</span>
                     <div class="flex flex-wrap gap-2">
-                      <span v-for="item in e.items" :key="item.id" class="bg-slate-900/60 text-slate-200 border border-slate-700/60 rounded-lg px-2.5 py-1 text-[10px] font-semibold flex items-center gap-1.5">
+                      <span v-for="item in e.items" :key="item.id" class="bg-slate-50 text-slate-700 border border-slate-200 rounded-lg px-2.5 py-1 text-[10px] font-semibold flex items-center gap-1.5 hover:border-accent-500/40 duration-300">
                         <i :class="['fa-solid text-accent-500', item.icon || 'fa-circle-dot']"></i>
                         {{ item.name_id }}
                       </span>
@@ -296,13 +334,13 @@
                   </div>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-slate-700/50 flex justify-between items-center text-xs">
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
                   <span class="text-slate-400">Tarif Tambahan:</span>
-                  <span class="font-extrabold text-accent-400">Rp {{ e.price.toLocaleString('id-ID') }}</span>
+                  <span class="font-extrabold text-accent-600">Rp {{ e.price.toLocaleString('id-ID') }}</span>
                 </div>
               </div>
             </div>
-            <div v-if="adminStore.equipment.length === 0" class="text-center py-12 text-slate-500 text-xs">
+            <div v-if="adminStore.equipment.length === 0" class="text-center py-12 text-slate-400 text-xs">
               Belum ada fasilitas/peralatan terdaftar.
             </div>
           </section>
@@ -310,9 +348,71 @@
         </div>
 
         <!-- Footer -->
-        <footer class="bg-slate-950 border-t border-slate-800/80 py-8 text-center text-xs text-slate-500">
-          <p>© {{ new Date().getFullYear() }} FITNESS CENTER FV UNY VOKASI WATES. Hak Cipta Dilindungi.</p>
-          <p class="mt-1 text-[10px] text-slate-600">Sistem Informasi Manajemen Internal Kebugaran Kampus Wates</p>
+        <footer class="bg-white border-t border-slate-200 py-12 text-center shadow-inner">
+          <div class="max-w-6xl mx-auto px-6 space-y-8">
+            <!-- Social & Contact Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+              <!-- Google Maps -->
+              <a href="https://maps.app.goo.gl/LGrWhwmiHJVB6VcJ6" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-emerald-500/40 hover:bg-emerald-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-emerald-500/5">
+                <span class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-lg group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
+                  <i class="fa-solid fa-map-location-dot"></i>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-emerald-700 transition-colors">Google Maps</span>
+                <span class="text-[9px] text-slate-400 line-clamp-1">Vokasi UNY Wates</span>
+              </a>
+
+              <!-- Instagram -->
+              <a href="https://www.instagram.com/fvuny.fitnesscenter?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-500/40 hover:bg-pink-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-pink-500/5">
+                <span class="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600 text-lg group-hover:scale-110 group-hover:bg-gradient-to-tr group-hover:from-amber-500 group-hover:via-pink-500 group-hover:to-violet-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                  <i class="fa-brands fa-instagram"></i>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-pink-700 transition-colors">Instagram</span>
+                <span class="text-[9px] text-slate-400 line-clamp-1">@fvuny.fitnesscenter</span>
+              </a>
+
+              <!-- TikTok -->
+              <a href="https://www.tiktok.com/@fvunyofficial?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-slate-800/40 hover:bg-slate-50 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-slate-900/5">
+                <span class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800 text-lg group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 shadow-sm">
+                  <i class="fa-brands fa-tiktok"></i>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900 transition-colors">TikTok</span>
+                <span class="text-[9px] text-slate-400 line-clamp-1">@fvunyofficial</span>
+              </a>
+
+              <!-- YouTube -->
+              <a href="https://www.youtube.com/@FVUNYOfficial" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-red-500/40 hover:bg-red-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-red-500/5">
+                <span class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-600 text-lg group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                  <i class="fa-brands fa-youtube"></i>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-red-700 transition-colors">YouTube</span>
+                <span class="text-[9px] text-slate-400 line-clamp-1">FV UNY Official</span>
+              </a>
+
+              <!-- Email -->
+              <a href="mailto:fv@uny.ac.id" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-blue-500/40 hover:bg-blue-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-blue-500/5">
+                <span class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-lg group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                  <i class="fa-regular fa-envelope"></i>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-blue-700 transition-colors">Email</span>
+                <span class="text-[9px] text-slate-400 line-clamp-1">fv@uny.ac.id</span>
+              </a>
+
+              <!-- Call Center -->
+              <a href="https://wa.me/6285158550034" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-green-500/40 hover:bg-green-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-green-500/5">
+                <span class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 text-lg group-hover:scale-110 group-hover:bg-green-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </span>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-green-700 transition-colors">Call Center</span>
+                <span class="text-[9px] text-slate-400 line-clamp-1">+62 851-5855-0034</span>
+              </a>
+            </div>
+
+            <!-- Bottom copyright -->
+            <div class="pt-6 border-t border-slate-150 text-xs text-slate-400 space-y-1">
+              <p>© {{ new Date().getFullYear() }} FITNESS CENTER FV UNY VOKASI WATES. Hak Cipta Dilindungi.</p>
+              <p class="text-[10px] text-slate-400 font-medium">Sistem Informasi Kebugaran Kampus Wates</p>
+            </div>
+          </div>
         </footer>
 
       </div>
@@ -498,7 +598,7 @@ async function handleLogin() {
   left: -150%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
   transform: skewX(-25deg);
   animation: shine 7s infinite ease-in-out;
 }
@@ -554,11 +654,15 @@ async function handleLogin() {
 
 /* ===== Stat card hover lift ===== */
 .stat-card {
-  transition: transform 0.22s ease, background 0.22s ease, border-color 0.22s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.stat-card:hover {
-  transform: translateY(-4px) scale(1.03);
-  background: rgba(255,255,255,0.20);
-  border-color: rgba(255,107,0,0.45);
+
+/* ===== Category divider hover animation ===== */
+.group-divider:hover .divider-icon {
+  transform: rotate(360deg) scale(1.25);
+  color: var(--color-accent-500);
+}
+.divider-icon {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
 }
 </style>
