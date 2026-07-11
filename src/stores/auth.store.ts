@@ -40,8 +40,8 @@ export const useAuthStore = defineStore('auth', () => {
       const profile = data[0] as User
       currentUser.value = profile
       
-      // Simpan session secara lokal
-      localStorage.setItem('fitnesuny_user_session', JSON.stringify(profile))
+      // Simpan session secara lokal (sessionStorage agar terisolasi per tab)
+      sessionStorage.setItem('fitnesuny_user_session', JSON.stringify(profile))
       return { ok: true, message: 'Login berhasil.' }
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Terjadi kesalahan tidak dikenal.'
@@ -52,20 +52,20 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout(): Promise<void> {
-    localStorage.removeItem('fitnesuny_user_session')
+    sessionStorage.removeItem('fitnesuny_user_session')
     currentUser.value = null
   }
 
   async function initAuth(): Promise<void> {
     isLoading.value = true
     try {
-      const storedSession = localStorage.getItem('fitnesuny_user_session')
+      const storedSession = sessionStorage.getItem('fitnesuny_user_session')
       if (storedSession) {
         currentUser.value = JSON.parse(storedSession) as User
       }
     } catch {
       currentUser.value = null
-      localStorage.removeItem('fitnesuny_user_session')
+      sessionStorage.removeItem('fitnesuny_user_session')
     } finally {
       isLoading.value = false
     }
