@@ -356,67 +356,119 @@
         </div>
 
         <!-- Footer -->
-        <footer class="bg-white border-t border-slate-200 py-12 text-center shadow-inner">
-          <div class="max-w-6xl mx-auto px-6 space-y-8">
-            <!-- Social & Contact Grid -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-              <!-- Google Maps -->
-              <a href="https://maps.app.goo.gl/LGrWhwmiHJVB6VcJ6" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-emerald-500/40 hover:bg-emerald-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-emerald-500/5">
-                <span class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 text-lg group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <i class="fa-solid fa-map-location-dot"></i>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-emerald-700 transition-colors">Google Maps</span>
-                <span class="text-[9px] text-slate-400 line-clamp-1">Vokasi UNY Wates</span>
-              </a>
+        <footer class="bg-white border-t border-slate-200 py-16 shadow-inner text-slate-700">
+          <div class="max-w-6xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+              
+              <!-- Column 1: Brand Info -->
+              <div class="space-y-4 text-left">
+                <div class="flex items-center gap-3">
+                  <img src="/assets/logo.png" alt="Logo" class="w-10 h-10 object-contain" />
+                  <div>
+                    <h3 class="font-extrabold text-primary-900 text-base leading-tight">FITNESS CENTER</h3>
+                    <p class="text-accent-500 font-bold text-xs uppercase tracking-wider">FV UNY WATES</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                  Fasilitas kebugaran modern di Kampus Vokasi UNY Wates. Mendukung gaya hidup sehat dan aktif bagi seluruh civitas akademika dan masyarakat umum.
+                </p>
+              </div>
 
-              <!-- Instagram -->
-              <a href="https://www.instagram.com/fvuny.fitnesscenter?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-500/40 hover:bg-pink-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-pink-500/5">
-                <span class="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600 text-lg group-hover:scale-110 group-hover:bg-gradient-to-tr group-hover:from-amber-500 group-hover:via-pink-500 group-hover:to-violet-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <i class="fa-brands fa-instagram"></i>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-pink-700 transition-colors">Instagram</span>
-                <span class="text-[9px] text-slate-400 line-clamp-1">@fvuny.fitnesscenter</span>
-              </a>
+              <!-- Column 2: Navigasi -->
+              <div class="space-y-4 text-left">
+                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Navigasi</h4>
+                <ul class="space-y-2.5 text-xs text-slate-500 font-semibold">
+                  <li>
+                    <a href="#membership-info" class="hover:text-accent-500 transition-colors flex items-center gap-2">
+                      <i class="fa-solid fa-chevron-right text-[8px] text-slate-350"></i> Paket Membership
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#intensity-info" class="hover:text-accent-500 transition-colors flex items-center gap-2">
+                      <i class="fa-solid fa-chevron-right text-[8px] text-slate-350"></i> Intensitas &amp; Keramaian
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#program-info" class="hover:text-accent-500 transition-colors flex items-center gap-2">
+                      <i class="fa-solid fa-chevron-right text-[8px] text-slate-350"></i> Program Kelas &amp; PT
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#facility-info" class="hover:text-accent-500 transition-colors flex items-center gap-2">
+                      <i class="fa-solid fa-chevron-right text-[8px] text-slate-350"></i> Fasilitas Latihan
+                    </a>
+                  </li>
+                </ul>
+              </div>
 
-              <!-- TikTok -->
-              <a href="https://www.tiktok.com/@fvunyofficial?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-slate-800/40 hover:bg-slate-50 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-slate-900/5">
-                <span class="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-800 text-lg group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <i class="fa-brands fa-tiktok"></i>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900 transition-colors">TikTok</span>
-                <span class="text-[9px] text-slate-400 line-clamp-1">@fvunyofficial</span>
-              </a>
+              <!-- Column 3: Kontak & Lokasi -->
+              <div class="space-y-4 text-left">
+                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Kontak &amp; Lokasi</h4>
+                <ul class="space-y-3 text-xs text-slate-500 font-semibold">
+                  <li class="flex items-start gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 text-xs mt-0.5">
+                      <i class="fa-solid fa-map-location-dot"></i>
+                    </span>
+                    <a href="https://maps.app.goo.gl/LGrWhwmiHJVB6VcJ6" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors leading-tight">
+                      Vokasi UNY Wates <br />
+                      <span class="text-[10px] text-slate-400 font-medium">Lihat Google Maps</span>
+                    </a>
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 text-xs">
+                      <i class="fa-regular fa-envelope"></i>
+                    </span>
+                    <a href="mailto:fv@uny.ac.id" class="hover:text-accent-500 transition-colors">
+                      fv@uny.ac.id
+                    </a>
+                  </li>
+                  <li class="flex items-start gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center text-green-600 text-xs mt-0.5">
+                      <i class="fa-brands fa-whatsapp"></i>
+                    </span>
+                    <a href="https://wa.me/6285158550034" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors leading-tight">
+                      +62 851-5855-0034 <br />
+                      <span class="text-[10px] text-slate-400 font-medium">WhatsApp / Call Center</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
 
-              <!-- YouTube -->
-              <a href="https://www.youtube.com/@FVUNYOfficial" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-red-500/40 hover:bg-red-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-red-500/5">
-                <span class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center text-red-600 text-lg group-hover:scale-110 group-hover:bg-red-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <i class="fa-brands fa-youtube"></i>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-red-700 transition-colors">YouTube</span>
-                <span class="text-[9px] text-slate-400 line-clamp-1">FV UNY Official</span>
-              </a>
+              <!-- Column 4: Ikuti Kami -->
+              <div class="space-y-4 text-left">
+                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Media Sosial</h4>
+                <ul class="space-y-2.5 text-xs text-slate-500 font-semibold">
+                  <li class="flex items-center gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 text-xs">
+                      <i class="fa-brands fa-instagram"></i>
+                    </span>
+                    <a href="https://www.instagram.com/fvuny.fitnesscenter?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
+                      @fvuny.fitnesscenter
+                    </a>
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 text-xs">
+                      <i class="fa-brands fa-tiktok"></i>
+                    </span>
+                    <a href="https://www.tiktok.com/@fvunyofficial?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
+                      @fvunyofficial
+                    </a>
+                  </li>
+                  <li class="flex items-center gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center text-red-600 text-xs">
+                      <i class="fa-brands fa-youtube"></i>
+                    </span>
+                    <a href="https://www.youtube.com/@FVUNYOfficial" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
+                      FV UNY Official
+                    </a>
+                  </li>
+                </ul>
+              </div>
 
-              <!-- Email -->
-              <a href="mailto:fv@uny.ac.id" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-blue-500/40 hover:bg-blue-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-blue-500/5">
-                <span class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-lg group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <i class="fa-regular fa-envelope"></i>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-blue-700 transition-colors">Email</span>
-                <span class="text-[9px] text-slate-400 line-clamp-1">fv@uny.ac.id</span>
-              </a>
-
-              <!-- Call Center -->
-              <a href="https://wa.me/6285158550034" target="_blank" rel="noopener noreferrer" class="social-btn border border-slate-200 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-green-500/40 hover:bg-green-50/20 group transition-all duration-300 hover:scale-102 hover:translate-y-[-2px] shadow-sm hover:shadow-green-500/5">
-                <span class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 text-lg group-hover:scale-110 group-hover:bg-green-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                  <i class="fa-brands fa-whatsapp"></i>
-                </span>
-                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 group-hover:text-green-700 transition-colors">Call Center</span>
-                <span class="text-[9px] text-slate-400 line-clamp-1">+62 851-5855-0034</span>
-              </a>
             </div>
 
             <!-- Bottom copyright -->
-            <div class="pt-6 border-t border-slate-150 text-xs text-slate-400 space-y-1">
+            <div class="mt-12 pt-6 border-t border-slate-150 text-center text-xs text-slate-400 space-y-1">
               <p>© {{ new Date().getFullYear() }} FITNESS CENTER FV UNY VOKASI WATES. Hak Cipta Dilindungi.</p>
               <p class="text-[10px] text-slate-400 font-medium">Sistem Informasi Kebugaran Kampus Wates</p>
             </div>

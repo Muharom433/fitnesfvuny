@@ -143,7 +143,7 @@
           <i class="fa-solid fa-file-excel text-sm"></i>
         </div>
         <div>
-          <h3 class="font-extrabold text-primary-900 text-sm">Ekspor Rekapan Transaksi (Excel / Spreadsheet)</h3>
+          <h3 class="font-extrabold text-primary-900 text-sm">Ekspor Rekapan Transaksi Excel</h3>
           <p class="text-[10px] text-slate-400 font-semibold mt-0.5">Unduh data laporan kunjungan, member, & penjualan produk untuk pembukuan</p>
         </div>
       </div>
@@ -195,8 +195,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useReceptionistStore } from '@/stores/receptionist.store'
 import { useToast } from '@/composables/useToast'
-import * as XLSX from 'xlsx'
-
+// @ts-ignore
+import XLSX from 'xlsx-js-style'
 const recStore = useReceptionistStore()
 const toast = useToast()
 
@@ -425,6 +425,81 @@ function parseDateParts(dateStr: string) {
   }
 }
 
+function applyTableStyle(
+  ws: any,
+  startRow: number,
+  startCol: number,
+  endRow: number,
+  endCol: number,
+  options: {
+    headerRow?: number
+    totalRow?: number
+    alignments?: ('left' | 'center' | 'right')[]
+    isCurrencyCol?: (r: number, c: number) => boolean
+  }
+) {
+  const borderStyle = {
+    top: { style: 'thin', color: { rgb: 'cbd5e1' } },
+    bottom: { style: 'thin', color: { rgb: 'cbd5e1' } },
+    left: { style: 'thin', color: { rgb: 'cbd5e1' } },
+    right: { style: 'thin', color: { rgb: 'cbd5e1' } }
+  }
+
+  for (let r = startRow; r <= endRow; r++) {
+    const isHeader = r === options.headerRow
+    const isTotal = r === options.totalRow
+    const isEven = !isHeader && !isTotal && (r % 2 === 0)
+
+    for (let c = startCol; c <= endCol; c++) {
+      const cellRef = XLSX.utils.encode_cell({ r, c })
+      if (!ws[cellRef]) {
+        ws[cellRef] = { t: 's', v: '' }
+      }
+      const cell = ws[cellRef]
+
+      let align: 'left' | 'center' | 'right' = 'left'
+      if (options.alignments && options.alignments[c - startCol]) {
+        align = options.alignments[c - startCol]
+      }
+
+      if (typeof cell.v === 'number') {
+        cell.t = 'n'
+        if (options.isCurrencyCol && options.isCurrencyCol(r, c)) {
+          cell.z = '"Rp "#,##0'
+        } else {
+          cell.z = '#,##0'
+        }
+      }
+
+      if (isHeader) {
+        cell.s = {
+          font: { name: 'Segoe UI', sz: 10, bold: true, color: { rgb: 'FFFFFF' } },
+          fill: { fgColor: { rgb: '0A2540' } },
+          alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
+          border: borderStyle
+        }
+      } else if (isTotal) {
+        cell.s = {
+          font: { name: 'Segoe UI', sz: 10, bold: true, color: { rgb: '0A2540' } },
+          fill: { fgColor: { rgb: 'FFEDD8' } },
+          alignment: {
+            horizontal: (c === endCol - 2 || c === endCol - 1 || cell.v === 'Total:') ? 'right' : align,
+            vertical: 'center'
+          },
+          border: borderStyle
+        }
+      } else {
+        cell.s = {
+          font: { name: 'Segoe UI', sz: 10 },
+          alignment: { horizontal: align, vertical: 'center' },
+          border: borderStyle,
+          fill: isEven ? { fgColor: { rgb: 'F0F4F9' } } : undefined
+        }
+      }
+    }
+  }
+}
+
 function exportToExcel() {
   let visitsToExport = []
   let productsToExport = []
@@ -488,20 +563,16 @@ function exportToExcel() {
   const summaryData = [
     ['FITNESS CENTER FV UNY WATES'],
     ['LAPORAN REKAPAN TRANSAKSI KEUANGAN'],
-    ['================================================'],
+    [],
     ['Jenis Laporan:', reportPeriodLabel],
     ['Tanggal Ekspor:', new Date().toLocaleString('id-ID')],
     ['Petugas:', 'Resepsionis Fitness Center'],
-    ['================================================'],
     [],
-    ['RINGKASAN TOTAL PEMASUKAN:'],
-    ['------------------------------------------------'],
-    ['Pemasukan Registrasi / Member:', `Rp ${totalVisitRevenue.toLocaleString('id-ID')}`],
-    ['Pemasukan Penjualan Produk:', `Rp ${totalProductRevenue.toLocaleString('id-ID')}`],
-    ['Total Produk Terjual (Unit):', `${totalQtySold} unit`],
-    ['------------------------------------------------'],
-    ['GRAND TOTAL PENDAPATAN:', `Rp ${grandTotal.toLocaleString('id-ID')}`],
-    ['================================================']
+    ['Kategori Pemasukan', 'Jumlah / Detail'],
+    ['Pemasukan Registrasi / Member', totalVisitRevenue],
+    ['Pemasukan Penjualan Produk', totalProductRevenue],
+    ['Total Produk Terjual', totalQtySold],
+    ['GRAND TOTAL PENDAPATAN', grandTotal]
   ]
 
   // 2. Sheet: Registrasi & Kunjungan
@@ -554,30 +625,111 @@ function exportToExcel() {
   const wsProducts = XLSX.utils.aoa_to_sheet(productSheetData)
 
   // Align Column Widths beautifully
-  wsSummary['!cols'] = [{ wch: 30 }, { wch: 25 }]
+  wsSummary['!cols'] = [{ wch: 35 }, { wch: 25 }]
   wsVisits['!cols'] = [
-    { wch: 5 },  // No
-    { wch: 12 }, // Tanggal
-    { wch: 8 },  // Waktu
-    { wch: 25 }, // Nama Pengunjung
-    { wch: 25 }, // Civitas
-    { wch: 12 }, // Kategori
-    { wch: 10 }, // Durasi
-    { wch: 20 }, // Pelatih
-    { wch: 20 }, // Kelas
-    { wch: 20 }, // Alat
-    { wch: 15 }, // Total Bayar
-    { wch: 15 }  // Metode Bayar
+    { wch: 6 },  // No
+    { wch: 14 }, // Tanggal
+    { wch: 10 },  // Waktu
+    { wch: 28 }, // Nama Pengunjung
+    { wch: 28 }, // Civitas
+    { wch: 14 }, // Kategori
+    { wch: 12 }, // Durasi
+    { wch: 22 }, // Pelatih
+    { wch: 22 }, // Kelas
+    { wch: 22 }, // Alat
+    { wch: 18 }, // Total Bayar
+    { wch: 18 }  // Metode Bayar
   ]
   wsProducts['!cols'] = [
-    { wch: 5 },  // No
-    { wch: 12 }, // Tanggal
-    { wch: 25 }, // Nama Produk
-    { wch: 8 },  // Qty
-    { wch: 15 }, // Harga Satuan
-    { wch: 15 }, // Total Bayar
-    { wch: 15 }  // Metode Bayar
+    { wch: 6 },  // No
+    { wch: 14 }, // Tanggal
+    { wch: 28 }, // Nama Produk
+    { wch: 10 },  // Qty
+    { wch: 18 }, // Harga Satuan
+    { wch: 18 }, // Total Bayar
+    { wch: 18 }  // Metode Bayar
   ]
+
+  // Apply Styling
+  // 1. Ringkasan
+  if (wsSummary['A1']) {
+    wsSummary['A1'].s = {
+      font: { name: 'Segoe UI', sz: 14, bold: true, color: { rgb: '0A2540' } }
+    }
+  }
+  if (wsSummary['A2']) {
+    wsSummary['A2'].s = {
+      font: { name: 'Segoe UI', sz: 12, bold: true, color: { rgb: '0A2540' } }
+    }
+  }
+  for (let r = 3; r <= 5; r++) {
+    const cellA = wsSummary[XLSX.utils.encode_cell({ r, c: 0 })]
+    const cellB = wsSummary[XLSX.utils.encode_cell({ r, c: 1 })]
+    if (cellA) {
+      cellA.s = { font: { name: 'Segoe UI', sz: 10, bold: true, color: { rgb: '0A2540' } } }
+    }
+    if (cellB) {
+      cellB.s = { font: { name: 'Segoe UI', sz: 10 } }
+    }
+  }
+  applyTableStyle(wsSummary, 7, 0, 11, 1, {
+    headerRow: 7,
+    totalRow: 11,
+    alignments: ['left', 'right'],
+    isCurrencyCol: (r, c) => c === 1 && r !== 10
+  })
+  const cellQty = wsSummary[XLSX.utils.encode_cell({ r: 10, c: 1 })]
+  if (cellQty) {
+    cellQty.z = '#,##0" unit"'
+  }
+
+  // 2. Registrasi & Kunjungan
+  if (wsVisits['A1']) {
+    wsVisits['A1'].s = {
+      font: { name: 'Segoe UI', sz: 14, bold: true, color: { rgb: '0A2540' } }
+    }
+  }
+  if (wsVisits['A2']) {
+    wsVisits['A2'].s = {
+      font: { name: 'Segoe UI', sz: 11, bold: true, color: { rgb: '64748B' } }
+    }
+  }
+  // Main table styling
+  applyTableStyle(wsVisits, 3, 0, 3 + visitsToExport.length, 11, {
+    headerRow: 3,
+    alignments: ['center', 'center', 'center', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'right', 'center'],
+    isCurrencyCol: (r, c) => c === 10
+  })
+  // Total row styling
+  applyTableStyle(wsVisits, 5 + visitsToExport.length, 0, 5 + visitsToExport.length, 11, {
+    totalRow: 5 + visitsToExport.length,
+    alignments: ['center', 'center', 'center', 'left', 'left', 'center', 'center', 'left', 'left', 'left', 'right', 'center'],
+    isCurrencyCol: (r, c) => c === 10
+  })
+
+  // 3. Penjualan Produk
+  if (wsProducts['A1']) {
+    wsProducts['A1'].s = {
+      font: { name: 'Segoe UI', sz: 14, bold: true, color: { rgb: '0A2540' } }
+    }
+  }
+  if (wsProducts['A2']) {
+    wsProducts['A2'].s = {
+      font: { name: 'Segoe UI', sz: 11, bold: true, color: { rgb: '64748B' } }
+    }
+  }
+  // Main table styling
+  applyTableStyle(wsProducts, 3, 0, 3 + productsToExport.length, 6, {
+    headerRow: 3,
+    alignments: ['center', 'center', 'left', 'center', 'right', 'right', 'center'],
+    isCurrencyCol: (r, c) => c === 4 || c === 5
+  })
+  // Total row styling
+  applyTableStyle(wsProducts, 5 + productsToExport.length, 0, 5 + productsToExport.length, 6, {
+    totalRow: 5 + productsToExport.length,
+    alignments: ['center', 'center', 'left', 'center', 'right', 'right', 'center'],
+    isCurrencyCol: (r, c) => c === 5
+  })
 
   // Append Sheets
   XLSX.utils.book_append_sheet(wb, wsSummary, 'Ringkasan Laporan')
