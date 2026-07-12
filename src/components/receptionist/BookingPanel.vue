@@ -179,8 +179,8 @@
           </select>
         </div>
 
-        <!-- Metode Pembayaran (Only for Umum) -->
-        <div v-if="bookingType === 'umum'" class="space-y-1.5">
+        <!-- Metode Pembayaran (Semua Kategori) -->
+        <div class="space-y-1.5">
           <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Metode Pembayaran</label>
           <select v-model="form.paymentMethod" required class="input-field">
             <option value="Tunai">Tunai</option>
@@ -190,7 +190,7 @@
         </div>
 
         <!-- Bank Select (if Transfer Bank) -->
-        <div v-if="bookingType === 'umum' && form.paymentMethod === 'Transfer Bank'" class="space-y-1.5">
+        <div v-if="form.paymentMethod === 'Transfer Bank'" class="space-y-1.5">
           <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Pilih Bank</label>
           <select v-model="form.selectedBank" required class="input-field">
             <option value="">-- Pilih Bank --</option>
@@ -456,7 +456,7 @@ function formatIndonesianDate(dateStr: string) {
 
 // Extract unique members registered from cashier transactions (only category === 'Member')
 const registeredMembers = computed(() => {
-  const list: { name: string; civitas: string; duration: string }[] = []
+  const list: { name: string; civitas: string; duration: string; phone: string }[] = []
   const seen = new Set<string>()
 
   recStore.transactions.forEach(t => {
@@ -465,7 +465,8 @@ const registeredMembers = computed(() => {
       list.push({
         name: t.name,
         civitas: t.civitas,
-        duration: t.duration || '1 Bulan'
+        duration: t.duration || '1 Bulan',
+        phone: t.phone || '-'
       })
     }
   })
@@ -524,16 +525,16 @@ async function refreshBookings() {
         id: dbRow.id,
         user_id: dbRow.user_id,
         name: dbRow.name,
-        phone: '-',
-        status_civitas: 'Masyarakat Umum',
-        category: 'Insidental',
-        duration: null,
+        phone: dbRow.phone || '-',
+        status_civitas: dbRow.status_civitas || 'Masyarakat Umum',
+        category: dbRow.category || 'Insidental',
+        duration: dbRow.duration || null,
         trainer_id,
         class_id,
         equipment_id,
         preferred_time,
-        estimated_price: 0,
-        status: 'Approved',
+        estimated_price: dbRow.estimated_price || 0,
+        status: dbRow.status || 'Approved',
         created_at: dbRow.created_at
       }
     })
@@ -644,12 +645,17 @@ async function submitBooking() {
 
   const payload = {
     name: form.name,
+    phone: bookingType.value === 'member' ? (selectedMember.value?.phone || '-') : '-',
+    status_civitas: getCategoryLabel(form.civitas),
+    category: bookingType.value === 'member' ? 'Member' : 'Insidental',
+    duration: bookingType.value === 'member' ? (form.duration || '1 Bulan') : null,
     booking_date: form.date,
     booking_day: form.day,
     booking_time: form.timeSlot,
     trainer: selectedTrainer,
     kelas: selectedClass,
     alat: selectedEquipment,
+    estimated_price: computedAmount.value,
     user_id: null
   }
 
@@ -659,19 +665,20 @@ async function submitBooking() {
       if (!error) {
         toast.success('Jadwal booking berhasil diperbarui!')
         
-        // SYNC TRANSACTION ON EDIT (Only general public pays here)
-        if (bookingType.value === 'umum') {
+        // SYNC TRANSACTION ON EDIT
+        const shouldRecordTx = bookingType.value === 'umum' || computedAmount.value > 0
+        recStore.removeTransaction('tx_book_' + editingId.value)
+        if (shouldRecordTx) {
           const finalMethod = form.paymentMethod === 'Transfer Bank' && form.selectedBank
             ? `Transfer Bank - ${form.selectedBank}`
             : form.paymentMethod
 
-          recStore.removeTransaction('tx_book_' + editingId.value)
           recStore.addTransaction({
             id: 'tx_book_' + editingId.value,
             name: form.name,
             civitas: getCategoryLabel(form.civitas),
-            category: 'Insidental',
-            duration: '-',
+            category: bookingType.value === 'member' ? 'Member' : 'Insidental',
+            duration: bookingType.value === 'member' ? (form.duration || '1 Bulan') : '-',
             trainer: selectedTrainer,
             kelas: selectedClass,
             alat: selectedEquipment,
@@ -680,12 +687,9 @@ async function submitBooking() {
             date: form.date,
             time: form.timeSlot,
             type: 'visit',
-            phone: '-',
+            phone: bookingType.value === 'member' ? (selectedMember.value?.phone || '-') : '-',
             status: 'Lunas'
           })
-        } else {
-          // If updated to Member, ensure the old general public transaction is removed
-          recStore.removeTransaction('tx_book_' + editingId.value)
         }
 
         resetForm()
@@ -699,7 +703,8 @@ async function submitBooking() {
         toast.success('Jadwal booking berhasil disimpan!')
         
         // SYNC TRANSACTION ON CREATE
-        if (bookingType.value === 'umum' && data) {
+        const shouldRecordTx = bookingType.value === 'umum' || computedAmount.value > 0
+        if (shouldRecordTx && data) {
           const finalMethod = form.paymentMethod === 'Transfer Bank' && form.selectedBank
             ? `Transfer Bank - ${form.selectedBank}`
             : form.paymentMethod
@@ -708,8 +713,8 @@ async function submitBooking() {
             id: 'tx_book_' + data.id,
             name: form.name,
             civitas: getCategoryLabel(form.civitas),
-            category: 'Insidental',
-            duration: '-',
+            category: bookingType.value === 'member' ? 'Member' : 'Insidental',
+            duration: bookingType.value === 'member' ? (form.duration || '1 Bulan') : '-',
             trainer: selectedTrainer,
             kelas: selectedClass,
             alat: selectedEquipment,
@@ -718,7 +723,7 @@ async function submitBooking() {
             date: form.date,
             time: form.timeSlot,
             type: 'visit',
-            phone: '-',
+            phone: bookingType.value === 'member' ? (selectedMember.value?.phone || '-') : '-',
             status: 'Lunas'
           })
         }

@@ -473,8 +473,8 @@ function applyTableStyle(
 
       if (isHeader) {
         cell.s = {
-          font: { name: 'Segoe UI', sz: 10, bold: true, color: { rgb: 'FFFFFF' } },
-          fill: { fgColor: { rgb: '0A2540' } },
+          font: { name: 'Segoe UI', sz: 10, bold: true, color: { rgb: '0A2540' } },
+          fill: { fgColor: { rgb: 'F1F5F9' } },
           alignment: { horizontal: 'center', vertical: 'center', wrapText: true },
           border: borderStyle
         }

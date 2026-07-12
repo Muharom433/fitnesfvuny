@@ -40,21 +40,6 @@ export const useReceptionistStore = defineStore('receptionist', () => {
   function addTransaction(tx: KasirTransaction) {
     transactions.value.unshift(tx)
     saveToLocalStorage()
-    // Also sync to Supabase bookings if possible
-    const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-    const d = new Date(tx.date)
-    const dayName = isNaN(d.getTime()) ? '' : dayNames[d.getDay()]
-
-    supabase.from('bookings').insert({
-      name: tx.name,
-      booking_date: tx.date,
-      booking_day: dayName,
-      booking_time: tx.time,
-      trainer: tx.trainer || 'Mandiri (Tanpa Pelatih)',
-      kelas: tx.kelas || 'Tanpa Kelas',
-      alat: tx.alat || 'Tanpa Alat',
-      user_id: null
-    }).then(() => {})
   }
 
   function addProductSale(sale: ProductSale) {

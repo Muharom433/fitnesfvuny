@@ -60,16 +60,16 @@ export const useAdminStore = defineStore('admin', () => {
             id: dbRow.id,
             user_id: dbRow.user_id,
             name: dbRow.name,
-            phone: '-',
-            status_civitas: 'Masyarakat Umum',
-            category: 'Insidental',
-            duration: null,
+            phone: dbRow.phone || '-',
+            status_civitas: dbRow.status_civitas || 'Masyarakat Umum',
+            category: dbRow.category || 'Insidental',
+            duration: dbRow.duration || null,
             trainer_id,
             class_id,
             equipment_id,
             preferred_time,
-            estimated_price,
-            status: 'Approved',
+            estimated_price: dbRow.estimated_price || 0,
+            status: dbRow.status || 'Approved',
             created_at: dbRow.created_at
           }
         })
