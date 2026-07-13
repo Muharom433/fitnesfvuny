@@ -599,16 +599,24 @@ onMounted(async () => {
     // Fetch all store configurations (pricing, classes, trainers, equipment)
     adminStore.fetchAll()
 
-    // Count unique members from users table with role 'member'
-    const { data: memberData } = await supabase
-      .from('users')
-      .select('name')
-      .eq('role', 'member')
+    // Count unique members from users table with role 'member' and bookings table with category 'Member'
+    const [usersRes, bookingsRes] = await Promise.all([
+      supabase.from('users').select('name').eq('role', 'member'),
+      supabase.from('bookings').select('name').eq('category', 'Member')
+    ])
 
-    if (memberData) {
-      const uniqueNames = new Set(memberData.map((b: any) => b.name?.toLowerCase().trim()).filter(Boolean))
-      memberCount.value = uniqueNames.size > 0 ? `${uniqueNames.size}` : '0'
+    const uniqueNames = new Set()
+    if (usersRes.data) {
+      usersRes.data.forEach((u: any) => {
+        if (u.name) uniqueNames.add(u.name.toLowerCase().trim())
+      })
     }
+    if (bookingsRes.data) {
+      bookingsRes.data.forEach((b: any) => {
+        if (b.name) uniqueNames.add(b.name.toLowerCase().trim())
+      })
+    }
+    memberCount.value = uniqueNames.size > 0 ? `${uniqueNames.size}` : '0'
 
     // Total bookings
     const { count } = await supabase

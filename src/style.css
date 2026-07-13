@@ -208,3 +208,38 @@ textarea:focus {
   transform: scale(1.1) rotate(3deg);
 }
 
+/* ===== Unified Print Media Styles ===== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #print-container,
+  #print-container *,
+  #print-booking-layout,
+  #print-booking-layout *,
+  #print-product-struk,
+  #print-product-struk * {
+    visibility: visible !important;
+  }
+  
+  #print-container,
+  #print-booking-layout,
+  #print-product-struk {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    background: white !important;
+    color: black !important;
+  }
+}
+
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+

@@ -649,11 +649,21 @@ const todayTransactions = computed(() =>
 // Computed expiry date for member card
 const activeCardExpiry = computed(() => {
   if (!activeCard.value) return '—'
-  const dateStr = activeCard.value.date // YYYY-MM-DD
-  const parts = dateStr.split('-')
+  const dateStr = activeCard.value.date
+  const parts = dateStr.split(/[-/]/)
   if (parts.length < 3) return '—'
   
-  const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
+  let d: Date
+  if (parts[0].length === 4) {
+    // YYYY-MM-DD
+    d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
+  } else {
+    // DD/MM/YYYY
+    d = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
+  }
+  
+  if (isNaN(d.getTime())) return '—'
+  
   const durationText = activeCard.value.duration || '1 Bulan'
   const months = Number(durationText.replace(/[^0-9]/g, '')) || 1
   
@@ -812,25 +822,4 @@ function triggerPrintRekap() {
 }
 </script>
 
-<style>
-@media screen {
-  .print-only {
-    display: none !important;
-  }
-}
-@media print {
-  /* Hide all screen components */
-  aside, header, main, nav, button, .no-print, #app > div > div:not(#print-container) {
-    display: none !important;
-  }
-  #print-container {
-    display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    background: white !important;
-    color: black !important;
-  }
-}
-</style>
+

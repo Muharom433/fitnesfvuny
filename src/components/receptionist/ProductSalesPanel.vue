@@ -260,25 +260,4 @@ function printLastSale() {
 }
 </script>
 
-<style>
-@media screen {
-  .print-only {
-    display: none !important;
-  }
-}
-@media print {
-  /* Hide all screen components */
-  aside, header, main, nav, button, .no-print, #app > div > div:not(#print-product-struk) {
-    display: none !important;
-  }
-  #print-product-struk {
-    display: block !important;
-    position: absolute !important;
-    left: 0 !important;
-    top: 0 !important;
-    width: 100% !important;
-    background: white !important;
-    color: black !important;
-  }
-}
-</style>
+
