@@ -108,6 +108,7 @@ export interface KasirTransaction {
   paymentMethod: string
   status: string
   type: 'visit' | 'product_sale'
+  token?: string
 }
 
 export interface ProductSale {

@@ -404,7 +404,7 @@ function generateNewToken() {
   for (let i = 0; i < 5; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length))
   }
-  form.token = `MEM-${result}`
+  form.token = result
 }
 
 function openAddModal() {

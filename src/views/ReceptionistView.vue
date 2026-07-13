@@ -28,6 +28,7 @@
             <TokenMembershipPanel v-else-if="activePanel === 'token-membership'" />
             <BookingPanel v-else-if="activePanel === 'booking'" />
             <ProductSalesPanel v-else-if="activePanel === 'products'" />
+            <MemberInfoPanel v-else-if="activePanel === 'member-info'" />
             <ReportsPanel v-else-if="activePanel === 'reports'" />
           </div>
         </Transition>
@@ -51,6 +52,7 @@ import KasirPanel from '@/components/receptionist/KasirPanel.vue'
 import TokenMembershipPanel from '@/components/receptionist/TokenMembershipPanel.vue'
 import BookingPanel from '@/components/receptionist/BookingPanel.vue'
 import ProductSalesPanel from '@/components/receptionist/ProductSalesPanel.vue'
+import MemberInfoPanel from '@/components/receptionist/MemberInfoPanel.vue'
 import ReportsPanel from '@/components/receptionist/ReportsPanel.vue'
 
 import { useAdminStore } from '@/stores/admin.store'
@@ -67,6 +69,7 @@ const panelLabelMap: Record<string, string> = {
   'token-membership': 'Token Membership',
   booking: 'Booking & Jadwal',
   products: 'Kasir Produk',
+  'member-info': 'Informasi Membership',
   reports: 'Kas & Laporan Rekapan',
 }
 const panelLabel = computed(() => panelLabelMap[activePanel.value] ?? '')
@@ -84,6 +87,7 @@ const menuSections = [
       { id: 'token-membership', label: 'Token Membership', icon: 'fa-solid fa-key' },
       { id: 'booking', label: 'Booking & Jadwal', icon: 'fa-solid fa-calendar-check' },
       { id: 'products', label: 'Kasir Produk', icon: 'fa-solid fa-bag-shopping' },
+      { id: 'member-info', label: 'Informasi Membership', icon: 'fa-solid fa-address-card' },
     ],
   },
   {

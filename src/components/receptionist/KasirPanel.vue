@@ -191,12 +191,17 @@
                 <td class="px-4 py-3 font-semibold text-slate-400">{{ index + 1 }}</td>
                 <td class="px-4 py-3 font-bold text-primary-900">{{ tx.name }}</td>
                 <td class="px-4 py-3">
-                  <span :class="[
-                    'text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border uppercase',
-                    tx.category === 'Member' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-700 border-blue-200'
-                  ]">
-                    {{ tx.category }}
-                  </span>
+                  <div class="flex flex-col gap-1">
+                    <span :class="[
+                      'text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border uppercase w-fit',
+                      tx.category === 'Member' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-blue-50 text-blue-700 border-blue-200'
+                    ]">
+                      {{ tx.category }}
+                    </span>
+                    <span v-if="tx.token" class="text-[9px] font-mono font-bold text-accent-600 bg-accent-50/80 border border-accent-100 rounded px-1.5 py-0.5 w-fit flex items-center gap-0.5">
+                      <i class="fa-solid fa-key text-[7.5px]"></i> {{ tx.token }}
+                    </span>
+                  </div>
                 </td>
                 <td class="px-4 py-3 text-slate-500">{{ tx.duration || '-' }}</td>
                 <td class="px-4 py-3 text-slate-500 truncate max-w-[100px]">{{ tx.trainer || '-' }}</td>
@@ -781,7 +786,8 @@ async function submitKasir() {
     for (let i = 0; i < 5; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length))
     }
-    generatedToken = `MEM-${result}`
+    generatedToken = result
+    tx.token = generatedToken
     
     const months = form.duration === '3 Bulan' ? 3 : 1
     const expiry = new Date()
