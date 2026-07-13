@@ -247,6 +247,12 @@ export const useAdminStore = defineStore('admin', () => {
       if (error && idx !== -1 && oldVal) {
         bookings.value[idx] = oldVal
       }
+    } else {
+      const res = await supabase.from('bookings').update({ status }).eq('id', id)
+      error = res.error
+      if (error && idx !== -1 && oldVal) {
+        bookings.value[idx] = oldVal
+      }
     }
     
     return { data, error }
