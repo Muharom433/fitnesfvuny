@@ -39,6 +39,9 @@
               <td class="px-5 py-3 font-semibold text-primary-900 text-xs">
                 <div class="flex flex-col">
                   <span class="font-bold text-primary-900">{{ m.name }}</span>
+                  <span v-if="m.role === 'member' && m.token" class="text-[9px] font-mono font-bold text-accent-600 bg-accent-50/80 border border-accent-100 rounded px-1.5 py-0.5 mt-1.5 w-fit flex items-center gap-1">
+                    <i class="fa-solid fa-key"></i> {{ m.token }}
+                  </span>
                   <span v-if="m.role === 'member' && getMembershipStatus(m)" :class="['text-[9px] font-semibold mt-1 px-2 py-0.5 rounded-md w-fit border', getMembershipStatusClass(m)]">
                     {{ getMembershipStatus(m) }}
                   </span>
@@ -55,6 +58,9 @@
                   <span>Bergabung: {{ m.created_at ? new Date(m.created_at).toLocaleDateString('id-ID') : '—' }}</span>
                   <span v-if="m.role === 'member' && getMembershipInfo(m)" class="text-[9.5px] text-slate-400 font-semibold mt-0.5">
                     Masa Aktif: s.d. {{ getMembershipInfo(m)?.endDateText }} ({{ getMembershipInfo(m)?.duration }})
+                  </span>
+                  <span v-if="m.role === 'member' && m.visit_count !== undefined" class="text-[9.5px] text-primary-850 font-bold mt-1">
+                    Total Kunjungan: <span class="text-accent-600 font-extrabold">{{ m.visit_count }}</span> Kali
                   </span>
                 </div>
               </td>
@@ -143,6 +149,28 @@
               </select>
             </div>
 
+            <!-- Token Membership (Only for Member Role) -->
+            <div v-if="form.role === 'member'" class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Token Membership</label>
+              <div class="flex gap-2">
+                <input
+                  v-model="form.token"
+                  type="text"
+                  placeholder="Token otomatis"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold text-primary-900 bg-slate-100/70 focus:outline-none"
+                  disabled
+                />
+                <button
+                  type="button"
+                  @click="generateNewToken"
+                  class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[10px] font-bold text-slate-700 rounded-xl transition-all flex items-center justify-center gap-1.5"
+                >
+                  <i class="fa-solid fa-rotate"></i>
+                  Acak
+                 </button>
+              </div>
+            </div>
+
             <!-- Password (Only for accounts, optional in edit mode) -->
             <div v-if="form.role !== 'member'" class="space-y-1">
               <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
@@ -203,7 +231,8 @@ const form = reactive({
   name: '',
   email: '',
   role: 'member' as Role,
-  password: ''
+  password: '',
+  token: ''
 })
 
 const filteredMembers = computed(() => {
@@ -224,6 +253,21 @@ function roleClass(role: string) {
 
 function getMembershipInfo(m: any) {
   if (m.role !== 'member') return null
+
+  if (m.expiry_date) {
+    const endDate = new Date(m.expiry_date)
+    const today = new Date()
+    today.setHours(0,0,0,0)
+    endDate.setHours(0,0,0,0)
+    const diffTime = endDate.getTime() - today.getTime()
+    const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    const endDateText = endDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+    return {
+      daysRemaining,
+      endDateText,
+      duration: m.duration || '1 Bulan'
+    }
+  }
   
   // Find transaction matching cashier member registration
   const tx = recStore.transactions.find(t => t.name.toLowerCase() === m.name.toLowerCase() && t.category === 'Member')
@@ -301,12 +345,13 @@ onMounted(async () => {
 })
 
 async function fetchAllMembers() {
-  const [usersRes, bookingsRes] = await Promise.all([
+  const [usersRes, bookingsRes, tokensRes] = await Promise.all([
     supabase.from('users').select('*').order('created_at', { ascending: false }),
-    supabase.from('bookings').select('*').order('created_at', { ascending: false })
+    supabase.from('bookings').select('*').order('created_at', { ascending: false }),
+    supabase.from('member_tokens').select('*')
   ])
   
-  const list: (User & { password?: string })[] = []
+  const list: (User & { password?: string; token?: string; visit_count?: number; visits_log?: any[]; expiry_date?: string; duration?: string; registration_date?: string })[] = []
   const seen = new Set<string>()
   
   // 1. Add actual database registered users
@@ -332,8 +377,34 @@ async function fetchAllMembers() {
       }
     })
   }
+
+  // Match token info to members
+  const tokens = tokensRes.data || []
+  list.forEach(m => {
+    const tInfo = tokens.find(t => 
+      t.name.toLowerCase() === m.name.toLowerCase() ||
+      (m.email && m.email !== '— (Registrasi Kasir)' && t.email?.toLowerCase() === m.email.toLowerCase())
+    )
+    if (tInfo) {
+      m.token = tInfo.token
+      m.visit_count = tInfo.visit_count
+      m.visits_log = tInfo.visits_log
+      m.expiry_date = tInfo.expiry_date
+      m.duration = tInfo.duration
+      m.registration_date = tInfo.registration_date
+    }
+  })
   
   members.value = list
+}
+
+function generateNewToken() {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  let result = ''
+  for (let i = 0; i < 5; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  form.token = `MEM-${result}`
 }
 
 function openAddModal() {
@@ -343,20 +414,26 @@ function openAddModal() {
     name: '',
     email: '',
     role: 'member',
-    password: ''
+    password: '',
+    token: ''
   })
+  generateNewToken()
   isModalOpen.value = true
 }
 
-function openEditModal(user: User) {
+function openEditModal(user: any) {
   isEditMode.value = true
   editingUserId.value = user.id
   Object.assign(form, {
     name: user.name,
     email: user.email === '— (Registrasi Kasir)' ? '' : user.email,
     role: user.role,
-    password: ''
+    password: '',
+    token: user.token || ''
   })
+  if (user.role === 'member' && !user.token) {
+    generateNewToken()
+  }
   isModalOpen.value = true
 }
 
@@ -385,20 +462,50 @@ async function submitForm() {
       if (isRealUser) {
         const { error } = await supabase.from('users').update(payload).eq('id', editingUserId.value)
         if (error) throw error
-        toast.success('User berhasil diperbarui!')
       } else {
         // Cashier visitor is registered in bookings table
         const { error } = await supabase.from('bookings').update({ name: form.name }).eq('id', editingUserId.value)
         if (error) throw error
-        toast.success('Member berhasil diperbarui!')
       }
     } else {
       // Create new
       const { error } = await supabase.from('users').insert([payload])
       if (error) throw error
-      toast.success('User baru berhasil ditambahkan!')
     }
 
+    // Process Token Membership creation/update
+    if (form.role === 'member' && form.token) {
+      const { data: existingToken } = await supabase
+        .from('member_tokens')
+        .select('id')
+        .eq('name', form.name)
+        .maybeSingle()
+
+      const now = new Date()
+      const expiryDate = new Date()
+      expiryDate.setMonth(expiryDate.getMonth() + 1) // default 1 month
+
+      if (existingToken) {
+        await supabase.from('member_tokens').update({
+          token: form.token,
+          email: form.email || null
+        }).eq('id', existingToken.id)
+      } else {
+        await supabase.from('member_tokens').insert({
+          token: form.token,
+          name: form.name,
+          email: form.email || null,
+          status_civitas: 'public',
+          duration: '1 Bulan',
+          registration_date: now.toISOString().split('T')[0],
+          expiry_date: expiryDate.toISOString().split('T')[0],
+          visit_count: 0,
+          visits_log: []
+        })
+      }
+    }
+
+    toast.success(isEditMode.value ? 'User berhasil diperbarui!' : 'User baru berhasil ditambahkan!')
     closeModal()
     await fetchAllMembers()
   } catch (err: any) {
@@ -416,12 +523,15 @@ async function handleDelete(user: User) {
       if (isRealUser) {
         const { error } = await supabase.from('users').delete().eq('id', user.id)
         if (error) throw error
-        toast.warning('User berhasil dihapus.')
       } else {
         const { error } = await supabase.from('bookings').delete().eq('id', user.id)
         if (error) throw error
-        toast.warning('Member berhasil dihapus.')
       }
+      
+      // Also delete from member_tokens table to keep clean
+      await supabase.from('member_tokens').delete().eq('name', user.name)
+
+      toast.warning('User dan Token berhasil dihapus.')
       await fetchAllMembers()
     } catch (err: any) {
       console.error('Error deleting user:', err)

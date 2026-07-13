@@ -500,6 +500,7 @@ import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useReceptionistStore } from '@/stores/receptionist.store'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
+import { supabase } from '@/lib/supabase'
 import type { KasirTransaction } from '@/types/booking'
 
 
@@ -741,7 +742,7 @@ watch(computedAmount, (newVal) => {
   form.amount = newVal
 })
 
-function submitKasir() {
+async function submitKasir() {
   const now = new Date()
   
   // Resolve trainer, class, equipment labels
@@ -758,7 +759,7 @@ function submitKasir() {
     date: now.toISOString().split('T')[0],
     time: now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
     name: form.name,
-    phone: '-',
+    phone: form.phone || '-',
     civitas: getCategoryLabel(form.civitas),
     category: form.category,
     duration: form.category === 'Member' ? form.duration : '',
@@ -772,9 +773,47 @@ function submitKasir() {
     type: 'visit',
   }
 
+  // Token Membership generation for Member category
+  let generatedToken = ''
+  if (form.category === 'Member') {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    let result = ''
+    for (let i = 0; i < 5; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    generatedToken = `MEM-${result}`
+    
+    const months = form.duration === '3 Bulan' ? 3 : 1
+    const expiry = new Date()
+    expiry.setMonth(expiry.getMonth() + months)
+
+    try {
+      const { error } = await supabase.from('member_tokens').insert({
+        token: generatedToken,
+        name: form.name,
+        email: null,
+        phone: form.phone || '-',
+        status_civitas: form.civitas || 'public',
+        duration: form.duration || '1 Bulan',
+        registration_date: now.toISOString().split('T')[0],
+        expiry_date: expiry.toISOString().split('T')[0],
+        visit_count: 0,
+        visits_log: []
+      })
+      if (error) throw error
+    } catch (dbErr) {
+      console.error('Gagal menyimpan token ke database:', dbErr)
+    }
+  }
+
   recStore.addTransaction(tx)
   lastTransaction.value = tx
-  toast.success(`Kunjungan ${form.name} berhasil dicatat!`)
+  
+  if (generatedToken) {
+    toast.success(`Kunjungan & Pendaftaran Member ${form.name} berhasil dicatat! Token Baru: ${generatedToken}`)
+  } else {
+    toast.success(`Kunjungan ${form.name} berhasil dicatat!`)
+  }
   
   // Reset form
   Object.assign(form, {

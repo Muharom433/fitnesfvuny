@@ -25,6 +25,7 @@
         <Transition name="panel-fade" mode="out-in">
           <div :key="activePanel">
             <KasirPanel v-if="activePanel === 'kasir'" />
+            <TokenMembershipPanel v-else-if="activePanel === 'token-membership'" />
             <BookingPanel v-else-if="activePanel === 'booking'" />
             <ProductSalesPanel v-else-if="activePanel === 'products'" />
             <ReportsPanel v-else-if="activePanel === 'reports'" />
@@ -47,6 +48,7 @@ import AppToast from '@/components/common/AppToast.vue'
 import { supabase } from '@/lib/supabase'
 
 import KasirPanel from '@/components/receptionist/KasirPanel.vue'
+import TokenMembershipPanel from '@/components/receptionist/TokenMembershipPanel.vue'
 import BookingPanel from '@/components/receptionist/BookingPanel.vue'
 import ProductSalesPanel from '@/components/receptionist/ProductSalesPanel.vue'
 import ReportsPanel from '@/components/receptionist/ReportsPanel.vue'
@@ -62,6 +64,7 @@ const activePanel = ref('kasir')
 
 const panelLabelMap: Record<string, string> = {
   kasir: 'Kasir Kunjungan Harian',
+  'token-membership': 'Token Membership',
   booking: 'Booking & Jadwal',
   products: 'Kasir Produk',
   reports: 'Kas & Laporan Rekapan',
@@ -78,6 +81,7 @@ const menuSections = [
     label: 'Menu Utama',
     items: [
       { id: 'kasir', label: 'Kasir Kunjungan', icon: 'fa-solid fa-cash-register' },
+      { id: 'token-membership', label: 'Token Membership', icon: 'fa-solid fa-key' },
       { id: 'booking', label: 'Booking & Jadwal', icon: 'fa-solid fa-calendar-check' },
       { id: 'products', label: 'Kasir Produk', icon: 'fa-solid fa-bag-shopping' },
     ],
