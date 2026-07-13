@@ -8,12 +8,16 @@ export const useReceptionistStore = defineStore('receptionist', () => {
   const productSales = ref<ProductSale[]>([])
   const isLoading = ref(false)
 
-  // Computed total pendapatan hari ini
+  // Computed total pendapatan hari ini (Kunjungan + Penjualan Produk)
   const todayRevenue = computed(() => {
     const today = new Date().toISOString().split('T')[0]
-    return transactions.value
+    const visitRev = transactions.value
       .filter(t => t.date === today)
       .reduce((sum, t) => sum + t.amount, 0)
+    const productRev = productSales.value
+      .filter(s => s.date === today)
+      .reduce((sum, s) => sum + s.total, 0)
+    return visitRev + productRev
   })
 
   const todayVisitors = computed(() => {

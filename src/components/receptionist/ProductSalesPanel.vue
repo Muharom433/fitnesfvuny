@@ -222,7 +222,7 @@ function submitSale() {
 
   const sale: ProductSale = {
     id: Date.now().toString(),
-    date: new Date().toLocaleDateString('id-ID'),
+    date: new Date().toISOString().split('T')[0],
     productName: form.productName,
     qty: form.qty,
     price: form.price,

@@ -232,7 +232,20 @@ function getMembershipInfo(m: any) {
   let duration = '1 Bulan'
   
   if (tx) {
-    if (tx.date) startDate = new Date(tx.date)
+    if (tx.date) {
+      const parts = tx.date.split(/[-/]/)
+      if (parts.length >= 3) {
+        if (parts[0].length === 4) {
+          // YYYY-MM-DD
+          startDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
+        } else {
+          // DD/MM/YYYY
+          startDate = new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
+        }
+      } else {
+        startDate = new Date(tx.date)
+      }
+    }
     duration = tx.duration || '1 Bulan'
   }
   

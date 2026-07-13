@@ -68,7 +68,7 @@ export const useAdminStore = defineStore('admin', () => {
             class_id,
             equipment_id,
             preferred_time,
-            estimated_price: dbRow.estimated_price || 0,
+            estimated_price: dbRow.estimated_price || estimated_price,
             status: dbRow.status || 'Approved',
             created_at: dbRow.created_at
           }

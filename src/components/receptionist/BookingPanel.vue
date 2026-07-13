@@ -545,8 +545,11 @@ const isSlotBooked = (dateStr: string, slotStr: string) => {
   if (!dateStr || !slotStr) return false
   return bookings.value.some(b => {
     if (editingId.value && b.id === editingId.value) return false
-    const parts = b.preferred_time.split('|')
-    return parts[0] === dateStr && parts[2] === slotStr
+    const parts = (b.preferred_time || '').split('|')
+    if (parts.length >= 3) {
+      return parts[0] === dateStr && parts[2] === slotStr
+    }
+    return false
   })
 }
 
