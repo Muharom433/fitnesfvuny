@@ -132,7 +132,7 @@
         <!-- Waktu Latihan -->
         <div class="space-y-1.5">
           <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Waktu Latihan</label>
-          <select v-model="form.timeSlot" required :disabled="!form.date || !!dateWarning" class="input-field">
+          <select v-model="form.timeSlotOption" required :disabled="!form.date || !!dateWarning" class="input-field">
             <option value="">-- Pilih Waktu Latihan --</option>
             <option
               v-for="slot in timeSlots"
@@ -142,8 +142,22 @@
             >
               {{ slot }} {{ isSlotBooked(form.date, slot) ? '— [SUDAH DIBOOKING]' : '' }}
             </option>
+            <option value="custom">✏️ Input Waktu Manual (Ketik Sendiri)</option>
           </select>
-          <p v-if="slotWarning" class="text-[10px] text-red-500 font-bold mt-1">⚠️ Slot waktu terpilih sudah dibooking. Silakan pilih slot lain.</p>
+
+          <!-- Input Manual Waktu (Tampil jika memilih custom) -->
+          <div v-if="form.timeSlotOption === 'custom'" class="mt-2 space-y-1">
+            <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Ketik Jam Waktu Latihan</label>
+            <input
+              v-model="form.customTimeSlot"
+              type="text"
+              required
+              placeholder="Contoh: 08:30 - 10:00 atau Jam 13:00 WIB"
+              class="input-field"
+            />
+          </div>
+
+          <p v-if="slotWarning" class="text-[10px] text-red-500 font-bold mt-1">⚠️ Waktu latihan terpilih sudah dibooking. Silakan pilih atau ketik waktu lain.</p>
         </div>
 
         <!-- Pelatih Pilihan -->
@@ -214,7 +228,7 @@
           <button v-if="editingId" type="button" @click="resetForm" class="flex-1 py-3 border border-slate-200 text-slate-600 font-semibold text-sm rounded-xl hover:bg-slate-50 transition-colors">
             Batal
           </button>
-          <button type="submit" :disabled="!!dateWarning || (!!form.timeSlot && isSlotBooked(form.date, form.timeSlot))" class="flex-1 py-3 bg-accent-500 text-white font-bold text-sm rounded-xl hover:bg-accent-600 transition-colors disabled:opacity-60">
+          <button type="submit" :disabled="!!dateWarning || !effectiveTimeSlot || isSlotBooked(form.date, effectiveTimeSlot)" class="flex-1 py-3 bg-accent-500 text-white font-bold text-sm rounded-xl hover:bg-accent-600 transition-colors disabled:opacity-60">
             <i class="fa-solid fa-floppy-disk mr-1.5"></i>
             {{ editingId ? 'Simpan Perubahan' : 'SIMPAN JADWAL BOOKING' }}
           </button>
@@ -375,12 +389,20 @@ const form = reactive({
   duration: '',
   date: '',
   day: '',
-  timeSlot: '',
+  timeSlotOption: '',
+  customTimeSlot: '',
   trainerId: '',
   classId: '',
   equipmentId: '',
   paymentMethod: 'Tunai',
   selectedBank: ''
+})
+
+const effectiveTimeSlot = computed(() => {
+  if (form.timeSlotOption === 'custom') {
+    return form.customTimeSlot.trim()
+  }
+  return form.timeSlotOption
 })
 
 // Generate padding days for first week of current month
@@ -563,8 +585,8 @@ const dateWarning = computed(() => {
 })
 
 const slotWarning = computed(() => {
-  if (!form.date || !form.timeSlot) return false
-  return isSlotBooked(form.date, form.timeSlot)
+  if (!form.date || !effectiveTimeSlot.value) return false
+  return isSlotBooked(form.date, effectiveTimeSlot.value)
 })
 
 watch(
@@ -635,12 +657,16 @@ function getEquipmentName(id: string | null | undefined) {
 }
 
 async function submitBooking() {
-  if (isSlotBooked(form.date, form.timeSlot)) {
-    toast.error('Slot waktu terpilih sudah dibooking!')
+  const actualSlot = effectiveTimeSlot.value
+  if (!actualSlot) {
+    toast.error('Silakan isi atau pilih waktu latihan!')
     return
   }
 
-  const finalTime = `${form.date}|${form.day}|${form.timeSlot}`
+  if (isSlotBooked(form.date, actualSlot)) {
+    toast.error('Slot/Waktu latihan terpilih sudah dibooking!')
+    return
+  }
 
   const selectedTrainer = adminStore.trainers.find(t => t.id === form.trainerId)?.name || 'Mandiri (Tanpa Pelatih)'
   const selectedClass = adminStore.classes.find(c => c.id === form.classId)?.name_id || 'Tanpa Kelas'
@@ -654,7 +680,7 @@ async function submitBooking() {
     duration: bookingType.value === 'member' ? (form.duration || '1 Bulan') : null,
     booking_date: form.date,
     booking_day: form.day,
-    booking_time: form.timeSlot,
+    booking_time: actualSlot,
     trainer: selectedTrainer,
     kelas: selectedClass,
     alat: selectedEquipment,
@@ -688,7 +714,7 @@ async function submitBooking() {
             amount: computedAmount.value,
             paymentMethod: finalMethod,
             date: form.date,
-            time: form.timeSlot,
+            time: actualSlot,
             type: 'visit',
             phone: bookingType.value === 'member' ? (selectedMember.value?.phone || '-') : '-',
             status: 'Lunas'
@@ -724,7 +750,7 @@ async function submitBooking() {
             amount: computedAmount.value,
             paymentMethod: finalMethod,
             date: form.date,
-            time: form.timeSlot,
+            time: actualSlot,
             type: 'visit',
             phone: bookingType.value === 'member' ? (selectedMember.value?.phone || '-') : '-',
             status: 'Lunas'
@@ -781,7 +807,17 @@ function startEdit(b: Booking) {
   const times = getSplitTime(b.preferred_time)
   form.date = times.date !== '—' ? times.date : ''
   form.day = times.day !== '—' ? times.day : ''
-  form.timeSlot = times.timeSlot
+
+  if (timeSlots.includes(times.timeSlot)) {
+    form.timeSlotOption = times.timeSlot
+    form.customTimeSlot = ''
+  } else if (times.timeSlot) {
+    form.timeSlotOption = 'custom'
+    form.customTimeSlot = times.timeSlot
+  } else {
+    form.timeSlotOption = ''
+    form.customTimeSlot = ''
+  }
 
   // Set calendar focus to editing date
   if (form.date) {
@@ -818,7 +854,8 @@ function resetForm() {
     duration: '',
     date: '',
     day: '',
-    timeSlot: '',
+    timeSlotOption: '',
+    customTimeSlot: '',
     trainerId: '',
     classId: '',
     equipmentId: '',
