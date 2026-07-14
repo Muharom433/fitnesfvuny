@@ -198,8 +198,8 @@
                     ]">
                       {{ tx.category }}
                     </span>
-                    <span v-if="tx.token" class="text-[9px] font-mono font-bold text-accent-600 bg-accent-50/80 border border-accent-100 rounded px-1.5 py-0.5 w-fit flex items-center gap-0.5">
-                      <i class="fa-solid fa-key text-[7.5px]"></i> {{ tx.token }}
+                    <span v-if="tx.token" class="text-[10px] font-bold tracking-widest text-accent-600 bg-accent-50 border border-accent-200 rounded-md px-2 py-0.5 mt-0.5 w-fit flex items-center gap-1">
+                      <i class="fa-solid fa-key text-[9px]"></i> {{ tx.token }}
                     </span>
                   </div>
                 </td>

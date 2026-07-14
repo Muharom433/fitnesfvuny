@@ -60,7 +60,6 @@
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/composables/useToast'
-import { useReceptionistStore } from '@/stores/receptionist.store'
 
 interface VisitRecord {
   date: string
@@ -72,7 +71,6 @@ const emit = defineEmits<{
 }>()
 
 const toast = useToast()
-const recStore = useReceptionistStore()
 
 const tokenInput = ref('')
 const isProcessing = ref(false)
@@ -131,26 +129,6 @@ async function handleCheckIn() {
       .eq('id', member.id)
 
     if (updateErr) throw updateErr
-
-    // 4. Record zero-price visit transaction locally to receptionist store to sync stats
-    recStore.addTransaction({
-      id: 'tx_token_' + member.id + '_' + Date.now(),
-      date: dateStr,
-      time: timeStr,
-      name: member.name,
-      phone: member.phone || '-',
-      civitas: member.status_civitas === 'student' ? 'Mahasiswa / Civitas UNY' : member.status_civitas === 'alumni' ? 'Alumni UNY' : 'Masyarakat Umum',
-      category: 'Member (Token)',
-      duration: member.duration,
-      trainer: '-',
-      kelas: '-',
-      alat: '-',
-      amount: 0,
-      paymentMethod: 'Token Membership',
-      status: 'Lunas',
-      type: 'visit',
-      token: formattedToken
-    })
 
     toast.success(`Kehadiran berhasil dicatat! Selamat datang, ${member.name}.`)
     // Navigate to member info panel showing this member

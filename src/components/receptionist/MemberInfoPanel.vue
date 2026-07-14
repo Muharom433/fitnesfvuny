@@ -51,10 +51,10 @@
                 ]"
               >
                 <td class="px-5 py-3.5">
-                  <div class="flex flex-col">
-                    <span class="font-extrabold text-primary-950 text-xs">{{ m.name }}</span>
-                    <span class="text-[9px] font-mono font-bold text-accent-600 bg-accent-50 border border-accent-100 rounded px-1.5 py-0.5 mt-1 w-fit flex items-center gap-0.5">
-                      <i class="fa-solid fa-key text-[7px]"></i> {{ m.token }}
+                  <div class="flex flex-col gap-1.5">
+                    <span class="font-extrabold text-primary-950 text-sm">{{ m.name }}</span>
+                    <span class="text-xs font-bold tracking-widest text-accent-600 bg-accent-50 border border-accent-200 rounded-md px-2 py-1 w-fit flex items-center gap-1.5">
+                      <i class="fa-solid fa-key text-[10px]"></i> {{ m.token }}
                     </span>
                   </div>
                 </td>
@@ -90,46 +90,55 @@
           <div v-if="selectedMember" :key="selectedMember.id" class="bg-white rounded-2xl border border-slate-200/80 shadow-card p-5 space-y-4">
             
             <!-- Member Visual Card Header -->
-            <div class="bg-gradient-to-tr from-primary-950 to-primary-900 text-white rounded-2xl p-4 shadow-md relative overflow-hidden">
-              <div class="absolute -top-6 -right-6 w-20 h-20 bg-white/5 rounded-full blur-lg pointer-events-none"></div>
+            <div class="bg-gradient-to-tr from-primary-950 to-primary-900 text-white rounded-2xl p-5 shadow-md relative overflow-hidden">
+              <div class="absolute -top-6 -right-6 w-24 h-24 bg-white/5 rounded-full blur-lg pointer-events-none"></div>
+              <div class="absolute -bottom-4 -left-4 w-16 h-16 bg-accent-500/10 rounded-full blur-xl pointer-events-none"></div>
               
               <!-- Card Header -->
-              <div class="flex items-center justify-between pb-2 border-b border-white/10">
-                <div>
-                  <h4 class="text-xs font-black uppercase tracking-wide text-white">{{ selectedMember.name }}</h4>
-                  <p class="text-[9px] font-bold text-accent-400 uppercase tracking-widest mt-0.5">{{ selectedMember.status_civitas }}</p>
+              <div class="flex items-start justify-between pb-3 border-b border-white/10">
+                <div class="flex-1 min-w-0">
+                  <h4 class="text-sm font-black uppercase tracking-wide text-white leading-tight">{{ selectedMember.name }}</h4>
+                  <p class="text-[10px] font-bold text-accent-400 uppercase tracking-widest mt-1">{{ selectedMember.status_civitas }}</p>
                 </div>
-                <span :class="['text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider border', detailStatusClass]">
+                <span :class="['text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-wider border ml-2 shrink-0', detailStatusClass]">
                   {{ detailStatusText }}
                 </span>
               </div>
 
-              <!-- Details Grid -->
-              <div class="grid grid-cols-2 gap-3 py-3 text-[10px]">
+              <!-- Token Badge — Big & Prominent -->
+              <div class="my-3 bg-white/8 border border-white/15 rounded-xl px-4 py-3 flex items-center justify-between">
                 <div>
-                  <p class="text-slate-400 font-bold uppercase tracking-wider text-[8px]">Token</p>
-                  <p class="font-mono font-bold text-white mt-0.5 text-xs">{{ selectedMember.token }}</p>
-                </div>
-                <div>
-                  <p class="text-slate-400 font-bold uppercase tracking-wider text-[8px]">Sisa Hari</p>
-                  <p class="font-bold text-white mt-0.5 text-xs">
-                    {{ selectedMemberDaysRemaining >= 0 ? `${selectedMemberDaysRemaining} Hari` : 'Habis' }}
+                  <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Token Membership</p>
+                  <p class="text-xl font-black text-white tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-key text-accent-400 text-sm"></i>
+                    {{ selectedMember.token }}
                   </p>
                 </div>
+                <div class="text-right">
+                  <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-1">Sisa Hari</p>
+                  <p class="text-xl font-black" :class="selectedMemberDaysRemaining >= 0 ? 'text-emerald-400' : 'text-red-400'">
+                    {{ selectedMemberDaysRemaining >= 0 ? selectedMemberDaysRemaining : '0' }}
+                    <span class="text-xs font-bold text-slate-400">hari</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Details Grid -->
+              <div class="grid grid-cols-2 gap-3 text-[10px]">
                 <div>
                   <p class="text-slate-400 font-bold uppercase tracking-wider text-[8px]">Masa Aktif</p>
-                  <p class="font-bold text-white mt-0.5">{{ formatDate(selectedMember.expiry_date) }}</p>
+                  <p class="font-bold text-white mt-0.5 text-xs">{{ formatDate(selectedMember.expiry_date) }}</p>
                 </div>
                 <div>
                   <p class="text-slate-400 font-bold uppercase tracking-wider text-[8px]">Total Kehadiran</p>
-                  <p class="font-bold text-accent-400 mt-0.5 text-xs">{{ selectedMember.visit_count }} Kali</p>
+                  <p class="font-bold text-accent-400 mt-0.5 text-sm">{{ selectedMember.visit_count }} <span class="text-xs">Kali</span></p>
                 </div>
               </div>
 
               <!-- Extra Info -->
-              <div class="bg-white/5 rounded-lg p-2 flex items-center justify-between text-[9px] text-slate-300">
-                <span>Paket: <strong>{{ selectedMember.duration }}</strong></span>
-                <span>Daftar: <strong>{{ formatDate(selectedMember.registration_date) }}</strong></span>
+              <div class="bg-white/5 rounded-lg p-2 mt-3 flex items-center justify-between text-[9px] text-slate-300">
+                <span>Paket: <strong class="text-white">{{ selectedMember.duration }}</strong></span>
+                <span>Daftar: <strong class="text-white">{{ formatDate(selectedMember.registration_date) }}</strong></span>
               </div>
             </div>
 
@@ -143,14 +152,14 @@
                 <button
                   @click="extendMembership(1)"
                   :disabled="isExtending"
-                  class="py-2 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 text-[10px] font-bold transition-all disabled:opacity-50"
+                  class="py-2.5 bg-white hover:bg-primary-50 text-primary-800 hover:text-primary-900 rounded-xl border border-slate-200 hover:border-primary-200 text-xs font-bold transition-all disabled:opacity-50"
                 >
                   + 1 Bulan
                 </button>
                 <button
                   @click="extendMembership(3)"
                   :disabled="isExtending"
-                  class="py-2 bg-white hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 text-[10px] font-bold transition-all disabled:opacity-50"
+                  class="py-2.5 bg-accent-500 hover:bg-accent-600 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shadow-sm shadow-accent-500/30"
                 >
                   + 3 Bulan
                 </button>
@@ -160,7 +169,7 @@
             <!-- Visits Log History list -->
             <div class="space-y-2">
               <h4 class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">RIWAYAT AKTIVITAS KEHADIRAN</h4>
-              <div class="bg-white border border-slate-100 rounded-2xl divide-y divide-slate-100 overflow-hidden shadow-inner max-h-56 overflow-y-auto">
+              <div class="bg-white border border-slate-100 rounded-2xl divide-y divide-slate-100 overflow-hidden shadow-inner max-h-60 overflow-y-auto">
                 <div v-if="!selectedMember.visits_log || selectedMember.visits_log.length === 0" class="p-4 text-center text-[10px] text-slate-400">
                   Belum ada riwayat aktivitas kehadiran.
                 </div>
@@ -168,10 +177,15 @@
                   v-else
                   v-for="(visit, idx) in sortedVisits"
                   :key="idx"
-                  class="p-2.5 px-3 flex items-center justify-between text-[10.5px] hover:bg-slate-50/50 transition-colors"
+                  class="p-3 px-4 flex items-center justify-between hover:bg-slate-50/60 transition-colors"
                 >
-                  <span class="font-semibold text-primary-900">Kunjungan #{{ selectedMember.visits_log.length - idx }}</span>
-                  <span class="text-slate-400 font-medium">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-accent-100 flex items-center justify-center">
+                      <i class="fa-solid fa-person-walking text-accent-500 text-[9px]"></i>
+                    </div>
+                    <span class="font-bold text-primary-900 text-xs">Kunjungan #{{ selectedMember.visits_log.length - idx }}</span>
+                  </div>
+                  <span class="text-slate-400 font-medium text-[10px]">
                     {{ formatDate(visit.date) }} — {{ visit.time }}
                   </span>
                 </div>

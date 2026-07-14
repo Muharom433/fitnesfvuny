@@ -111,8 +111,10 @@ const menuSections = [
 
 let realtimeChannel: any = null
 
-onMounted(() => {
-  recStore.loadFromLocalStorage()
+onMounted(async () => {
+  recStore.loadFromLocalStorage() // Show cached data immediately while loading
+  recStore.fetchTransactionsFromSupabase() // Then load from Supabase
+  recStore.fetchProductSalesFromSupabase()
   adminStore.fetchAll()
 
   // Realtime updates when bookings or pricing configurations are updated

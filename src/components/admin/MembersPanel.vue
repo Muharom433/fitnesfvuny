@@ -39,8 +39,8 @@
               <td class="px-5 py-3 font-semibold text-primary-900 text-xs">
                 <div class="flex flex-col">
                   <span class="font-bold text-primary-900">{{ m.name }}</span>
-                  <span v-if="m.role === 'member' && m.token" class="text-[9px] font-mono font-bold text-accent-600 bg-accent-50/80 border border-accent-100 rounded px-1.5 py-0.5 mt-1.5 w-fit flex items-center gap-1">
-                    <i class="fa-solid fa-key"></i> {{ m.token }}
+                  <span v-if="m.role === 'member' && m.token" class="text-xs font-bold tracking-widest text-accent-600 bg-accent-50 border border-accent-200 rounded-md px-2 py-1 mt-1.5 w-fit flex items-center gap-1.5">
+                    <i class="fa-solid fa-key text-[10px]"></i> {{ m.token }}
                   </span>
                   <span v-if="m.role === 'member' && getMembershipStatus(m)" :class="['text-[9px] font-semibold mt-1 px-2 py-0.5 rounded-md w-fit border', getMembershipStatusClass(m)]">
                     {{ getMembershipStatus(m) }}
@@ -157,7 +157,7 @@
                   v-model="form.token"
                   type="text"
                   placeholder="Token otomatis"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-mono font-bold text-primary-900 bg-slate-100/70 focus:outline-none"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-bold tracking-widest text-primary-900 bg-slate-100/70 focus:outline-none uppercase"
                   disabled
                 />
                 <button
