@@ -179,6 +179,7 @@
               <input
                 v-model="form.password"
                 type="password"
+                autocomplete="off"
                 :required="!isEditMode"
                 placeholder="Min. 6 karakter..."
                 class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 bg-slate-50/50"

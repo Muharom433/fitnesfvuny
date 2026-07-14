@@ -529,7 +529,7 @@
                   :type="showPassword ? 'text' : 'password'"
                   required
                   placeholder="••••••••"
-                  autocomplete="new-password"
+                  autocomplete="current-password"
                   class="w-full pl-10 pr-11 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-primary-900 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
                 />
                 <button
