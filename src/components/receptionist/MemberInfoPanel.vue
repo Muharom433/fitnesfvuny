@@ -193,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/composables/useToast'
 
@@ -346,8 +346,18 @@ async function extendMembership(months: number) {
   }
 }
 
+let refreshInterval: ReturnType<typeof setInterval> | null = null
+
 onMounted(() => {
   fetchMembers()
+  // Auto-refresh every 30s to reflect check-ins from TokenMembershipPanel
+  refreshInterval = setInterval(() => {
+    fetchMembers()
+  }, 30000)
+})
+
+onUnmounted(() => {
+  if (refreshInterval) clearInterval(refreshInterval)
 })
 </script>
 

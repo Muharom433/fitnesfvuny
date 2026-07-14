@@ -781,12 +781,32 @@ async function submitKasir() {
   // Token Membership generation for Member category
   let generatedToken = ''
   if (form.category === 'Member') {
+    let isUnique = false
+    let attempts = 0
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    let result = ''
-    for (let i = 0; i < 5; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    
+    while (!isUnique && attempts < 10) {
+      let result = ''
+      for (let i = 0; i < 5; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length))
+      }
+      const { data } = await supabase
+        .from('member_tokens')
+        .select('id')
+        .eq('token', result)
+        .maybeSingle()
+      
+      if (!data) {
+        generatedToken = result
+        isUnique = true
+      }
+      attempts++
     }
-    generatedToken = result
+
+    if (!generatedToken) {
+      generatedToken = crypto.randomUUID().replace(/-/g, '').substring(0, 5).toUpperCase()
+    }
+
     tx.token = generatedToken
     
     const months = form.duration === '3 Bulan' ? 3 : 1

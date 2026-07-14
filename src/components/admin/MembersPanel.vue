@@ -219,7 +219,15 @@ import type { User, Role } from '@/types/user'
 const toast = useToast()
 const recStore = useReceptionistStore()
 
-const members = ref<(User & { password?: string })[]>([])
+const members = ref<(User & {
+  password?: string;
+  token?: string;
+  visit_count?: number;
+  visits_log?: any[];
+  expiry_date?: string;
+  duration?: string;
+  registration_date?: string;
+})[]>([])
 const search = ref('')
 
 const isModalOpen = ref(false)
@@ -353,11 +361,14 @@ async function fetchAllMembers() {
   
   const list: (User & { password?: string; token?: string; visit_count?: number; visits_log?: any[]; expiry_date?: string; duration?: string; registration_date?: string })[] = []
   const seen = new Set<string>()
+  const seenUserIds = new Set<string>()
+  const seenBookingIds = new Set<string>()
   
   // 1. Add actual database registered users
   if (usersRes.data) {
     (usersRes.data as User[]).forEach(u => {
       seen.add(u.name.toLowerCase())
+      seenUserIds.add(u.id)
       list.push(u)
     })
   }
@@ -367,6 +378,7 @@ async function fetchAllMembers() {
     (bookingsRes.data as any[]).forEach(b => {
       if (!seen.has(b.name.toLowerCase())) {
         seen.add(b.name.toLowerCase())
+        seenBookingIds.add(b.id)
         list.push({
           id: b.id,
           name: b.name,
@@ -381,9 +393,12 @@ async function fetchAllMembers() {
   // Match token info to members
   const tokens = tokensRes.data || []
   list.forEach(m => {
+    const isRealUser = m.email !== '— (Registrasi Kasir)'
     const tInfo = tokens.find(t => 
+      (isRealUser && t.user_id === m.id) ||
+      (!isRealUser && t.booking_id === m.id) ||
       t.name.toLowerCase() === m.name.toLowerCase() ||
-      (m.email && m.email !== '— (Registrasi Kasir)' && t.email?.toLowerCase() === m.email.toLowerCase())
+      (m.email && isRealUser && t.email?.toLowerCase() === m.email.toLowerCase())
     )
     if (tInfo) {
       m.token = tInfo.token
@@ -394,20 +409,65 @@ async function fetchAllMembers() {
       m.registration_date = tInfo.registration_date
     }
   })
+
+  // 3. Add members who have tokens but are not in the list yet (standalone cashier members)
+  tokens.forEach(t => {
+    const isAlreadyInList = list.some(m => 
+      (m.email !== '— (Registrasi Kasir)' && t.user_id === m.id) ||
+      (m.email === '— (Registrasi Kasir)' && t.booking_id === m.id) ||
+      m.name.toLowerCase() === t.name.toLowerCase()
+    )
+    if (!isAlreadyInList) {
+      list.push({
+        id: t.id, // Gunakan token ID sebagai fallback ID
+        name: t.name,
+        email: t.email || '— (Registrasi Kasir)',
+        role: 'member',
+        created_at: t.created_at,
+        token: t.token,
+        visit_count: t.visit_count,
+        visits_log: t.visits_log,
+        expiry_date: t.expiry_date,
+        duration: t.duration,
+        registration_date: t.registration_date
+      })
+    }
+  })
   
   members.value = list
 }
 
-function generateNewToken() {
+async function generateNewToken() {
+  let generatedToken = ''
+  let isUnique = false
+  let attempts = 0
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-  let result = ''
-  for (let i = 0; i < 5; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length))
+  
+  while (!isUnique && attempts < 10) {
+    let result = ''
+    for (let i = 0; i < 5; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    const { data } = await supabase
+      .from('member_tokens')
+      .select('id')
+      .eq('token', result)
+      .maybeSingle()
+    
+    if (!data) {
+      generatedToken = result
+      isUnique = true
+    }
+    attempts++
   }
-  form.token = result
+  
+  if (!generatedToken) {
+    generatedToken = crypto.randomUUID().replace(/-/g, '').substring(0, 5).toUpperCase()
+  }
+  form.token = generatedToken
 }
 
-function openAddModal() {
+async function openAddModal() {
   isEditMode.value = false
   editingUserId.value = null
   Object.assign(form, {
@@ -417,11 +477,11 @@ function openAddModal() {
     password: '',
     token: ''
   })
-  generateNewToken()
+  await generateNewToken()
   isModalOpen.value = true
 }
 
-function openEditModal(user: any) {
+async function openEditModal(user: any) {
   isEditMode.value = true
   editingUserId.value = user.id
   Object.assign(form, {
@@ -432,7 +492,7 @@ function openEditModal(user: any) {
     token: user.token || ''
   })
   if (user.role === 'member' && !user.token) {
-    generateNewToken()
+    await generateNewToken()
   }
   isModalOpen.value = true
 }
@@ -454,11 +514,14 @@ async function submitForm() {
       payload.password = form.password
     }
 
+    let targetUserId = editingUserId.value
+    let targetBookingId = null
+    const isRealUser = isEditMode.value 
+      ? (members.value.find(m => m.id === editingUserId.value)?.email !== '— (Registrasi Kasir)')
+      : true
+
     if (isEditMode.value && editingUserId.value) {
       // Update existing
-      // If it was a cashier member row, it actually exists in bookings, not users. Let's handle updates
-      const isRealUser = members.value.find(m => m.id === editingUserId.value)?.email !== '— (Registrasi Kasir)'
-      
       if (isRealUser) {
         const { error } = await supabase.from('users').update(payload).eq('id', editingUserId.value)
         if (error) throw error
@@ -466,20 +529,43 @@ async function submitForm() {
         // Cashier visitor is registered in bookings table
         const { error } = await supabase.from('bookings').update({ name: form.name }).eq('id', editingUserId.value)
         if (error) throw error
+        targetBookingId = editingUserId.value
+        targetUserId = null
       }
     } else {
       // Create new
-      const { error } = await supabase.from('users').insert([payload])
+      const { data: newUser, error } = await supabase.from('users').insert([payload]).select().single()
       if (error) throw error
+      if (newUser) {
+        targetUserId = newUser.id
+      }
     }
 
     // Process Token Membership creation/update
     if (form.role === 'member' && form.token) {
-      const { data: existingToken } = await supabase
-        .from('member_tokens')
-        .select('id')
-        .eq('name', form.name)
-        .maybeSingle()
+      let existingToken = null
+
+      if (isEditMode.value && editingUserId.value) {
+        const filterStr = isRealUser 
+          ? `user_id.eq.${editingUserId.value}`
+          : `booking_id.eq.${editingUserId.value}`
+        const { data } = await supabase
+          .from('member_tokens')
+          .select('id')
+          .or(filterStr)
+          .maybeSingle()
+        existingToken = data
+      }
+
+      if (!existingToken) {
+        // Fallback matching by name
+        const { data } = await supabase
+          .from('member_tokens')
+          .select('id')
+          .eq('name', form.name)
+          .maybeSingle()
+        existingToken = data
+      }
 
       const now = new Date()
       const expiryDate = new Date()
@@ -488,7 +574,10 @@ async function submitForm() {
       if (existingToken) {
         await supabase.from('member_tokens').update({
           token: form.token,
-          email: form.email || null
+          name: form.name, // update name as well to keep sync
+          email: form.email || null,
+          user_id: targetUserId || null,
+          booking_id: targetBookingId || null
         }).eq('id', existingToken.id)
       } else {
         await supabase.from('member_tokens').insert({
@@ -500,7 +589,9 @@ async function submitForm() {
           registration_date: now.toISOString().split('T')[0],
           expiry_date: expiryDate.toISOString().split('T')[0],
           visit_count: 0,
-          visits_log: []
+          visits_log: [],
+          user_id: targetUserId || null,
+          booking_id: targetBookingId || null
         })
       }
     }
@@ -521,15 +612,20 @@ async function handleDelete(user: User) {
     try {
       const isRealUser = user.email !== '— (Registrasi Kasir)'
       if (isRealUser) {
+        // Deleting from users will cascade-delete linked member_tokens automatically via FK
         const { error } = await supabase.from('users').delete().eq('id', user.id)
         if (error) throw error
       } else {
+        // Deleting from bookings will cascade-delete linked member_tokens automatically via FK
         const { error } = await supabase.from('bookings').delete().eq('id', user.id)
         if (error) throw error
       }
       
-      // Also delete from member_tokens table to keep clean
-      await supabase.from('member_tokens').delete().eq('name', user.name)
+      // Safety fallback: also delete any orphaned tokens matching by name (for old unlinked data)
+      await supabase
+        .from('member_tokens')
+        .delete()
+        .eq('name', user.name)
 
       toast.warning('User dan Token berhasil dihapus.')
       await fetchAllMembers()
