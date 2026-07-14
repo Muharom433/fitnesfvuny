@@ -209,7 +209,7 @@
                 <td class="px-4 py-3 text-slate-500 truncate max-w-[100px]">{{ tx.alat || '-' }}</td>
                 <td class="px-4 py-3 font-bold text-primary-900">Rp {{ tx.amount.toLocaleString('id-ID') }}</td>
                 <td class="px-4 py-3 text-slate-600 truncate max-w-[100px]">{{ tx.paymentMethod }}</td>
-                <td class="px-4 py-3 text-slate-400">{{ tx.time }}</td>
+                <td class="px-4 py-3 text-slate-500 font-semibold whitespace-nowrap">{{ tx.date }} — {{ tx.time }}</td>
                 <td class="px-4 py-3 sticky right-0 bg-white shadow-[-4px_0_8px_rgba(0,0,0,0.04)] z-10">
                   <div class="flex items-center justify-center gap-2">
                     <button v-if="tx.category === 'Member'" @click="openCardModal(tx)" class="flex items-center gap-1 text-[10px] font-bold px-2 py-1 border border-accent-500 text-accent-500 rounded-lg hover:bg-accent-50 transition-colors">
@@ -224,7 +224,7 @@
               <tr v-if="todayTransactions.length === 0">
                 <td colspan="11" class="text-center py-12 text-slate-400">
                   <i class="fa-solid fa-receipt text-3xl block mb-2 text-slate-200"></i>
-                  Belum ada kunjungan hari ini.
+                  Belum ada data transaksi kunjungan.
                 </td>
               </tr>
             </tbody>
