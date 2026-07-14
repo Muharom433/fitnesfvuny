@@ -67,6 +67,10 @@ interface VisitRecord {
   time: string
 }
 
+const emit = defineEmits<{
+  'checkin-success': [token: string]
+}>()
+
 const toast = useToast()
 const recStore = useReceptionistStore()
 
@@ -149,6 +153,8 @@ async function handleCheckIn() {
     })
 
     toast.success(`Kehadiran berhasil dicatat! Selamat datang, ${member.name}.`)
+    // Navigate to member info panel showing this member
+    emit('checkin-success', formattedToken)
     tokenInput.value = ''
   } catch (err: any) {
     console.error('Error proses kehadiran:', err)

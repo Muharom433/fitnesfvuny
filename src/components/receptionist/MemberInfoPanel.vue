@@ -193,7 +193,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { useToast } from '@/composables/useToast'
 
@@ -216,6 +216,12 @@ interface MemberToken {
   visits_log: VisitRecord[]
   created_at: string
 }
+
+const props = withDefaults(defineProps<{
+  initialToken?: string
+}>(), {
+  initialToken: ''
+})
 
 const toast = useToast()
 const members = ref<MemberToken[]>([])
@@ -302,6 +308,12 @@ async function fetchMembers() {
     if (error) throw error
     members.value = data as MemberToken[]
     
+    // Auto-select member from initialToken prop (after check-in redirect)
+    if (props.initialToken) {
+      const target = members.value.find(m => m.token === props.initialToken)
+      if (target) selectedMember.value = target
+    }
+
     // Auto-update selected member details if it was open
     if (selectedMember.value) {
       const updated = members.value.find(m => m.id === selectedMember.value?.id)
@@ -348,12 +360,21 @@ async function extendMembership(months: number) {
 
 let refreshInterval: ReturnType<typeof setInterval> | null = null
 
-onMounted(() => {
-  fetchMembers()
+onMounted(async () => {
+  await fetchMembers()
   // Auto-refresh every 30s to reflect check-ins from TokenMembershipPanel
   refreshInterval = setInterval(() => {
     fetchMembers()
   }, 30000)
+})
+
+// If initialToken changes (parent navigates here again), re-select the member
+watch(() => props.initialToken, async (newToken) => {
+  if (newToken) {
+    await fetchMembers()
+    const target = members.value.find(m => m.token === newToken)
+    if (target) selectedMember.value = target
+  }
 })
 
 onUnmounted(() => {

@@ -25,10 +25,16 @@
         <Transition name="panel-fade" mode="out-in">
           <div :key="activePanel">
             <KasirPanel v-if="activePanel === 'kasir'" />
-            <TokenMembershipPanel v-else-if="activePanel === 'token-membership'" />
+            <TokenMembershipPanel
+              v-else-if="activePanel === 'token-membership'"
+              @checkin-success="handleCheckinSuccess"
+            />
             <BookingPanel v-else-if="activePanel === 'booking'" />
             <ProductSalesPanel v-else-if="activePanel === 'products'" />
-            <MemberInfoPanel v-else-if="activePanel === 'member-info'" />
+            <MemberInfoPanel
+              v-else-if="activePanel === 'member-info'"
+              :initial-token="checkedInToken"
+            />
             <ReportsPanel v-else-if="activePanel === 'reports'" />
           </div>
         </Transition>
@@ -63,6 +69,7 @@ const adminStore = useAdminStore()
 
 const sidebarCollapsed = ref(false)
 const activePanel = ref('kasir')
+const checkedInToken = ref('')
 
 const panelLabelMap: Record<string, string> = {
   kasir: 'Kasir Kunjungan Harian',
@@ -79,6 +86,11 @@ function switchPanel(id: string) {
   if (window.innerWidth < 1024) sidebarCollapsed.value = true
 }
 
+function handleCheckinSuccess(token: string) {
+  checkedInToken.value = token
+  switchPanel('member-info')
+}
+
 const menuSections = [
   {
     label: 'Menu Utama',
@@ -87,7 +99,6 @@ const menuSections = [
       { id: 'token-membership', label: 'Token Membership', icon: 'fa-solid fa-key' },
       { id: 'booking', label: 'Booking & Jadwal', icon: 'fa-solid fa-calendar-check' },
       { id: 'products', label: 'Kasir Produk', icon: 'fa-solid fa-bag-shopping' },
-      { id: 'member-info', label: 'Informasi Membership', icon: 'fa-solid fa-address-card' },
     ],
   },
   {
