@@ -712,6 +712,9 @@ async function handleLogin() {
 .anim-stat3 {
   animation: fadeSlideUp 0.55s 0.82s cubic-bezier(0.16,1,0.3,1) both;
 }
+.anim-stat4 {
+  animation: fadeSlideUp 0.55s 0.92s cubic-bezier(0.16,1,0.3,1) both;
+}
 
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(20px); }
