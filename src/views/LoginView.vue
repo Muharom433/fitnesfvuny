@@ -92,14 +92,14 @@
           <!-- SECTION 1: MEMBERSHIP (Tiers & Tariffs) -->
           <section id="membership-info" class="w-full py-20 scroll-mt-20 bg-white">
             <div class="max-w-6xl mx-auto px-6 space-y-8">
-              <div class="text-center space-y-2">
+              <div class="text-center space-y-2 reveal-section">
                 <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Pilihan Paket Membership</h3>
                 <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Tarif pendaftaran dan iuran bulanan fitness</p>
                 <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div v-for="p in adminStore.pricing" :key="p.id" class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
+                <div v-for="p in adminStore.pricing" :key="p.id" class="reveal-up bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group cursor-default">
                   <div class="space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                       <h4 class="font-extrabold text-sm text-accent-600 uppercase tracking-wider">{{ p.category_name_id }}</h4>
@@ -152,7 +152,7 @@
           <!-- SECTION 2: INTENSITAS (Keramaian & Jam Operasional) -->
           <section id="intensity-info" class="w-full py-20 scroll-mt-20 bg-slate-50">
             <div class="max-w-6xl mx-auto px-6 space-y-8">
-              <div class="text-center space-y-2">
+              <div class="text-center space-y-2 reveal-section">
                 <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Intensitas &amp; Keramaian Latihan</h3>
                 <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Pantau keramaian dan jam aktif operasional gym</p>
                 <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
@@ -160,7 +160,7 @@
 
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Left: Stats & Operational Hours -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-6 flex flex-col justify-between hover:shadow-xl hover:border-accent-500/50 hover:translate-y-[-6px] shadow-md transition-all duration-300">
+                <div class="reveal-left bg-white border border-slate-200 rounded-2xl p-6 space-y-6 flex flex-col justify-between hover:shadow-xl hover:border-accent-500/50 hover:translate-y-[-6px] shadow-md transition-all duration-300">
                   <div class="space-y-4">
                     <h4 class="font-bold text-sm text-accent-600 uppercase tracking-wide">Jam Operasional Resmi</h4>
                     <p class="text-xs text-slate-600 leading-relaxed">
@@ -188,7 +188,7 @@
                 </div>
 
                 <!-- Right: Peak Hours info -->
-                <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 hover:shadow-xl hover:border-accent-500/50 hover:translate-y-[-6px] shadow-md transition-all duration-300">
+                <div class="reveal-right bg-white border border-slate-200 rounded-2xl p-6 space-y-4 hover:shadow-xl hover:border-accent-500/50 hover:translate-y-[-6px] shadow-md transition-all duration-300">
                   <h4 class="font-bold text-sm text-accent-600 uppercase tracking-wide">Grafik Perkiraan Jam Ramai</h4>
                   <p class="text-xs text-slate-600">Gunakan acuan ini untuk merencanakan waktu latihan yang nyaman:</p>
                   
@@ -231,7 +231,7 @@
           <!-- SECTION 3: PROGRAM KELAS & TRAINER (Programs) -->
           <section id="program-info" class="w-full py-20 scroll-mt-20 bg-white">
             <div class="max-w-6xl mx-auto px-6 space-y-8">
-              <div class="text-center space-y-2">
+              <div class="text-center space-y-2 reveal-section">
                 <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Program Kelas &amp; Instruktur</h3>
                 <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Pilihan kelas kebugaran terpandu dan instruktur handal</p>
                 <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
@@ -239,7 +239,7 @@
 
               <!-- Classes Grid -->
               <div class="space-y-4">
-                <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Daftar Program Kelas</h4>
+                <h4 class="reveal-up font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Daftar Program Kelas</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div v-for="c in adminStore.classes" :key="c.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md flex flex-col justify-between transition-all duration-300 group cursor-default">
                     <div>
@@ -279,7 +279,7 @@
 
               <!-- Personal Trainers Grid -->
               <div class="space-y-4 pt-6">
-                <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Personal Trainer Terbaik Kami</h4>
+                <h4 class="reveal-up font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Personal Trainer Terbaik Kami</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                   <div v-for="t in adminStore.trainers" :key="t.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden text-center hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md transition-all duration-300 group flex flex-col justify-between cursor-default">
                     <!-- Trainer Photo - full width adaptive -->
@@ -348,7 +348,7 @@
           <!-- SECTION 4: FASILITAS & ALAT (Facilities) -->
           <section id="facility-info" class="w-full py-20 scroll-mt-20 bg-slate-50">
             <div class="max-w-6xl mx-auto px-6 space-y-8">
-              <div class="text-center space-y-2">
+              <div class="text-center space-y-2 reveal-section">
                 <h3 class="text-2xl font-black text-slate-800 tracking-wide uppercase hover:text-accent-500 transition-colors duration-300">Fasilitas &amp; Paket Peralatan</h3>
                 <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Perangkat alat penunjang kebugaran terlengkap</p>
                 <div class="w-12 h-[3px] bg-accent-500 mx-auto rounded-full mt-3"></div>
@@ -397,7 +397,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
               
               <!-- Column 1: Brand Info -->
-              <div class="space-y-4 text-left">
+              <div class="reveal-up space-y-4 text-left">
                 <div class="flex items-center gap-3">
                   <img src="/assets/logo.png" alt="Logo" class="w-10 h-10 object-contain" />
                   <div>
@@ -411,7 +411,7 @@
               </div>
 
               <!-- Column 2: Navigasi -->
-              <div class="space-y-4 text-left">
+              <div class="reveal-up space-y-4 text-left">
                 <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Navigasi</h4>
                 <ul class="space-y-2.5 text-xs text-slate-500 font-semibold">
                   <li>
@@ -438,7 +438,7 @@
               </div>
 
               <!-- Column 3: Lokasi -->
-              <div class="space-y-4 text-left">
+              <div class="reveal-up space-y-4 text-left">
                 <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Lokasi</h4>
                 <ul class="space-y-3 text-xs text-slate-500 font-semibold">
                   <li class="flex items-start gap-3">
@@ -454,7 +454,7 @@
               </div>
 
               <!-- Column 4: Media Sosial -->
-              <div class="space-y-4 text-left">
+              <div class="reveal-up space-y-4 text-left">
                 <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Media Sosial</h4>
                 <ul class="space-y-2.5 text-xs text-slate-500 font-semibold">
                   <li class="flex items-center gap-3">
@@ -588,22 +588,32 @@ function handleImgError(e: Event) {
 }
 
 // Scroll reveal animation using IntersectionObserver
+// Supports: .reveal-up, .reveal-left, .reveal-right, .reveal-card, .reveal-section
 function initScrollReveal() {
-  const cards = document.querySelectorAll('.reveal-card')
+  const selectors = '.reveal-up, .reveal-left, .reveal-right, .reveal-card, .reveal-section'
+  const elements = document.querySelectorAll(selectors)
+
   const observer = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            ;(entry.target as HTMLElement).classList.add('revealed')
-          }, i * 80)
-          observer.unobserve(entry.target)
-        }
+      // Group entries that are intersecting in this batch
+      const visible = entries.filter(e => e.isIntersecting)
+      visible.forEach((entry, i) => {
+        const el = entry.target as HTMLElement
+        // Stagger delay based on sibling index within the same parent
+        const siblings = el.parentElement
+          ? Array.from(el.parentElement.querySelectorAll(selectors))
+          : []
+        const sibIdx = siblings.indexOf(el)
+        const delay = sibIdx >= 0 ? sibIdx * 90 : i * 90
+        setTimeout(() => {
+          el.classList.add('revealed')
+        }, Math.min(delay, 600))
+        observer.unobserve(el)
       })
     },
-    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+    { threshold: 0.08, rootMargin: '0px 0px -50px 0px' }
   )
-  cards.forEach(el => observer.observe(el))
+  elements.forEach(el => observer.observe(el))
 }
 
 const router = useRouter()
@@ -770,24 +780,62 @@ async function handleLogin() {
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
 }
 
-/* ===== Scroll Reveal Animations ===== */
-.reveal-card {
+/* ===================================================
+   SCROLL REVEAL - Base states (hidden before reveal)
+   =================================================== */
+
+/* Slide up from below */
+.reveal-up {
   opacity: 0;
-  transform: translateY(32px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.reveal-card.revealed {
-  opacity: 1;
-  transform: translateY(0);
+  transform: translateY(40px);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Section headings fade in from left */
-section h3 {
+/* Slide in from left */
+.reveal-left {
   opacity: 0;
-  animation: fadeSlideUp 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateX(-48px);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
-section p {
+
+/* Slide in from right */
+.reveal-right {
   opacity: 0;
-  animation: fadeSlideUp 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateX(48px);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Section heading - fade + small slide up */
+.reveal-section {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cards slide up (existing .reveal-card) */
+.reveal-card {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===== All revealed state ===== */
+.reveal-up.revealed,
+.reveal-left.revealed,
+.reveal-right.revealed,
+.reveal-section.revealed,
+.reveal-card.revealed {
+  opacity: 1;
+  transform: translate(0, 0);
 }
 </style>
