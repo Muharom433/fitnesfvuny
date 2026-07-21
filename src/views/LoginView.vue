@@ -316,22 +316,31 @@
                         <div
                           v-for="(pkg, pIdx) in t.packages"
                           :key="pIdx"
-                          class="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100 hover:bg-accent-50 hover:border-accent-100 transition-colors duration-200"
+                          class="bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100 hover:bg-accent-50 hover:border-accent-100 transition-colors duration-200 space-y-0.5"
                         >
-                          <span class="font-bold text-slate-700 text-[10px] truncate max-w-[90px]">{{ pkg.name }}</span>
-                          <div class="text-right flex items-center gap-1.5">
-                            <span v-if="pkg.original_price && Number(pkg.original_price) > Number(pkg.price)" class="line-through text-slate-400 text-[9px] font-semibold">
-                              Rp {{ Number(pkg.original_price).toLocaleString('id-ID') }}
-                            </span>
-                            <span class="font-extrabold text-accent-600 text-[11px]">Rp {{ Number(pkg.price).toLocaleString('id-ID') }}</span>
+                          <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-700 text-[10px] truncate max-w-[90px]">{{ pkg.name }}</span>
+                            <div class="text-right flex items-center gap-1.5">
+                              <span v-if="pkg.original_price && Number(pkg.original_price) > Number(pkg.price)" class="line-through text-slate-400 text-[9px] font-semibold">
+                                Rp {{ Number(pkg.original_price).toLocaleString('id-ID') }}
+                              </span>
+                              <span class="font-extrabold text-accent-600 text-[11px]">Rp {{ Number(pkg.price).toLocaleString('id-ID') }}</span>
+                            </div>
+                          </div>
+                          <!-- Per Session Price Calculation (e.g. 4 Sesi = total / 4 / sesi) -->
+                          <div v-if="getPerSessionPrice(Number(pkg.price), pkg.name, t.price)" class="text-right text-[9px] text-slate-400 font-semibold">
+                            {{ getPerSessionPrice(Number(pkg.price), pkg.name, t.price) }}
                           </div>
                         </div>
                       </div>
-                      <div v-else class="flex items-center justify-center gap-1.5">
-                        <span v-if="t.original_price && Number(t.original_price) > Number(t.price)" class="line-through text-slate-400 text-[10px] font-semibold">
-                          Rp {{ Number(t.original_price).toLocaleString('id-ID') }}
-                        </span>
-                        <span class="font-extrabold text-accent-600">Rp {{ Number(t.price).toLocaleString('id-ID') }} / sesi</span>
+                      <div v-else class="flex flex-col items-center justify-center bg-slate-50 p-2 rounded-lg border border-slate-100 space-y-0.5">
+                        <div class="flex items-center gap-1.5">
+                          <span v-if="t.original_price && Number(t.original_price) > Number(t.price)" class="line-through text-slate-400 text-[10px] font-semibold">
+                            Rp {{ Number(t.original_price).toLocaleString('id-ID') }}
+                          </span>
+                          <span class="font-extrabold text-accent-600 text-xs">Rp {{ Number(t.price).toLocaleString('id-ID') }}</span>
+                        </div>
+                        <span class="text-[9px] text-slate-400 font-semibold">/ sesi</span>
                       </div>
                     </div>
                   </div>
@@ -598,6 +607,23 @@ import { formatImageUrl } from '@/lib/imageHelper'
 function handleImgError(e: Event) {
   const target = e.target as HTMLImageElement
   if (target) target.style.display = 'none'
+}
+
+function getPerSessionPrice(price: number, packageName?: string, defaultPerSessionPrice?: number): string | null {
+  if (packageName) {
+    const match = packageName.match(/(\d+)/)
+    if (match && match[1]) {
+      const numSessions = parseInt(match[1], 10)
+      if (numSessions > 0) {
+        const perSesi = Math.round(price / numSessions)
+        return `Rp ${perSesi.toLocaleString('id-ID')} / sesi`
+      }
+    }
+  }
+  if (defaultPerSessionPrice && defaultPerSessionPrice > 0) {
+    return `Rp ${Math.round(defaultPerSessionPrice).toLocaleString('id-ID')} / sesi`
+  }
+  return null
 }
 
 // Scroll reveal animation using IntersectionObserver
