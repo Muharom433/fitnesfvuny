@@ -188,6 +188,8 @@ export const useAdminStore = defineStore('admin', () => {
     classes.value.push(kelas as GymClass)
     const dbPayload: any = {
       ...kelas,
+      duration: (kelas.duration || '45 Menit').slice(0, 45),
+      level: (kelas.level || 'Semua Level').slice(0, 45),
       desc_en: encodePhotoDesc(kelas.photo, kelas.desc_en)
     }
     delete dbPayload.photo
@@ -200,7 +202,7 @@ export const useAdminStore = defineStore('admin', () => {
       const idx = classes.value.findIndex(c => c.id === kelas.id)
       if (idx !== -1) {
         const decoded = decodePhotoDesc(data.desc_en)
-        classes.value[idx] = { ...data, desc_en: decoded.desc, photo: kelas.photo || decoded.photo } as GymClass
+        classes.value[idx] = { ...data, duration: kelas.duration, level: kelas.level, desc_en: decoded.desc, photo: kelas.photo || decoded.photo } as GymClass
       }
     }
     return { data, error }
@@ -214,6 +216,8 @@ export const useAdminStore = defineStore('admin', () => {
       classes.value[idx] = { ...classes.value[idx], ...updates }
     }
     const dbPayload: any = { ...updates }
+    if (updates.duration) dbPayload.duration = updates.duration.slice(0, 45)
+    if (updates.level) dbPayload.level = updates.level.slice(0, 45)
     if (updates.photo !== undefined || updates.desc_en !== undefined) {
       const currentPhoto = updates.photo !== undefined ? updates.photo : (oldVal?.photo || '')
       const currentDesc = updates.desc_en !== undefined ? updates.desc_en : (oldVal?.desc_en || '')
@@ -227,7 +231,7 @@ export const useAdminStore = defineStore('admin', () => {
       console.error('updateClass db error:', error)
     } else if (data && idx !== -1) {
       const decoded = decodePhotoDesc(data.desc_en)
-      classes.value[idx] = { ...data, desc_en: decoded.desc, photo: updates.photo !== undefined ? updates.photo : decoded.photo } as GymClass
+      classes.value[idx] = { ...data, duration: updates.duration || oldVal?.duration || '45 Menit', level: updates.level || oldVal?.level || 'Semua Level', desc_en: decoded.desc, photo: updates.photo !== undefined ? updates.photo : decoded.photo } as GymClass
     }
     return { data, error }
   }
@@ -326,7 +330,7 @@ export const useAdminStore = defineStore('admin', () => {
     equipment.value.push(newCat)
     const { id, name_id, name_en, desc_id, desc_en, icon, price, photo } = cat as any
     const encodedDesc = encodePhotoDesc(photo, desc_en || desc_id)
-    const { data, error } = await supabase.from('equipment').insert({ id, name_id, name_en, desc_id, desc_en: encodedDesc, icon, price }).select().single()
+    const { data, error } = await supabase.from('equipment').insert({ id, name_id, name_en: name_en || name_id, desc_id: desc_id || '', desc_en: encodedDesc, icon, price }).select().single()
     if (error) {
       equipment.value = equipment.value.filter(e => e.id !== (cat as any).id)
       console.error('addEquipmentCategory db error:', error)
@@ -334,7 +338,7 @@ export const useAdminStore = defineStore('admin', () => {
       const idx = equipment.value.findIndex(e => e.id === (cat as any).id)
       if (idx !== -1) {
         const decoded = decodePhotoDesc(data.desc_en)
-        equipment.value[idx] = { ...data, desc_en: decoded.desc, photo: photo || decoded.photo, items: [] } as Equipment
+        equipment.value[idx] = { ...data, desc_id: data.desc_id || desc_id, desc_en: decoded.desc, photo: photo || decoded.photo, items: [] } as Equipment
       }
     }
     return { data, error }
@@ -347,14 +351,14 @@ export const useAdminStore = defineStore('admin', () => {
       oldVal = { ...equipment.value[idx] }
       equipment.value[idx] = { ...equipment.value[idx], ...updates }
     }
-    const { name_id, name_en, price, photo } = updates as any
+    const { name_id, name_en, price, photo, desc_id } = updates as any
     const payload: Record<string, unknown> = {}
     if (name_id !== undefined) { payload.name_id = name_id; payload.name_en = name_en ?? name_id }
     if (price !== undefined) payload.price = price
-    if (photo !== undefined || updates.desc_en !== undefined) {
-      const currentPhoto = photo !== undefined ? photo : (oldVal?.photo || '')
-      const currentDesc = updates.desc_en !== undefined ? updates.desc_en : (oldVal?.desc_en || oldVal?.desc_id || '')
-      payload.desc_en = encodePhotoDesc(currentPhoto, currentDesc)
+    if (desc_id !== undefined) { payload.desc_id = desc_id; payload.desc_en = encodePhotoDesc(photo !== undefined ? photo : (oldVal?.photo || ''), desc_id) }
+    if (photo !== undefined && desc_id === undefined) {
+      const currentDesc = oldVal?.desc_id || oldVal?.desc_en || ''
+      payload.desc_en = encodePhotoDesc(photo, currentDesc)
     }
 
     const { data, error } = await supabase.from('equipment').update(payload).eq('id', id).select().single()
@@ -363,7 +367,7 @@ export const useAdminStore = defineStore('admin', () => {
       console.error('updateEquipmentCategory db error:', error)
     } else if (data && idx !== -1) {
       const decoded = decodePhotoDesc(data.desc_en)
-      equipment.value[idx] = { ...equipment.value[idx], ...data, desc_en: decoded.desc, photo: photo !== undefined ? photo : decoded.photo } as Equipment
+      equipment.value[idx] = { ...equipment.value[idx], ...data, desc_id: data.desc_id || desc_id || oldVal?.desc_id || '', desc_en: decoded.desc, photo: photo !== undefined ? photo : decoded.photo } as Equipment
     }
     return { data, error }
   }

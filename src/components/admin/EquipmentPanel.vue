@@ -70,6 +70,19 @@
           </div>
         </div>
 
+        <!-- Deskripsi Kategori Alat -->
+        <div class="mt-4 space-y-1.5">
+          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Deskripsi Kategori Alat (Tampil untuk Publik)</label>
+          <textarea
+            v-model="cat.desc_id"
+            @blur="handleUpdateCategory(cat.id, { desc_id: cat.desc_id, desc_en: cat.desc_id })"
+            rows="2"
+            placeholder="Tuliskan deskripsi lengkap mengenai fasilitas & peralatan ini..."
+            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
+          ></textarea>
+          <p class="text-[10px] text-slate-400">Deskripsi ini akan otomatis tampil di beranda utama depan agar publik dapat membaca detail mengenai alat ini (bebas tanpa batas karakter).</p>
+        </div>
+
         <!-- Equipment Items Sub-list -->
         <div class="mt-6 pt-5 border-t border-slate-100">
           <div class="flex items-center justify-between mb-4">

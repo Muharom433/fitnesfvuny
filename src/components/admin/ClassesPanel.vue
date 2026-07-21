@@ -10,8 +10,8 @@
     <template #modal>
       <Transition name="modal">
         <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md">
-            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+          <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white z-10">
               <h3 class="font-extrabold text-primary-900 text-sm">{{ editing ? 'Edit Kelas' : 'Tambah Kelas' }}</h3>
               <button @click="showModal = false" class="text-slate-400 hover:text-slate-700 transition-colors">
                 <i class="fa-solid fa-xmark text-lg"></i>
@@ -20,7 +20,21 @@
             <form @submit.prevent="save" class="p-6 space-y-4">
               <div class="space-y-1.5">
                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Kelas</label>
-                <input v-model="form.name_id" type="text" placeholder="Yoga Dasar" required
+                <input v-model="form.name_id" type="text" placeholder="Yoga Dasar / Fatloss Workout" required
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
+              </div>
+
+              <!-- Durasi / Waktu Kelas -->
+              <div class="space-y-1.5">
+                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Durasi / Waktu Kelas</label>
+                <input v-model="form.duration" type="text" placeholder="45 Menit / 60 Menit" required
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
+              </div>
+
+              <!-- Jenis Level Kelas -->
+              <div class="space-y-1.5">
+                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Jenis Level Kelas</label>
+                <input v-model="form.level" type="text" placeholder="Semua Level / Pemula / Menengah" required
                   class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
               </div>
 
@@ -43,6 +57,7 @@
                 <input v-model.number="form.price" type="number" placeholder="50000" required
                   class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
               </div>
+
               <div class="flex gap-3 pt-2">
                 <button type="button" @click="showModal = false" class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors">Batal</button>
                 <button type="submit" :disabled="isSaving" class="flex-1 py-2.5 rounded-xl bg-accent-500 text-white text-sm font-bold hover:bg-accent-600 transition-colors disabled:opacity-60">
@@ -73,11 +88,13 @@ const isSaving = ref(false)
 
 const columns = [
   { key: 'name_id', label: 'Nama Kelas' },
+  { key: 'duration', label: 'Durasi/Waktu' },
+  { key: 'level', label: 'Jenis Level' },
   { key: 'price', label: 'Tarif Tambahan', format: (v: number) => 'Rp ' + v.toLocaleString('id-ID') },
 ]
 
 const form = reactive<Partial<GymClass>>({
-  id: '', name_id: '', name_en: '', duration: '', level: '', icon: '', price: 0, desc_id: '', desc_en: '', photo: ''
+  id: '', name_id: '', name_en: '', duration: '45 Menit', level: 'Semua Level', icon: '', price: 0, desc_id: '', desc_en: '', photo: ''
 })
 
 function handleImgError(e: Event) {
@@ -87,13 +104,18 @@ function handleImgError(e: Event) {
 
 function openAdd() {
   editing.value = null
-  Object.assign(form, { id: '', name_id: '', name_en: '', duration: '', level: '', icon: '', price: 0, desc_id: '', desc_en: '', photo: '' })
+  Object.assign(form, { id: '', name_id: '', name_en: '', duration: '45 Menit', level: 'Semua Level', icon: '', price: 0, desc_id: '', desc_en: '', photo: '' })
   showModal.value = true
 }
 function openEdit(item: unknown) {
   const kelas = item as GymClass
   editing.value = kelas
-  Object.assign(form, { ...kelas, photo: kelas.photo || '' })
+  Object.assign(form, {
+    ...kelas,
+    duration: kelas.duration || '45 Menit',
+    level: kelas.level || 'Semua Level',
+    photo: kelas.photo || ''
+  })
   showModal.value = true
 }
 async function save() {
@@ -102,12 +124,13 @@ async function save() {
     const payload = { ...form }
     
     if (!payload.id) {
-      payload.id = 'class_' + (payload.name_id || '').toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString().slice(-4)
+      const cleanSlug = (payload.name_id || '').toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 30)
+      payload.id = 'class_' + cleanSlug + '_' + Date.now().toString().slice(-4)
     }
 
     payload.name_en = payload.name_id
-    payload.duration = '45 Menit'
-    payload.level = 'Semua Level'
+    payload.duration = payload.duration || '45 Menit'
+    payload.level = payload.level || 'Semua Level'
     payload.icon = 'fa-solid fa-users'
     payload.desc_id = `Kelas ${payload.name_id} di Fitness Center FV UNY.`
     payload.desc_en = payload.desc_id

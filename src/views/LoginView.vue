@@ -371,7 +371,7 @@
                       </div>
                     </div>
 
-                    <p class="text-xs text-slate-600 leading-relaxed">{{ e.desc_id }}</p>
+                    <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/70 p-3 rounded-xl border border-slate-100">{{ e.desc_id }}</p>
 
                     <!-- Nested Equipment Items -->
                     <div v-if="e.items && e.items.length > 0" class="space-y-2">

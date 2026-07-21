@@ -301,10 +301,12 @@ async function saveTrainer() {
     const payload = { ...form }
     
     if (!payload.id) {
-      payload.id = 'coach_' + payload.name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now().toString().slice(-4)
+      const cleanSlug = payload.name.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 30)
+      payload.id = 'coach_' + cleanSlug + '_' + Date.now().toString().slice(-4)
     }
 
-    payload.specialty_id = 'trainer_' + payload.specialty_id_val.toLowerCase().replace(/[^a-z0-9]/g, '_')
+    const cleanSpecSlug = payload.specialty_id_val.toLowerCase().replace(/[^a-z0-9]/g, '_').slice(0, 35)
+    payload.specialty_id = 'trainer_' + cleanSpecSlug
     payload.specialty_en = payload.specialty_id_val
     payload.bio_id = `${payload.name} adalah pelatih profesional di bidang ${payload.specialty_id_val}.`
     payload.bio_en = payload.bio_id
