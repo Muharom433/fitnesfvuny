@@ -352,7 +352,7 @@
                 <div v-for="e in adminStore.equipment" :key="e.id" class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
                   <div class="space-y-4">
                     <!-- Equipment Photo Banner (If Provided) -->
-                    <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full h-44 rounded-xl overflow-hidden mb-4 border border-slate-100 shadow-xs">
+                    <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full h-48 rounded-xl overflow-hidden mb-4 border border-slate-100 shadow-xs">
                       <img
                         :src="formatImageUrl(e.photo)"
                         :alt="e.name_id"
@@ -361,17 +361,8 @@
                       />
                     </div>
 
-                    <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
-                      <div class="w-10 h-10 rounded-xl bg-accent-50/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
-                        <i :class="['fa-solid', e.icon || 'fa-dumbbell']"></i>
-                      </div>
-                      <div>
-                        <h4 class="font-extrabold text-sm text-slate-800 leading-tight uppercase">{{ e.name_id }}</h4>
-                        <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Paket Akses Tambahan</span>
-                      </div>
-                    </div>
-
-                    <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/70 p-3 rounded-xl border border-slate-100">{{ e.desc_id }}</p>
+                    <!-- Equipment Description -->
+                    <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/70 p-3.5 rounded-xl border border-slate-100 font-medium">{{ e.desc_id }}</p>
 
                     <!-- Nested Equipment Items -->
                     <div v-if="e.items && e.items.length > 0" class="space-y-2">
@@ -383,11 +374,6 @@
                         </span>
                       </div>
                     </div>
-                  </div>
-
-                  <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center text-xs">
-                    <span class="text-slate-400">Tarif Tambahan:</span>
-                    <span class="font-extrabold text-accent-600">Rp {{ e.price.toLocaleString('id-ID') }}</span>
                   </div>
                 </div>
               </div>
@@ -402,7 +388,7 @@
         <!-- Footer -->
         <footer class="bg-white border-t border-slate-200 py-16 shadow-inner text-slate-700">
           <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
               
               <!-- Column 1: Brand Info -->
               <div class="space-y-4 text-left">
@@ -445,76 +431,11 @@
                 </ul>
               </div>
 
-              <!-- Column 3: Kontak & Lokasi -->
-              <div class="space-y-4 text-left">
-                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Kontak &amp; Lokasi</h4>
-                <ul class="space-y-3 text-xs text-slate-500 font-semibold">
-                  <li class="flex items-start gap-3">
-                    <span class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 text-xs mt-0.5">
-                      <i class="fa-solid fa-map-location-dot"></i>
-                    </span>
-                    <a href="https://maps.app.goo.gl/LGrWhwmiHJVB6VcJ6" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors leading-tight">
-                      Vokasi UNY Wates <br />
-                      <span class="text-[10px] text-slate-400 font-medium">Lihat Google Maps</span>
-                    </a>
-                  </li>
-                  <li class="flex items-center gap-3">
-                    <span class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 text-xs">
-                      <i class="fa-regular fa-envelope"></i>
-                    </span>
-                    <a href="mailto:fv@uny.ac.id" class="hover:text-accent-500 transition-colors">
-                      fv@uny.ac.id
-                    </a>
-                  </li>
-                  <li class="flex items-start gap-3">
-                    <span class="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center text-green-600 text-xs mt-0.5">
-                      <i class="fa-brands fa-whatsapp"></i>
-                    </span>
-                    <a href="https://wa.me/6285158550034" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors leading-tight">
-                      +62 851-5855-0034 <br />
-                      <span class="text-[10px] text-slate-400 font-medium">WhatsApp / Call Center</span>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Column 4: Ikuti Kami -->
-              <div class="space-y-4 text-left">
-                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Media Sosial</h4>
-                <ul class="space-y-2.5 text-xs text-slate-500 font-semibold">
-                  <li class="flex items-center gap-3">
-                    <span class="w-7 h-7 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 text-xs">
-                      <i class="fa-brands fa-instagram"></i>
-                    </span>
-                    <a href="https://www.instagram.com/fvuny.fitnesscenter?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
-                      @fvuny.fitnesscenter
-                    </a>
-                  </li>
-                  <li class="flex items-center gap-3">
-                    <span class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-slate-800 text-xs">
-                      <i class="fa-brands fa-tiktok"></i>
-                    </span>
-                    <a href="https://www.tiktok.com/@fvunyofficial?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
-                      @fvunyofficial
-                    </a>
-                  </li>
-                  <li class="flex items-center gap-3">
-                    <span class="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center text-red-600 text-xs">
-                      <i class="fa-brands fa-youtube"></i>
-                    </span>
-                    <a href="https://www.youtube.com/@FVUNYOfficial" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
-                      FV UNY Official
-                    </a>
-                  </li>
-                </ul>
-              </div>
-
             </div>
 
             <!-- Bottom copyright -->
-            <div class="mt-12 pt-6 border-t border-slate-150 text-center text-xs text-slate-400 space-y-1">
-              <p>© {{ new Date().getFullYear() }} FITNESS CENTER FV UNY VOKASI WATES. Hak Cipta Dilindungi.</p>
-              <p class="text-[10px] text-slate-400 font-medium">Sistem Informasi Kebugaran Kampus Wates</p>
+            <div class="mt-12 pt-6 border-t border-slate-150 text-center text-xs text-slate-400">
+              <p class="font-extrabold text-slate-500 uppercase tracking-widest text-xs">FITNESS CENTER FV UNY</p>
             </div>
           </div>
         </footer>

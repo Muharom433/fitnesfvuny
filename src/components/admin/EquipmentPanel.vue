@@ -25,37 +25,13 @@
         </button>
 
         <div class="text-xs font-extrabold text-accent-500 uppercase tracking-widest mb-4">
-          {{ catIdx + 1 }} - Kategori: {{ cat.name_id || 'Baru' }}
+          {{ catIdx + 1 }} - Informasi Alat Gym
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Kategori</label>
-            <input
-              type="text"
-              v-model="cat.name_id"
-              @blur="handleUpdateCategory(cat.id, { name_id: cat.name_id, name_en: cat.name_id })"
-              placeholder="Strength & Resistance Area"
-              required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
-            />
-          </div>
-
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tarif Tambahan Kategori (Rp)</label>
-            <input
-              type="number"
-              v-model.number="cat.price"
-              @blur="handleUpdateCategory(cat.id, { price: Number(cat.price) })"
-              placeholder="20000"
-              required
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
-            />
-          </div>
-
+        <div class="space-y-4">
           <!-- Photo URL Input -->
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Link Foto Kategori (Drive/PNG/JPG)</label>
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Link Foto Alat (Drive / PNG / JPG)</label>
             <input
               type="text"
               v-model="cat.photo"
@@ -65,22 +41,22 @@
             />
             <div v-if="cat.photo && formatImageUrl(cat.photo)" class="mt-1 flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
               <img :src="formatImageUrl(cat.photo)" alt="Preview" class="w-12 h-9 rounded object-cover" @error="handleImgError" />
-              <span class="text-[10px] text-slate-500 font-semibold">Preview Foto</span>
+              <span class="text-[10px] text-slate-500 font-semibold">Preview Foto Alat</span>
             </div>
           </div>
-        </div>
 
-        <!-- Deskripsi Kategori Alat -->
-        <div class="mt-4 space-y-1.5">
-          <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Deskripsi Kategori Alat (Tampil untuk Publik)</label>
-          <textarea
-            v-model="cat.desc_id"
-            @blur="handleUpdateCategory(cat.id, { desc_id: cat.desc_id, desc_en: cat.desc_id })"
-            rows="2"
-            placeholder="Tuliskan deskripsi lengkap mengenai fasilitas & peralatan ini..."
-            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
-          ></textarea>
-          <p class="text-[10px] text-slate-400">Deskripsi ini akan otomatis tampil di beranda utama depan agar publik dapat membaca detail mengenai alat ini (bebas tanpa batas karakter).</p>
+          <!-- Deskripsi Alat -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Deskripsi Alat (Tampil untuk Publik)</label>
+            <textarea
+              v-model="cat.desc_id"
+              @blur="handleUpdateCategory(cat.id, { desc_id: cat.desc_id, desc_en: cat.desc_id })"
+              rows="3"
+              placeholder="Tuliskan deskripsi/penjelasan lengkap mengenai alat tersebut..."
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
+            ></textarea>
+            <p class="text-[10px] text-slate-400">Deskripsi dan foto ini akan otomatis tampil di halaman depan utama agar publik dapat membaca info penjelasannya.</p>
+          </div>
         </div>
 
         <!-- Equipment Items Sub-list -->
