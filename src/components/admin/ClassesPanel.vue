@@ -23,6 +23,21 @@
                 <input v-model="form.name_id" type="text" placeholder="Yoga Dasar" required
                   class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
               </div>
+
+              <!-- Photo URL Input -->
+              <div class="space-y-1.5">
+                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Link Foto Kelas (JPG / PNG / Drive)</label>
+                <input v-model="form.photo" type="text" placeholder="https://... (Link Foto/Drive)"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
+                <p class="text-[10px] text-slate-400">Bisa diisi link Google Drive / link foto publik. Foto langsung tampil di beranda depan.</p>
+                
+                <!-- Image Preview -->
+                <div v-if="form.photo && formatImageUrl(form.photo)" class="mt-2 flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                  <img :src="formatImageUrl(form.photo)" alt="Preview" class="w-16 h-12 rounded-lg object-cover border border-slate-200" @error="handleImgError" />
+                  <span class="text-xs text-slate-500 font-semibold">Preview Foto Kelas</span>
+                </div>
+              </div>
+
               <div class="space-y-1.5">
                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tarif Tambahan Kelas (Rp)</label>
                 <input v-model.number="form.price" type="number" placeholder="50000" required
@@ -48,6 +63,7 @@ import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { GymClass } from '@/types/booking'
 import CrudPanel from './shared/CrudPanel.vue'
+import { formatImageUrl } from '@/lib/imageHelper'
 
 const admin = useAdminStore()
 const toast = useToast()
@@ -61,18 +77,23 @@ const columns = [
 ]
 
 const form = reactive<Partial<GymClass>>({
-  id: '', name_id: '', name_en: '', duration: '', level: '', icon: '', price: 0, desc_id: '', desc_en: '',
+  id: '', name_id: '', name_en: '', duration: '', level: '', icon: '', price: 0, desc_id: '', desc_en: '', photo: ''
 })
+
+function handleImgError(e: Event) {
+  const target = e.target as HTMLImageElement
+  if (target) target.style.display = 'none'
+}
 
 function openAdd() {
   editing.value = null
-  Object.assign(form, { id: '', name_id: '', name_en: '', duration: '', level: '', icon: '', price: 0, desc_id: '', desc_en: '' })
+  Object.assign(form, { id: '', name_id: '', name_en: '', duration: '', level: '', icon: '', price: 0, desc_id: '', desc_en: '', photo: '' })
   showModal.value = true
 }
 function openEdit(item: unknown) {
   const kelas = item as GymClass
   editing.value = kelas
-  Object.assign(form, kelas)
+  Object.assign(form, { ...kelas, photo: kelas.photo || '' })
   showModal.value = true
 }
 async function save() {

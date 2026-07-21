@@ -28,7 +28,7 @@
           {{ catIdx + 1 }} - Kategori: {{ cat.name_id || 'Baru' }}
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="space-y-1.5">
             <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Kategori</label>
             <input
@@ -42,7 +42,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tarif Tambahan Kategori Alat (Rp)</label>
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tarif Tambahan Kategori (Rp)</label>
             <input
               type="number"
               v-model.number="cat.price"
@@ -51,6 +51,22 @@
               required
               class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
             />
+          </div>
+
+          <!-- Photo URL Input -->
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Link Foto Kategori (Drive/PNG/JPG)</label>
+            <input
+              type="text"
+              v-model="cat.photo"
+              @blur="handleUpdateCategory(cat.id, { photo: cat.photo })"
+              placeholder="https://... (Link Foto/Drive)"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
+            />
+            <div v-if="cat.photo && formatImageUrl(cat.photo)" class="mt-1 flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
+              <img :src="formatImageUrl(cat.photo)" alt="Preview" class="w-12 h-9 rounded object-cover" @error="handleImgError" />
+              <span class="text-[10px] text-slate-500 font-semibold">Preview Foto</span>
+            </div>
           </div>
         </div>
 
@@ -115,9 +131,15 @@
 import { onMounted } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
+import { formatImageUrl } from '@/lib/imageHelper'
 
 const admin = useAdminStore()
 const toast = useToast()
+
+function handleImgError(e: Event) {
+  const target = e.target as HTMLImageElement
+  if (target) target.style.display = 'none'
+}
 
 onMounted(() => {
   if (admin.equipment.length === 0) {
@@ -134,7 +156,8 @@ async function addNewCategory() {
     desc_id: 'Deskripsi kategori alat...',
     desc_en: 'Deskripsi kategori alat...',
     icon: 'fa-dumbbell',
-    price: 20000
+    price: 20000,
+    photo: ''
   }
   try {
     const { error } = await admin.addEquipmentCategory(payload)

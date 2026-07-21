@@ -243,6 +243,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <div v-for="c in adminStore.classes" :key="c.id" class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
                     <div class="space-y-3">
+                      <!-- Class Photo Banner (If Provided) -->
+                      <div v-if="c.photo && formatImageUrl(c.photo)" class="w-full h-36 rounded-xl overflow-hidden mb-3 border border-slate-100 shadow-xs">
+                        <img
+                          :src="formatImageUrl(c.photo)"
+                          :alt="c.name_id"
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          @error="handleImgError"
+                        />
+                      </div>
+
                       <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-xl bg-accent-55/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                           <i :class="['fa-solid', c.icon || 'fa-heart-pulse']"></i>
@@ -269,17 +279,41 @@
               <div class="space-y-4 pt-6">
                 <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Personal Trainer Terbaik Kami</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  <div v-for="t in adminStore.trainers" :key="t.id" class="bg-white border border-slate-200 rounded-2xl p-5 text-center hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md transition-all duration-300 space-y-3 group">
-                    <div class="w-16 h-16 rounded-full bg-slate-50 mx-auto flex items-center justify-center border-2 border-slate-100 text-accent-500 text-2xl group-hover:scale-110 duration-300 transition-transform">
-                      <i class="fa-solid fa-user-ninja"></i>
+                  <div v-for="t in adminStore.trainers" :key="t.id" class="bg-white border border-slate-200 rounded-2xl p-5 text-center hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md transition-all duration-300 space-y-3 group flex flex-col justify-between">
+                    <div class="space-y-3">
+                      <!-- Photo / Avatar -->
+                      <div class="w-20 h-20 rounded-full bg-slate-50 mx-auto flex items-center justify-center border-2 border-accent-500 text-accent-500 text-2xl group-hover:scale-105 duration-300 transition-transform overflow-hidden shadow-md">
+                        <img
+                          v-if="t.photo && formatImageUrl(t.photo)"
+                          :src="formatImageUrl(t.photo)"
+                          :alt="t.name"
+                          class="w-full h-full object-cover"
+                          @error="handleImgError"
+                        />
+                        <i v-else class="fa-solid fa-user-ninja"></i>
+                      </div>
+                      <div>
+                        <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ t.name }}</h5>
+                        <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">{{ t.specialty_id_val }}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ t.name }}</h5>
-                      <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">{{ t.specialty_id_val }}</p>
-                    </div>
-                    <div class="pt-2 border-t border-slate-100 text-[11px]">
-                      <span class="text-slate-400 block text-[9px] uppercase">Tarif Pelatih</span>
-                      <span class="font-extrabold text-accent-600">Rp {{ t.price.toLocaleString('id-ID') }} / sesi</span>
+
+                    <!-- Tariff Packages (Up to 6 Packages) -->
+                    <div class="pt-2.5 border-t border-slate-100 space-y-1.5 text-[11px]">
+                      <span class="text-slate-400 block text-[9px] font-extrabold uppercase tracking-wider">Tarif Pelatih</span>
+                      <div v-if="t.packages && t.packages.length > 0" class="space-y-1 text-left">
+                        <div
+                          v-for="(pkg, pIdx) in t.packages"
+                          :key="pIdx"
+                          class="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100"
+                        >
+                          <span class="font-bold text-slate-700 text-[10px] truncate max-w-[110px]">{{ pkg.name }}</span>
+                          <span class="font-extrabold text-accent-600 text-[11px]">Rp {{ Number(pkg.price).toLocaleString('id-ID') }}</span>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <span class="font-extrabold text-accent-600">Rp {{ Number(t.price).toLocaleString('id-ID') }} / sesi</span>
+                      </div>
                     </div>
                   </div>
                   <div v-if="adminStore.trainers.length === 0" class="col-span-full text-center py-6 text-slate-400 text-xs">
@@ -317,6 +351,16 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div v-for="e in adminStore.equipment" :key="e.id" class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
                   <div class="space-y-4">
+                    <!-- Equipment Photo Banner (If Provided) -->
+                    <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full h-44 rounded-xl overflow-hidden mb-4 border border-slate-100 shadow-xs">
+                      <img
+                        :src="formatImageUrl(e.photo)"
+                        :alt="e.name_id"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        @error="handleImgError"
+                      />
+                    </div>
+
                     <div class="flex items-center gap-3 pb-3 border-b border-slate-100">
                       <div class="w-10 h-10 rounded-xl bg-accent-50/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
                         <i :class="['fa-solid', e.icon || 'fa-dumbbell']"></i>
@@ -578,6 +622,12 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import { supabase } from '@/lib/supabase'
+import { formatImageUrl } from '@/lib/imageHelper'
+
+function handleImgError(e: Event) {
+  const target = e.target as HTMLImageElement
+  if (target) target.style.display = 'none'
+}
 
 const router = useRouter()
 const auth = useAuthStore()

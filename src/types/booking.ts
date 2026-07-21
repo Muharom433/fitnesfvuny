@@ -19,6 +19,11 @@ export interface Booking {
   created_at?: string
 }
 
+export interface TrainerPackage {
+  name: string
+  price: number
+}
+
 export interface Trainer {
   id: string
   name: string
@@ -32,6 +37,7 @@ export interface Trainer {
   photo: string
   philosophy: string
   price: number
+  packages?: TrainerPackage[]
   created_at?: string
 }
 
@@ -45,6 +51,7 @@ export interface GymClass {
   desc_en: string
   icon: string
   price: number
+  photo?: string
   created_at?: string
 }
 
@@ -56,6 +63,7 @@ export interface Equipment {
   desc_en?: string
   icon: string
   price: number
+  photo?: string
   items?: EquipmentItem[]
   created_at?: string
 }

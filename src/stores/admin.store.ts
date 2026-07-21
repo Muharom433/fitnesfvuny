@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { supabase } from '@/lib/supabase'
 import type { Trainer, GymClass, Equipment, EquipmentItem, Product, Booking, Pricing } from '@/types/booking'
+import { decodeTrainerPhilosophy, encodeTrainerPhilosophy, decodePhotoDesc, encodePhotoDesc } from '@/lib/imageHelper'
 
 export const useAdminStore = defineStore('admin', () => {
   const trainers = ref<Trainer[]>([])
@@ -23,21 +24,44 @@ export const useAdminStore = defineStore('admin', () => {
         supabase.from('bookings').select('*').order('created_at', { ascending: false }),
         supabase.from('pricing').select('*'),
       ])
-      if (t.data) trainers.value = t.data as Trainer[]
-      if (c.data) classes.value = c.data as GymClass[]
+      if (t.data) {
+        trainers.value = (t.data as any[]).map(row => {
+          const decoded = decodeTrainerPhilosophy(row.philosophy)
+          return {
+            ...row,
+            philosophy: decoded.text,
+            packages: decoded.packages
+          }
+        }) as Trainer[]
+      }
+      if (c.data) {
+        classes.value = (c.data as any[]).map(row => {
+          const decoded = decodePhotoDesc(row.desc_en)
+          return {
+            ...row,
+            desc_en: decoded.desc,
+            photo: decoded.photo
+          }
+        }) as GymClass[]
+      }
       if (e.data) {
         // Map equipment_items to items
-        equipment.value = (e.data as any[]).map(row => ({
-          ...row,
-          items: (row.equipment_items ?? []).map((it: any) => ({
-            id: it.id,
-            parent_id: it.equipment_id,
-            name_id: it.name_id,
-            name_en: it.name_en,
-            icon: it.icon,
-            created_at: it.created_at
-          })),
-        })) as Equipment[]
+        equipment.value = (e.data as any[]).map(row => {
+          const decoded = decodePhotoDesc(row.desc_en)
+          return {
+            ...row,
+            desc_en: decoded.desc,
+            photo: decoded.photo,
+            items: (row.equipment_items ?? []).map((it: any) => ({
+              id: it.id,
+              parent_id: it.equipment_id,
+              name_id: it.name_id,
+              name_en: it.name_en,
+              icon: it.icon,
+              created_at: it.created_at
+            })),
+          }
+        }) as Equipment[]
       }
       if (p.data) products.value = p.data as Product[]
       if (b.data) {
@@ -100,13 +124,22 @@ export const useAdminStore = defineStore('admin', () => {
   // =====================
   async function addTrainer(trainer: Omit<Trainer, 'created_at'>) {
     trainers.value.push(trainer as Trainer)
-    const { data, error } = await supabase.from('trainers').insert(trainer).select().single()
+    const dbPayload: any = {
+      ...trainer,
+      philosophy: encodeTrainerPhilosophy(trainer.philosophy, trainer.packages)
+    }
+    delete dbPayload.packages
+
+    const { data, error } = await supabase.from('trainers').insert(dbPayload).select().single()
     if (error) {
       trainers.value = trainers.value.filter(t => t.id !== trainer.id)
       console.error('addTrainer db error:', error)
     } else if (data) {
       const idx = trainers.value.findIndex(t => t.id === trainer.id)
-      if (idx !== -1) trainers.value[idx] = data as Trainer
+      if (idx !== -1) {
+        const decoded = decodeTrainerPhilosophy(data.philosophy)
+        trainers.value[idx] = { ...data, philosophy: decoded.text, packages: trainer.packages || decoded.packages } as Trainer
+      }
     }
     return { data, error }
   }
@@ -118,12 +151,21 @@ export const useAdminStore = defineStore('admin', () => {
       oldVal = { ...trainers.value[idx] }
       trainers.value[idx] = { ...trainers.value[idx], ...updates }
     }
-    const { data, error } = await supabase.from('trainers').update(updates).eq('id', id).select().single()
+    const dbPayload: any = { ...updates }
+    if (updates.philosophy !== undefined || updates.packages !== undefined) {
+      const currentPhil = updates.philosophy !== undefined ? updates.philosophy : (oldVal?.philosophy || '')
+      const currentPkgs = updates.packages !== undefined ? updates.packages : (oldVal?.packages || [])
+      dbPayload.philosophy = encodeTrainerPhilosophy(currentPhil, currentPkgs)
+    }
+    delete dbPayload.packages
+
+    const { data, error } = await supabase.from('trainers').update(dbPayload).eq('id', id).select().single()
     if (error) {
       if (idx !== -1 && oldVal) trainers.value[idx] = oldVal
       console.error('updateTrainer db error:', error)
     } else if (data && idx !== -1) {
-      trainers.value[idx] = data as Trainer
+      const decoded = decodeTrainerPhilosophy(data.philosophy)
+      trainers.value[idx] = { ...data, philosophy: decoded.text, packages: updates.packages || decoded.packages } as Trainer
     }
     return { data, error }
   }
@@ -144,13 +186,22 @@ export const useAdminStore = defineStore('admin', () => {
   // =====================
   async function addClass(kelas: Omit<GymClass, 'created_at'>) {
     classes.value.push(kelas as GymClass)
-    const { data, error } = await supabase.from('classes').insert(kelas).select().single()
+    const dbPayload: any = {
+      ...kelas,
+      desc_en: encodePhotoDesc(kelas.photo, kelas.desc_en)
+    }
+    delete dbPayload.photo
+
+    const { data, error } = await supabase.from('classes').insert(dbPayload).select().single()
     if (error) {
       classes.value = classes.value.filter(c => c.id !== kelas.id)
       console.error('addClass db error:', error)
     } else if (data) {
       const idx = classes.value.findIndex(c => c.id === kelas.id)
-      if (idx !== -1) classes.value[idx] = data as GymClass
+      if (idx !== -1) {
+        const decoded = decodePhotoDesc(data.desc_en)
+        classes.value[idx] = { ...data, desc_en: decoded.desc, photo: kelas.photo || decoded.photo } as GymClass
+      }
     }
     return { data, error }
   }
@@ -162,12 +213,21 @@ export const useAdminStore = defineStore('admin', () => {
       oldVal = { ...classes.value[idx] }
       classes.value[idx] = { ...classes.value[idx], ...updates }
     }
-    const { data, error } = await supabase.from('classes').update(updates).eq('id', id).select().single()
+    const dbPayload: any = { ...updates }
+    if (updates.photo !== undefined || updates.desc_en !== undefined) {
+      const currentPhoto = updates.photo !== undefined ? updates.photo : (oldVal?.photo || '')
+      const currentDesc = updates.desc_en !== undefined ? updates.desc_en : (oldVal?.desc_en || '')
+      dbPayload.desc_en = encodePhotoDesc(currentPhoto, currentDesc)
+    }
+    delete dbPayload.photo
+
+    const { data, error } = await supabase.from('classes').update(dbPayload).eq('id', id).select().single()
     if (error) {
       if (idx !== -1 && oldVal) classes.value[idx] = oldVal
       console.error('updateClass db error:', error)
     } else if (data && idx !== -1) {
-      classes.value[idx] = data as GymClass
+      const decoded = decodePhotoDesc(data.desc_en)
+      classes.value[idx] = { ...data, desc_en: decoded.desc, photo: updates.photo !== undefined ? updates.photo : decoded.photo } as GymClass
     }
     return { data, error }
   }
@@ -264,30 +324,46 @@ export const useAdminStore = defineStore('admin', () => {
   async function addEquipmentCategory(cat: Record<string, unknown>) {
     const newCat: Equipment = { ...(cat as any), items: [] }
     equipment.value.push(newCat)
-    const { id, name_id, name_en, desc_id, desc_en, icon, price } = cat as any
-    const { data, error } = await supabase.from('equipment').insert({ id, name_id, name_en, desc_id, desc_en, icon, price }).select().single()
+    const { id, name_id, name_en, desc_id, desc_en, icon, price, photo } = cat as any
+    const encodedDesc = encodePhotoDesc(photo, desc_en || desc_id)
+    const { data, error } = await supabase.from('equipment').insert({ id, name_id, name_en, desc_id, desc_en: encodedDesc, icon, price }).select().single()
     if (error) {
       equipment.value = equipment.value.filter(e => e.id !== (cat as any).id)
       console.error('addEquipmentCategory db error:', error)
     } else if (data) {
       const idx = equipment.value.findIndex(e => e.id === (cat as any).id)
-      if (idx !== -1) equipment.value[idx] = { ...data, items: [] } as Equipment
+      if (idx !== -1) {
+        const decoded = decodePhotoDesc(data.desc_en)
+        equipment.value[idx] = { ...data, desc_en: decoded.desc, photo: photo || decoded.photo, items: [] } as Equipment
+      }
     }
     return { data, error }
   }
 
   async function updateEquipmentCategory(id: string, updates: Partial<Equipment>) {
     const idx = equipment.value.findIndex(e => e.id === id)
+    let oldVal: Equipment | null = null
     if (idx !== -1) {
+      oldVal = { ...equipment.value[idx] }
       equipment.value[idx] = { ...equipment.value[idx], ...updates }
     }
-    const { name_id, name_en, price } = updates as any
+    const { name_id, name_en, price, photo } = updates as any
     const payload: Record<string, unknown> = {}
     if (name_id !== undefined) { payload.name_id = name_id; payload.name_en = name_en ?? name_id }
     if (price !== undefined) payload.price = price
+    if (photo !== undefined || updates.desc_en !== undefined) {
+      const currentPhoto = photo !== undefined ? photo : (oldVal?.photo || '')
+      const currentDesc = updates.desc_en !== undefined ? updates.desc_en : (oldVal?.desc_en || oldVal?.desc_id || '')
+      payload.desc_en = encodePhotoDesc(currentPhoto, currentDesc)
+    }
+
     const { data, error } = await supabase.from('equipment').update(payload).eq('id', id).select().single()
     if (error) {
+      if (idx !== -1 && oldVal) equipment.value[idx] = oldVal
       console.error('updateEquipmentCategory db error:', error)
+    } else if (data && idx !== -1) {
+      const decoded = decodePhotoDesc(data.desc_en)
+      equipment.value[idx] = { ...equipment.value[idx], ...data, desc_en: decoded.desc, photo: photo !== undefined ? photo : decoded.photo } as Equipment
     }
     return { data, error }
   }
