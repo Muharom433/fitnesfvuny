@@ -241,32 +241,34 @@
               <div class="space-y-4">
                 <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Daftar Program Kelas</h4>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div v-for="c in adminStore.classes" :key="c.id" class="bg-white border border-slate-200 rounded-2xl p-5 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
-                    <div class="space-y-3">
-                      <!-- Class Photo Banner (If Provided) -->
-                      <div v-if="c.photo && formatImageUrl(c.photo)" class="w-full h-36 rounded-xl overflow-hidden mb-3 border border-slate-100 shadow-xs">
+                  <div v-for="c in adminStore.classes" :key="c.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md flex flex-col justify-between transition-all duration-300 group cursor-default">
+                    <div>
+                      <!-- Class Photo - Adaptive (fills width, auto height) -->
+                      <div v-if="c.photo && formatImageUrl(c.photo)" class="w-full overflow-hidden bg-slate-100">
                         <img
                           :src="formatImageUrl(c.photo)"
                           :alt="c.name_id"
-                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          class="w-full max-h-52 object-cover group-hover:scale-105 transition-transform duration-700"
                           @error="handleImgError"
                         />
                       </div>
 
-                      <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-accent-55/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
-                          <i :class="['fa-solid', c.icon || 'fa-heart-pulse']"></i>
+                      <div class="p-5 space-y-3">
+                        <div class="flex items-center gap-3">
+                          <div class="w-10 h-10 rounded-xl bg-accent-50/80 border border-accent-100 flex items-center justify-center text-accent-500 text-lg group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 flex-shrink-0">
+                            <i :class="['fa-solid', c.icon || 'fa-heart-pulse']"></i>
+                          </div>
+                          <div>
+                            <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ c.name_id }}</h5>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ c.duration }} | {{ c.level }}</span>
+                          </div>
                         </div>
-                        <div>
-                          <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ c.name_id }}</h5>
-                          <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{{ c.duration }} | {{ c.level }}</span>
-                        </div>
+                        <p v-if="c.desc_id" class="text-[11px] text-slate-600 leading-relaxed">{{ c.desc_id }}</p>
                       </div>
-                      <p class="text-[11px] text-slate-600 leading-relaxed line-clamp-3">{{ c.desc_id }}</p>
                     </div>
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center text-xs">
+                    <div class="px-5 pb-5 pt-2 border-t border-slate-100 flex justify-between items-center text-xs">
                       <span class="text-slate-400">Tarif Tambahan:</span>
-                      <span class="font-extrabold text-accent-600">Rp {{ c.price.toLocaleString('id-ID') }}</span>
+                      <span class="font-extrabold text-accent-600 bg-accent-50 px-2 py-1 rounded-lg border border-accent-100">Rp {{ c.price.toLocaleString('id-ID') }}</span>
                     </div>
                   </div>
                   <div v-if="adminStore.classes.length === 0" class="col-span-full text-center py-6 text-slate-400 text-xs">
@@ -279,33 +281,37 @@
               <div class="space-y-4 pt-6">
                 <h4 class="font-extrabold text-sm text-slate-500 uppercase tracking-wider border-l-4 border-accent-500 pl-3">Personal Trainer Terbaik Kami</h4>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  <div v-for="t in adminStore.trainers" :key="t.id" class="bg-white border border-slate-200 rounded-2xl p-5 text-center hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md transition-all duration-300 space-y-3 group flex flex-col justify-between">
-                    <div class="space-y-3">
-                      <!-- Photo / Avatar -->
-                      <div class="w-20 h-20 rounded-full bg-slate-50 mx-auto flex items-center justify-center border-2 border-accent-500 text-accent-500 text-2xl group-hover:scale-105 duration-300 transition-transform overflow-hidden shadow-md">
+                  <div v-for="t in adminStore.trainers" :key="t.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden text-center hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md transition-all duration-300 group flex flex-col justify-between cursor-default">
+                    <!-- Trainer Photo - full width adaptive -->
+                    <div>
+                      <div v-if="t.photo && formatImageUrl(t.photo)" class="w-full overflow-hidden bg-slate-100">
                         <img
-                          v-if="t.photo && formatImageUrl(t.photo)"
                           :src="formatImageUrl(t.photo)"
                           :alt="t.name"
-                          class="w-full h-full object-cover"
+                          class="w-full max-h-52 object-cover object-top group-hover:scale-105 transition-transform duration-700"
                           @error="handleImgError"
                         />
-                        <i v-else class="fa-solid fa-user-ninja"></i>
                       </div>
-                      <div>
+                      <div v-else class="w-full h-36 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                        <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center border-2 border-accent-500 text-accent-500 text-3xl shadow-md group-hover:scale-110 transition-transform duration-300">
+                          <i class="fa-solid fa-user-ninja"></i>
+                        </div>
+                      </div>
+
+                      <div class="p-5 space-y-1">
                         <h5 class="font-extrabold text-sm text-slate-800 leading-tight">{{ t.name }}</h5>
-                        <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">{{ t.specialty_id_val }}</p>
+                        <p class="text-[10px] text-accent-500 font-bold uppercase tracking-wider">{{ t.specialty_id_val }}</p>
                       </div>
                     </div>
 
                     <!-- Tariff Packages (Up to 6 Packages) -->
-                    <div class="pt-2.5 border-t border-slate-100 space-y-1.5 text-[11px]">
+                    <div class="px-5 pb-5 pt-2 border-t border-slate-100 space-y-1.5 text-[11px]">
                       <span class="text-slate-400 block text-[9px] font-extrabold uppercase tracking-wider">Tarif Pelatih</span>
                       <div v-if="t.packages && t.packages.length > 0" class="space-y-1 text-left">
                         <div
                           v-for="(pkg, pIdx) in t.packages"
                           :key="pIdx"
-                          class="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100"
+                          class="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100 hover:bg-accent-50 hover:border-accent-100 transition-colors duration-200"
                         >
                           <span class="font-bold text-slate-700 text-[10px] truncate max-w-[110px]">{{ pkg.name }}</span>
                           <span class="font-extrabold text-accent-600 text-[11px]">Rp {{ Number(pkg.price).toLocaleString('id-ID') }}</span>
@@ -349,26 +355,26 @@
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div v-for="e in adminStore.equipment" :key="e.id" class="bg-white border border-slate-200 rounded-2xl p-6 hover:border-accent-500/50 hover:shadow-xl hover:translate-y-[-6px] shadow-md flex flex-col justify-between transition-all duration-300 group">
-                  <div class="space-y-4">
-                    <!-- Equipment Photo Banner (If Provided) -->
-                    <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full h-48 rounded-xl overflow-hidden mb-4 border border-slate-100 shadow-xs">
-                      <img
-                        :src="formatImageUrl(e.photo)"
-                        :alt="e.name_id"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        @error="handleImgError"
-                      />
-                    </div>
+                <div v-for="e in adminStore.equipment" :key="e.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md flex flex-col transition-all duration-300 group cursor-default">
+                  <!-- Equipment Photo - Adaptive (fills width, auto height) -->
+                  <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full overflow-hidden bg-slate-100 flex-shrink-0">
+                    <img
+                      :src="formatImageUrl(e.photo)"
+                      :alt="e.name_id || 'Foto Alat'"
+                      class="w-full max-h-64 object-cover group-hover:scale-105 transition-transform duration-700"
+                      @error="handleImgError"
+                    />
+                  </div>
 
+                  <div class="p-6 space-y-4 flex-1">
                     <!-- Equipment Description -->
-                    <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50/70 p-3.5 rounded-xl border border-slate-100 font-medium">{{ e.desc_id }}</p>
+                    <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line font-medium">{{ e.desc_id }}</p>
 
                     <!-- Nested Equipment Items -->
                     <div v-if="e.items && e.items.length > 0" class="space-y-2">
                       <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Daftar Alat/Zona:</span>
                       <div class="flex flex-wrap gap-2">
-                        <span v-for="item in e.items" :key="item.id" class="bg-slate-50 text-slate-700 border border-slate-200 rounded-lg px-2.5 py-1 text-[10px] font-semibold flex items-center gap-1.5 hover:border-accent-500/40 duration-300">
+                        <span v-for="item in e.items" :key="item.id" class="bg-slate-50 text-slate-700 border border-slate-200 rounded-lg px-2.5 py-1 text-[10px] font-semibold flex items-center gap-1.5 hover:bg-accent-50 hover:border-accent-200 hover:text-accent-700 transition-all duration-200">
                           <i :class="['fa-solid text-accent-500', item.icon || 'fa-circle-dot']"></i>
                           {{ item.name_id }}
                         </span>
@@ -581,6 +587,25 @@ function handleImgError(e: Event) {
   if (target) target.style.display = 'none'
 }
 
+// Scroll reveal animation using IntersectionObserver
+function initScrollReveal() {
+  const cards = document.querySelectorAll('.reveal-card')
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            ;(entry.target as HTMLElement).classList.add('revealed')
+          }, i * 80)
+          observer.unobserve(entry.target)
+        }
+      })
+    },
+    { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+  )
+  cards.forEach(el => observer.observe(el))
+}
+
 const router = useRouter()
 const auth = useAuthStore()
 const adminStore = useAdminStore()
@@ -599,7 +624,9 @@ const bookingCount = ref('—')
 onMounted(async () => {
   try {
     // Fetch all store configurations (pricing, classes, trainers, equipment)
-    adminStore.fetchAll()
+    await adminStore.fetchAll()
+    // Init scroll reveal after data is loaded
+    setTimeout(() => initScrollReveal(), 300)
 
     // Count unique members from users table with role 'member' and bookings table with category 'Member'
     const [usersRes, bookingsRes] = await Promise.all([
@@ -626,6 +653,8 @@ onMounted(async () => {
       .select('*', { count: 'exact', head: true })
 
     bookingCount.value = count !== null ? `${count}` : '0'
+    // Re-observe after all data loaded
+    setTimeout(() => initScrollReveal(), 600)
   } catch {
     memberCount.value = '0'
     bookingCount.value = '0'
@@ -739,5 +768,26 @@ async function handleLogin() {
 }
 .divider-icon {
   transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+}
+
+/* ===== Scroll Reveal Animations ===== */
+.reveal-card {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-card.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Section headings fade in from left */
+section h3 {
+  opacity: 0;
+  animation: fadeSlideUp 0.7s 0.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+section p {
+  opacity: 0;
+  animation: fadeSlideUp 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 </style>
