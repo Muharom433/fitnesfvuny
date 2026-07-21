@@ -388,7 +388,7 @@
         <!-- Footer -->
         <footer class="bg-white border-t border-slate-200 py-16 shadow-inner text-slate-700">
           <div class="max-w-6xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
               
               <!-- Column 1: Brand Info -->
               <div class="space-y-4 text-left">
@@ -426,6 +426,37 @@
                   <li>
                     <a href="#facility-info" class="hover:text-accent-500 transition-colors flex items-center gap-2">
                       <i class="fa-solid fa-chevron-right text-[8px] text-slate-350"></i> Fasilitas Latihan
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Column 3: Lokasi -->
+              <div class="space-y-4 text-left">
+                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Lokasi</h4>
+                <ul class="space-y-3 text-xs text-slate-500 font-semibold">
+                  <li class="flex items-start gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 text-xs mt-0.5">
+                      <i class="fa-solid fa-map-location-dot"></i>
+                    </span>
+                    <a href="https://maps.app.goo.gl/LGrWhwmiHJVB6VcJ6" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors leading-tight">
+                      Vokasi UNY Wates <br />
+                      <span class="text-[10px] text-slate-400 font-medium">Lihat Google Maps</span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Column 4: Media Sosial -->
+              <div class="space-y-4 text-left">
+                <h4 class="text-primary-900 font-bold text-xs uppercase tracking-wider">Media Sosial</h4>
+                <ul class="space-y-2.5 text-xs text-slate-500 font-semibold">
+                  <li class="flex items-center gap-3">
+                    <span class="w-7 h-7 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 text-xs">
+                      <i class="fa-brands fa-instagram"></i>
+                    </span>
+                    <a href="https://www.instagram.com/fvuny.fitnesscenter?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="hover:text-accent-500 transition-colors">
+                      @fvuny.fitnesscenter
                     </a>
                   </li>
                 </ul>
