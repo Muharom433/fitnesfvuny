@@ -135,15 +135,26 @@
               </div>
             </div>
 
-            <div class="space-y-1.5">
-              <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Harga/Sesi Standar (Rp)</label>
-              <input
-                v-model.number="form.price"
-                type="number"
-                placeholder="100000"
-                required
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="space-y-1.5">
+                <label class="text-[11px] font-bold text-slate-700 uppercase tracking-wider block">Harga/Sesi Standar (Rp)</label>
+                <input
+                  v-model.number="form.price"
+                  type="number"
+                  placeholder="100000"
+                  required
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all font-bold"
+                />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Harga Coret Standar (Rp, Opsional)</label>
+                <input
+                  v-model.number="form.original_price"
+                  type="number"
+                  placeholder="150000"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-500 line-through focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
+                />
+              </div>
             </div>
 
             <!-- Dynamic 6 Tariff Packages Section -->
@@ -163,13 +174,13 @@
                 </button>
               </div>
 
-              <div class="space-y-2 max-h-56 overflow-y-auto pr-1">
+              <div class="space-y-2 max-h-60 overflow-y-auto pr-1">
                 <div
                   v-for="(pkg, idx) in form.packages"
                   :key="idx"
-                  class="flex items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200"
+                  class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200"
                 >
-                  <span class="text-[10px] font-extrabold text-slate-400 w-5 text-center">{{ idx + 1 }}</span>
+                  <span class="text-[10px] font-extrabold text-slate-400 w-4 text-center hidden sm:block">{{ idx + 1 }}</span>
                   <input
                     v-model="pkg.name"
                     type="text"
@@ -177,20 +188,29 @@
                     required
                     class="flex-1 px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-primary-900 bg-white focus:outline-none focus:ring-1 focus:ring-accent-500"
                   />
-                  <div class="relative w-36">
+                  <div class="relative w-full sm:w-28" title="Harga Bayar / Promo">
                     <span class="absolute left-2.5 top-1.5 text-xs text-slate-400 font-bold">Rp</span>
                     <input
                       v-model.number="pkg.price"
                       type="number"
-                      placeholder="100000"
+                      placeholder="Bayar"
                       required
                       class="w-full pl-8 pr-2 py-1.5 rounded-lg border border-slate-200 text-xs text-primary-900 bg-white focus:outline-none focus:ring-1 focus:ring-accent-500 font-bold"
+                    />
+                  </div>
+                  <div class="relative w-full sm:w-28" title="Harga Asli / Sebelum Diskon (Coretan, Opsional)">
+                    <span class="absolute left-2.5 top-1.5 text-xs text-slate-400 font-bold">Rp</span>
+                    <input
+                      v-model.number="pkg.original_price"
+                      type="number"
+                      placeholder="Coret (Opt)"
+                      class="w-full pl-8 pr-2 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-500 bg-white focus:outline-none focus:ring-1 focus:ring-accent-500 line-through"
                     />
                   </div>
                   <button
                     type="button"
                     @click="removePackage(idx)"
-                    class="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                    class="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors text-right sm:text-center"
                     title="Hapus Paket"
                   >
                     <i class="fa-solid fa-trash text-xs"></i>
@@ -241,13 +261,14 @@ const form = reactive<{
   philosophy: string
   photo: string
   price: number
+  original_price: number | null
   quota_filled: number
   quota_max: number
   packages: TrainerPackage[]
 }>({
   id: '', name: '', specialty_id: '', specialty_id_val: '', specialty_en: '',
   bio_id: '', bio_en: '', philosophy: '', photo: '',
-  price: 0, quota_filled: 0, quota_max: 10,
+  price: 0, original_price: null, quota_filled: 0, quota_max: 10,
   packages: []
 })
 
@@ -263,7 +284,8 @@ function addPackage() {
     const nextNum = form.packages.length + 1
     form.packages.push({
       name: `${nextNum} Sesi`,
-      price: form.price > 0 ? form.price * nextNum : 100000
+      price: form.price > 0 ? form.price * nextNum : 100000,
+      original_price: null
     })
   } else {
     toast.warning('Maksimal 6 paket tarif.')
@@ -279,7 +301,7 @@ function openAdd() {
   Object.assign(form, {
     id: '', name: '', specialty_id: '', specialty_id_val: '', specialty_en: '',
     bio_id: '', bio_en: '', philosophy: '', photo: '',
-    price: 100000, quota_filled: 0, quota_max: 10,
+    price: 100000, original_price: null, quota_filled: 0, quota_max: 10,
     packages: []
   })
   showModal.value = true
@@ -290,7 +312,10 @@ function openEdit(t: Trainer) {
   Object.assign(form, {
     ...t,
     photo: t.photo || '',
-    packages: t.packages && t.packages.length > 0 ? JSON.parse(JSON.stringify(t.packages)) : []
+    original_price: t.original_price != null ? t.original_price : null,
+    packages: t.packages && t.packages.length > 0
+      ? t.packages.map(p => ({ name: p.name, price: p.price, original_price: p.original_price != null ? p.original_price : null }))
+      : []
   })
   showModal.value = true
 }
@@ -315,7 +340,12 @@ async function saveTrainer() {
     const finalPayload = {
       ...payload,
       price: Number(payload.price),
-      packages: payload.packages.slice(0, 6)
+      original_price: payload.original_price ? Number(payload.original_price) : null,
+      packages: payload.packages.slice(0, 6).map(p => ({
+        name: p.name,
+        price: Number(p.price) || 0,
+        original_price: p.original_price ? Number(p.original_price) : null
+      }))
     }
 
     let result

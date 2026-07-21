@@ -268,7 +268,12 @@
                     </div>
                     <div class="px-5 pb-5 pt-2 border-t border-slate-100 flex justify-between items-center text-xs">
                       <span class="text-slate-400">Tarif Tambahan:</span>
-                      <span class="font-extrabold text-accent-600 bg-accent-50 px-2 py-1 rounded-lg border border-accent-100">Rp {{ c.price.toLocaleString('id-ID') }}</span>
+                      <div class="flex items-center gap-1.5">
+                        <span v-if="c.original_price && Number(c.original_price) > Number(c.price)" class="line-through text-slate-400 text-[10px] font-semibold">
+                          Rp {{ Number(c.original_price).toLocaleString('id-ID') }}
+                        </span>
+                        <span class="font-extrabold text-accent-600 bg-accent-50 px-2 py-1 rounded-lg border border-accent-100">Rp {{ c.price.toLocaleString('id-ID') }}</span>
+                      </div>
                     </div>
                   </div>
                   <div v-if="adminStore.classes.length === 0" class="col-span-full text-center py-6 text-slate-400 text-xs">
@@ -313,11 +318,19 @@
                           :key="pIdx"
                           class="flex justify-between items-center bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100 hover:bg-accent-50 hover:border-accent-100 transition-colors duration-200"
                         >
-                          <span class="font-bold text-slate-700 text-[10px] truncate max-w-[110px]">{{ pkg.name }}</span>
-                          <span class="font-extrabold text-accent-600 text-[11px]">Rp {{ Number(pkg.price).toLocaleString('id-ID') }}</span>
+                          <span class="font-bold text-slate-700 text-[10px] truncate max-w-[90px]">{{ pkg.name }}</span>
+                          <div class="text-right flex items-center gap-1.5">
+                            <span v-if="pkg.original_price && Number(pkg.original_price) > Number(pkg.price)" class="line-through text-slate-400 text-[9px] font-semibold">
+                              Rp {{ Number(pkg.original_price).toLocaleString('id-ID') }}
+                            </span>
+                            <span class="font-extrabold text-accent-600 text-[11px]">Rp {{ Number(pkg.price).toLocaleString('id-ID') }}</span>
+                          </div>
                         </div>
                       </div>
-                      <div v-else>
+                      <div v-else class="flex items-center justify-center gap-1.5">
+                        <span v-if="t.original_price && Number(t.original_price) > Number(t.price)" class="line-through text-slate-400 text-[10px] font-semibold">
+                          Rp {{ Number(t.original_price).toLocaleString('id-ID') }}
+                        </span>
                         <span class="font-extrabold text-accent-600">Rp {{ Number(t.price).toLocaleString('id-ID') }} / sesi</span>
                       </div>
                     </div>

@@ -22,6 +22,7 @@ export interface Booking {
 export interface TrainerPackage {
   name: string
   price: number
+  original_price?: number | null
 }
 
 export interface Trainer {
@@ -37,6 +38,7 @@ export interface Trainer {
   photo: string
   philosophy: string
   price: number
+  original_price?: number | null
   packages?: TrainerPackage[]
   created_at?: string
 }
@@ -51,6 +53,7 @@ export interface GymClass {
   desc_en: string
   icon: string
   price: number
+  original_price?: number | null
   photo?: string
   created_at?: string
 }

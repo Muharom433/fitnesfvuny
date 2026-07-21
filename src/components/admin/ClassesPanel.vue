@@ -52,10 +52,17 @@
                 </div>
               </div>
 
-              <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tarif Tambahan Kelas (Rp)</label>
-                <input v-model.number="form.price" type="number" placeholder="50000" required
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="space-y-1.5">
+                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tarif Tambahan (Rp)</label>
+                  <input v-model.number="form.price" type="number" placeholder="50000" required
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all font-bold" />
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Harga Coret (Rp, Opsional)</label>
+                  <input v-model.number="form.original_price" type="number" placeholder="75000"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-500 line-through focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
+                </div>
               </div>
 
               <div class="flex gap-3 pt-2">
@@ -94,7 +101,7 @@ const columns = [
 ]
 
 const form = reactive<Partial<GymClass>>({
-  id: '', name_id: '', name_en: '', duration: '45 Menit', level: 'Semua Level', icon: '', price: 0, desc_id: '', desc_en: '', photo: ''
+  id: '', name_id: '', name_en: '', duration: '45 Menit', level: 'Semua Level', icon: '', price: 0, original_price: null, desc_id: '', desc_en: '', photo: ''
 })
 
 function handleImgError(e: Event) {
@@ -104,7 +111,7 @@ function handleImgError(e: Event) {
 
 function openAdd() {
   editing.value = null
-  Object.assign(form, { id: '', name_id: '', name_en: '', duration: '45 Menit', level: 'Semua Level', icon: '', price: 0, desc_id: '', desc_en: '', photo: '' })
+  Object.assign(form, { id: '', name_id: '', name_en: '', duration: '45 Menit', level: 'Semua Level', icon: '', price: 0, original_price: null, desc_id: '', desc_en: '', photo: '' })
   showModal.value = true
 }
 function openEdit(item: unknown) {
@@ -114,6 +121,7 @@ function openEdit(item: unknown) {
     ...kelas,
     duration: kelas.duration || '45 Menit',
     level: kelas.level || 'Semua Level',
+    original_price: kelas.original_price != null ? kelas.original_price : null,
     photo: kelas.photo || ''
   })
   showModal.value = true
@@ -135,7 +143,11 @@ async function save() {
     payload.desc_id = `Kelas ${payload.name_id} di Fitness Center FV UNY.`
     payload.desc_en = payload.desc_id
 
-    const finalPayload = { ...payload, price: Number(payload.price) } as GymClass
+    const finalPayload = {
+      ...payload,
+      price: Number(payload.price),
+      original_price: payload.original_price ? Number(payload.original_price) : null
+    } as GymClass
 
     const result = editing.value
       ? await admin.updateClass(editing.value.id, finalPayload)
