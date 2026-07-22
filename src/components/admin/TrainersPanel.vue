@@ -110,30 +110,12 @@
               />
             </div>
 
-            <!-- Photo URL Input (Bebas URL / Drive / Link direct) -->
-            <div class="space-y-1.5">
-              <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Link Foto Pelatih (JPG / PNG / Google Drive)
-              </label>
-              <input
-                v-model="form.photo"
-                type="text"
-                placeholder="https://drive.google.com/file/d/... atau https://.../foto.jpg"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
-              />
-              <p class="text-[10px] text-slate-400">Bisa diisi link Google Drive / link foto publik. Foto langsung tampil di beranda depan.</p>
-              
-              <!-- Image Preview -->
-              <div v-if="form.photo && formatImageUrl(form.photo)" class="mt-2 flex items-center gap-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                <img
-                  :src="formatImageUrl(form.photo)"
-                  alt="Preview"
-                  class="w-12 h-12 rounded-full object-cover border border-slate-200 shadow-xs"
-                  @error="handleImgError"
-                />
-                <span class="text-xs text-slate-500 font-semibold">Preview Foto Pelatih</span>
-              </div>
-            </div>
+            <!-- Photo Upload (Galeri / File) -->
+            <ImageUploader 
+              v-model="form.photo" 
+              label="Foto Pelatih (Upload dari Galeri / File)" 
+              helpText="Pilih foto pelatih dari galeri HP/komputer. Foto langsung otomatis muncul di beranda depan." 
+            />
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="space-y-1.5">
@@ -241,6 +223,7 @@ import { ref, reactive } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { Trainer, TrainerPackage } from '@/types/booking'
+import ImageUploader from '@/components/common/ImageUploader.vue'
 import { formatImageUrl } from '@/lib/imageHelper'
 
 const admin = useAdminStore()

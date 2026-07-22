@@ -29,21 +29,13 @@
         </div>
 
         <div class="space-y-4">
-          <!-- Photo URL Input -->
-          <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Link Foto Alat (Drive / PNG / JPG)</label>
-            <input
-              type="text"
-              v-model="cat.photo"
-              @blur="handleUpdateCategory(cat.id, { photo: cat.photo })"
-              placeholder="https://... (Link Foto/Drive)"
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all"
-            />
-            <div v-if="cat.photo && formatImageUrl(cat.photo)" class="mt-1 flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-              <img :src="formatImageUrl(cat.photo)" alt="Preview" class="w-12 h-9 rounded object-cover" @error="handleImgError" />
-              <span class="text-[10px] text-slate-500 font-semibold">Preview Foto Alat</span>
-            </div>
-          </div>
+          <!-- Photo Upload (Galeri / File) -->
+          <ImageUploader 
+            v-model="cat.photo" 
+            @update:model-value="handleUpdateCategory(cat.id, { photo: cat.photo })"
+            label="Foto Alat (Upload dari Galeri / File)" 
+            helpText="Foto ini akan otomatis muncul di beranda depan." 
+          />
 
           <!-- Deskripsi Alat -->
           <div class="space-y-1.5">
@@ -120,6 +112,7 @@
 import { onMounted } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
+import ImageUploader from '@/components/common/ImageUploader.vue'
 import { formatImageUrl } from '@/lib/imageHelper'
 
 const admin = useAdminStore()

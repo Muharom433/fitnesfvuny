@@ -117,27 +117,18 @@ onMounted(async () => {
   recStore.fetchProductSalesFromSupabase()
   adminStore.fetchAll()
 
-  // Realtime updates when bookings or pricing configurations are updated
+  // Realtime updates when bookings, products, transactions, or pricing configurations are updated
   realtimeChannel = supabase
     .channel('receptionist-realtime')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
-      recStore.fetchBookings()
-    })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'pricing' }, () => {
-      adminStore.fetchAll()
-    })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'trainers' }, () => {
-      adminStore.fetchAll()
-    })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, () => {
-      adminStore.fetchAll()
-    })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'equipment' }, () => {
-      adminStore.fetchAll()
-    })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
-      adminStore.fetchAll()
-    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => recStore.fetchBookings())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'pricing' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'trainers' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'equipment' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'kasir_transactions' }, () => recStore.fetchTransactionsFromSupabase())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'product_sales' }, () => recStore.fetchProductSalesFromSupabase())
     .subscribe()
 })
 

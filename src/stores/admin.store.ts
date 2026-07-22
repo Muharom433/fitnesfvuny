@@ -79,7 +79,7 @@ export const useAdminStore = defineStore('admin', () => {
           const tPrice = trainers.value.find(t => t.name === dbRow.trainer)?.price || 0
           const cPrice = classes.value.find(c => c.name_id === dbRow.kelas)?.price || 0
           const ePrice = equipment.value.find(e => e.name_id === dbRow.alat)?.price || 0
-          const estimated_price = Number(tPrice) + Number(cPrice) + Number(ePrice) + basePrice
+          const estimated_price = Number(tPrice) + Number(cPrice) + Number(ePrice)
 
           return {
             id: dbRow.id,

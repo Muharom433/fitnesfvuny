@@ -128,15 +128,18 @@ let realtimeChannel: any = null
 onMounted(() => {
   adminStore.fetchAll()
 
-  // Setup Supabase Realtime channel for bookings and users
+  // Setup Supabase Realtime channel for all relevant tables
   realtimeChannel = supabase
     .channel('admin-realtime')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
-      adminStore.fetchAll()
-    })
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => {
-      adminStore.fetchAll()
-    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'trainers' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'classes' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'equipment' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'pricing' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'kasir_transactions' }, () => adminStore.fetchAll())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'product_sales' }, () => adminStore.fetchAll())
     .subscribe()
 })
 
