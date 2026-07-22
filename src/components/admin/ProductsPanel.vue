@@ -18,13 +18,6 @@
               </button>
             </div>
             <form @submit.prevent="save" class="p-6 space-y-4">
-              <!-- Foto Produk (Upload dari Galeri) -->
-              <ImageUploader 
-                v-model="form.image"
-                label="Foto Produk (Upload dari Galeri / File)"
-                helpText="Pilih foto produk dari galeri HP/komputer."
-              />
-
               <div class="space-y-1.5">
                 <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Produk</label>
                 <input v-model="form.name_id" type="text" placeholder="Suplemen Protein" required
@@ -104,7 +97,6 @@ import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { Product } from '@/types/booking'
 import CrudPanel from './shared/CrudPanel.vue'
-import ImageUploader from '@/components/common/ImageUploader.vue'
 
 const admin = useAdminStore()
 const toast = useToast()
