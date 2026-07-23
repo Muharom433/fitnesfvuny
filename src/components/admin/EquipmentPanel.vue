@@ -32,6 +32,7 @@
           <!-- Photo Upload (Galeri / File) -->
           <ImageUploader 
             v-model="cat.photo" 
+            :aspectRatio="1.5"
             @update:model-value="handleUpdateCategory(cat.id, { photo: cat.photo })"
             label="Foto Alat (Upload dari Galeri / File)" 
             helpText="Foto ini akan otomatis muncul di beranda depan." 

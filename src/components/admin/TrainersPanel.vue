@@ -113,6 +113,7 @@
             <!-- Photo Upload (Galeri / File) -->
             <ImageUploader 
               v-model="form.photo" 
+              :aspectRatio="0.75"
               label="Foto Pelatih (Upload dari Galeri / File)" 
               helpText="Pilih foto pelatih dari galeri HP/komputer. Foto langsung otomatis muncul di beranda depan." 
             />
