@@ -120,7 +120,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-700 uppercase tracking-wider block min-h-[32px] flex items-end pb-1">Harga/Sesi Standar (Rp)</label>
+                <label class="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex min-h-[34px] items-end pb-1">Harga/Sesi Standar (Rp)</label>
                 <input
                   v-model.number="form.price"
                   type="number"
@@ -130,7 +130,7 @@
                 />
               </div>
               <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block min-h-[32px] flex items-end pb-1">Harga Coret Standar (Rp, Opsional)</label>
+                <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex min-h-[34px] items-end pb-1">Harga Coret Standar (Rp, Opsional)</label>
                 <input
                   v-model.number="form.original_price"
                   type="number"

@@ -48,12 +48,12 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div class="space-y-1.5">
-                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block min-h-[32px] flex items-end pb-1">Tarif Tambahan (Rp)</label>
+                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex min-h-[34px] items-end pb-1">Tarif Tambahan (Rp)</label>
                   <input v-model.number="form.price" type="number" placeholder="50000" required
                     class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all font-bold" />
                 </div>
                 <div class="space-y-1.5">
-                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block min-h-[32px] flex items-end pb-1">Harga Coret (Rp, Opsional)</label>
+                  <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex min-h-[34px] items-end pb-1">Harga Coret (Rp, Opsional)</label>
                   <input v-model.number="form.original_price" type="number" placeholder="75000"
                     class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-500 line-through focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all" />
                 </div>
