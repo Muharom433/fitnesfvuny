@@ -50,25 +50,13 @@
               <p class="text-slate-600 text-[10px] font-extrabold uppercase tracking-[2px] ml-1">Layanan Informasi</p>
             </div>
 
-            <!-- 4 Styled Info Cards (Membership, Intensitas, Program, Fasilitas) -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <!-- 2 Styled Info Cards (Membership, Fasilitas) -->
+            <div class="grid grid-cols-2 gap-4">
               <!-- Card 1: Membership -->
               <a href="#membership-info" class="stat-card anim-stat1 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
                 <i class="fa-solid fa-id-card-clip text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
                 <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Membership</p>
                 <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">{{ memberCount }} Member Aktif</p>
-              </a>
-              <!-- Card 2: Intensitas (Keramaian) -->
-              <a href="#intensity-info" class="stat-card anim-stat2 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
-                <i class="fa-solid fa-chart-simple text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
-                <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Intensitas</p>
-                <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">{{ bookingCount }} Booking</p>
-              </a>
-              <!-- Card 3: Program -->
-              <a href="#program-info" class="stat-card anim-stat3 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
-                <i class="fa-solid fa-calendar-days text-accent-500 text-lg block mb-1.5 group-hover:text-white transition-colors duration-300"></i>
-                <p class="text-slate-800 font-extrabold text-sm uppercase tracking-wide group-hover:text-white transition-colors duration-300">Program</p>
-                <p class="text-slate-500 text-[10px] font-bold mt-1 uppercase group-hover:text-white/90 transition-colors duration-300">Kelas & PT</p>
               </a>
               <!-- Card 4: Fasilitas -->
               <a href="#facility-info" class="stat-card anim-stat4 bg-slate-100/60 border border-slate-200 rounded-xl px-4 py-3 text-center hover:bg-accent-500 hover:border-accent-500 hover:shadow-lg hover:shadow-accent-500/20 hover:scale-105 active:scale-95 duration-300 transition-all block group shadow-sm">
