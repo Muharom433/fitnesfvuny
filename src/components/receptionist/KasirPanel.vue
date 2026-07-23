@@ -76,8 +76,8 @@
           <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Pilih Paket Alat (Opsional)</label>
           <select v-model="form.equipmentId" class="input-field">
             <option value="">Standard Access (Free)</option>
-            <option v-for="(e, eIdx) in adminStore.equipment" :key="e.id" :value="e.id">
-              Paket Alat #{{ eIdx + 1 }}{{ e.price > 0 ? ` (+Rp ${e.price.toLocaleString('id-ID')})` : '' }}
+            <option v-for="e in adminStore.equipment" :key="e.id" :value="e.id">
+              {{ e.name_id }}{{ e.price > 0 ? ` (+Rp ${e.price.toLocaleString('id-ID')})` : '' }}
             </option>
           </select>
         </div>
@@ -753,8 +753,7 @@ async function submitKasir() {
   // Resolve trainer, class, equipment labels
   const selectedTrainer = adminStore.trainers.find(t => t.id === form.trainerId)?.name || ''
   const selectedClass = adminStore.classes.find(c => c.id === form.classId)?.name_id || ''
-  const equipIdx = adminStore.equipment.findIndex(e => e.id === form.equipmentId)
-  const selectedEquipment = equipIdx >= 0 ? `Paket Alat #${equipIdx + 1}` : ''
+  const selectedEquipment = adminStore.equipment.find(e => e.id === form.equipmentId)?.name_id || ''
 
   const finalMethod = form.paymentMethod === 'Transfer Bank' && form.selectedBank
     ? `Transfer Bank - ${form.selectedBank}`
