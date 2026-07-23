@@ -25,20 +25,38 @@
       />
 
       <!-- Has Selected Image Preview -->
-      <div v-if="modelValue && formatImageUrl(modelValue)" class="relative bg-slate-50 border-2 border-dashed border-accent-200 rounded-xl p-3 flex items-center justify-between gap-3 group">
-        <div class="flex items-center gap-3 min-w-0">
+      <div v-if="modelValue && formatImageUrl(modelValue)" class="relative bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center justify-between gap-3 group">
+        <div class="flex items-center gap-3.5 min-w-0">
           <img 
             :src="formatImageUrl(modelValue)" 
             alt="Preview" 
-            class="w-16 h-16 rounded-lg object-cover border border-slate-200 shadow-xs flex-shrink-0 bg-white" 
+            :class="['w-16 h-16 rounded-lg object-cover border border-slate-200 shadow-xs flex-shrink-0 bg-white transition-all duration-300', getImagePositionClass(modelValue)]"
             @error="handleImgError"
           />
           <div class="min-w-0">
-            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-250">
               <i class="fa-solid fa-check text-[9px]"></i> Foto Siap
             </span>
-            <p class="text-xs font-semibold text-slate-700 truncate mt-1">Foto Berhasil Dipilih</p>
-            <p class="text-[10px] text-slate-400">Foto ini akan otomatis muncul di halaman utama.</p>
+            <p class="text-xs font-bold text-slate-700 truncate mt-1">Foto Berhasil Dipilih</p>
+            <div class="mt-1.5 flex flex-col gap-1">
+              <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Posisi Fokus Tampilan:</span>
+              <div class="flex gap-1.5">
+                <button
+                  v-for="pos in ['top', 'center', 'bottom']"
+                  :key="pos"
+                  type="button"
+                  @click="setPosition(pos)"
+                  :class="[
+                    'px-2 py-1 text-[9px] font-bold rounded-lg border transition-all active:scale-[0.98]',
+                    currentPosition === pos
+                      ? 'bg-accent-500 text-white border-accent-500 shadow-2xs'
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  ]"
+                >
+                  {{ pos === 'top' ? 'Atas' : pos === 'bottom' ? 'Bawah' : 'Tengah' }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -101,8 +119,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { formatImageUrl } from '@/lib/imageHelper'
+import { ref, computed } from 'vue'
+import { formatImageUrl, getImagePositionClass, cleanImageUrl } from '@/lib/imageHelper'
 
 const props = withDefaults(defineProps<{
   modelValue?: string
@@ -117,6 +135,19 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
 }>()
+
+const currentPosition = computed(() => {
+  if (!props.modelValue) return 'center'
+  if (props.modelValue.startsWith('[POS:top]:')) return 'top'
+  if (props.modelValue.startsWith('[POS:bottom]:')) return 'bottom'
+  return 'center'
+})
+
+function setPosition(pos: string) {
+  const clean = cleanImageUrl(props.modelValue)
+  if (!clean) return
+  emit('update:modelValue', `[POS:${pos}]:${clean}`)
+}
 
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const showUrlInput = ref(false)

@@ -244,11 +244,11 @@
                   <div v-for="c in adminStore.classes" :key="c.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md flex flex-col justify-between transition-all duration-300 group cursor-default">
                     <div>
                       <!-- Class Photo - Adaptive (fills width, auto height) -->
-                      <div v-if="c.photo && formatImageUrl(c.photo)" class="w-full overflow-hidden bg-slate-100">
+                      <div v-if="c.photo && formatImageUrl(c.photo)" class="w-full overflow-hidden bg-slate-100 image-container-shine flex-shrink-0">
                         <img
                           :src="formatImageUrl(c.photo)"
                           :alt="c.name_id"
-                          class="w-full max-h-52 object-cover group-hover:scale-105 transition-transform duration-700"
+                          :class="['w-full max-h-52 object-cover group-hover:scale-108 transition-transform duration-700', getImagePositionClass(c.photo)]"
                           @error="handleImgError"
                         />
                       </div>
@@ -289,11 +289,11 @@
                   <div v-for="t in adminStore.trainers" :key="t.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden text-center hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md transition-all duration-300 group flex flex-col justify-between cursor-default">
                     <!-- Trainer Photo - full width adaptive -->
                     <div>
-                      <div v-if="t.photo && formatImageUrl(t.photo)" class="w-full overflow-hidden bg-slate-100">
+                      <div v-if="t.photo && formatImageUrl(t.photo)" class="w-full overflow-hidden bg-slate-100 image-container-shine">
                         <img
                           :src="formatImageUrl(t.photo)"
                           :alt="t.name"
-                          class="w-full max-h-52 object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                          :class="['w-full max-h-52 object-cover group-hover:scale-108 transition-transform duration-700', getImagePositionClass(t.photo)]"
                           @error="handleImgError"
                         />
                       </div>
@@ -379,24 +379,45 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div v-for="e in adminStore.equipment" :key="e.id" class="reveal-card bg-white border border-slate-200 rounded-2xl overflow-hidden hover:border-accent-500/50 hover:shadow-2xl hover:translate-y-[-8px] shadow-md flex flex-col transition-all duration-300 group cursor-default">
                   <!-- Equipment Photo - Adaptive (fills width, auto height) -->
-                  <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full overflow-hidden bg-slate-100 flex-shrink-0">
+                  <div v-if="e.photo && formatImageUrl(e.photo)" class="w-full overflow-hidden bg-slate-100 flex-shrink-0 image-container-shine">
                     <img
                       :src="formatImageUrl(e.photo)"
                       :alt="e.name_id || 'Foto Alat'"
-                      class="w-full max-h-64 object-cover group-hover:scale-105 transition-transform duration-700"
+                      :class="['w-full max-h-64 object-cover group-hover:scale-108 transition-transform duration-700', getImagePositionClass(e.photo)]"
                       @error="handleImgError"
                     />
                   </div>
 
-                  <div class="p-6 space-y-4 flex-1">
-                    <!-- Equipment Description -->
-                    <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line font-medium">{{ e.desc_id }}</p>
+                  <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
+                    <div class="space-y-3.5">
+                      <!-- Title and Price Header -->
+                      <div class="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-2.5">
+                          <div class="w-9 h-9 rounded-xl bg-accent-50 text-accent-500 border border-accent-100 flex items-center justify-center text-base group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 flex-shrink-0">
+                            <i :class="['fa-solid', e.icon || 'fa-dumbbell']"></i>
+                          </div>
+                          <div>
+                            <h4 class="font-extrabold text-sm text-slate-800 leading-tight group-hover:text-accent-600 transition-colors">{{ e.name_id }}</h4>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Zona Latihan</span>
+                          </div>
+                        </div>
+                        <span v-if="e.price" class="text-[10px] text-accent-600 font-extrabold bg-accent-50 px-2.5 py-1 rounded-lg border border-accent-100 flex-shrink-0">
+                          Rp {{ Number(e.price).toLocaleString('id-ID') }} <span class="text-[8px] text-slate-450 font-medium">/sesi</span>
+                        </span>
+                      </div>
+
+                      <!-- Premium Styled Description -->
+                      <p v-if="e.desc_id" class="text-xs text-slate-600 leading-relaxed whitespace-pre-line font-semibold bg-slate-50/50 p-3.5 rounded-xl border border-slate-100/80 italic relative">
+                        <i class="fa-solid fa-quote-left text-[9px] text-accent-300 mr-1.5"></i>
+                        {{ e.desc_id }}
+                      </p>
+                    </div>
 
                     <!-- Nested Equipment Items -->
-                    <div v-if="e.items && e.items.length > 0" class="space-y-2">
-                      <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Daftar Alat/Zona:</span>
-                      <div class="flex flex-wrap gap-2">
-                        <span v-for="item in e.items" :key="item.id" class="bg-slate-50 text-slate-700 border border-slate-200 rounded-lg px-2.5 py-1 text-[10px] font-semibold flex items-center gap-1.5 hover:bg-accent-50 hover:border-accent-200 hover:text-accent-700 transition-all duration-200">
+                    <div v-if="e.items && e.items.length > 0" class="space-y-2.5 pt-2">
+                      <span class="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Peralatan Tersedia ({{ e.items.length }}):</span>
+                      <div class="flex flex-wrap gap-1.5">
+                        <span v-for="item in e.items" :key="item.id" class="bg-slate-50 text-slate-700 border border-slate-200/60 rounded-lg px-2.5 py-1.5 text-[10px] font-bold flex items-center gap-1.5 hover:bg-accent-500 hover:border-accent-500 hover:text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xs cursor-default">
                           <i :class="['fa-solid text-accent-500', item.icon || 'fa-circle-dot']"></i>
                           {{ item.name_id }}
                         </span>
@@ -602,7 +623,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import { supabase } from '@/lib/supabase'
-import { formatImageUrl } from '@/lib/imageHelper'
+import { formatImageUrl, getImagePositionClass } from '@/lib/imageHelper'
 
 function handleImgError(e: Event) {
   const target = e.target as HTMLImageElement

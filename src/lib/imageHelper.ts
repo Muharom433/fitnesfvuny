@@ -1,6 +1,35 @@
-export function formatImageUrl(url: string | null | undefined): string {
-  if (!url || !url.trim()) return ''
+export function cleanImageUrl(url: string | null | undefined): string {
+  if (!url) return ''
   const trimmed = url.trim()
+  if (trimmed.startsWith('[POS:')) {
+    const endIdx = trimmed.indexOf(']:')
+    if (endIdx !== -1) {
+      return trimmed.slice(endIdx + 2)
+    }
+  }
+  return trimmed
+}
+
+export function getImagePositionClass(url: string | null | undefined): string {
+  if (!url) return 'object-center'
+  const trimmed = url.trim()
+  if (trimmed.startsWith('[POS:')) {
+    const endIdx = trimmed.indexOf(']:')
+    if (endIdx !== -1) {
+      const pos = trimmed.slice(5, endIdx) // 'top', 'bottom', 'center' etc.
+      if (pos === 'top') return 'object-top'
+      if (pos === 'bottom') return 'object-bottom'
+      if (pos === 'left') return 'object-left'
+      if (pos === 'right') return 'object-right'
+    }
+  }
+  return 'object-center'
+}
+
+export function formatImageUrl(url: string | null | undefined): string {
+  const cleaned = cleanImageUrl(url)
+  if (!cleaned || !cleaned.trim()) return ''
+  const trimmed = cleaned.trim()
 
   // Google Drive file ID pattern 1: /file/d/FILE_ID/view
   const match1 = trimmed.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)

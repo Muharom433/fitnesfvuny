@@ -29,7 +29,7 @@
                 v-if="t.photo && formatImageUrl(t.photo)"
                 :src="formatImageUrl(t.photo)"
                 :alt="t.name"
-                class="w-full h-full object-cover"
+                :class="['w-full h-full object-cover', getImagePositionClass(t.photo)]"
                 @error="handleImgError"
               />
               <i v-else class="fa-solid fa-user-ninja text-accent-500"></i>
@@ -224,7 +224,7 @@ import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { Trainer, TrainerPackage } from '@/types/booking'
 import ImageUploader from '@/components/common/ImageUploader.vue'
-import { formatImageUrl } from '@/lib/imageHelper'
+import { formatImageUrl, getImagePositionClass } from '@/lib/imageHelper'
 
 const admin = useAdminStore()
 const toast = useToast()
