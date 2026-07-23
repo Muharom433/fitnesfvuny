@@ -37,7 +37,7 @@
             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-250">
               <i class="fa-solid fa-check text-[9px]"></i> Foto Siap
             </span>
-            <p class="text-xs font-bold text-slate-700 truncate mt-1">Foto Berhasil Dipilih</p>
+            <p class="text-xs font-bold text-slate-700 mt-1">Foto Berhasil Dipilih</p>
           </div>
         </div>
 

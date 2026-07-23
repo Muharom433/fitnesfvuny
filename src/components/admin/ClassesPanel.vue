@@ -42,8 +42,8 @@
               <ImageUploader 
                 v-model="form.photo" 
                 :aspectRatio="1.5"
-                label="Foto Kelas (Upload dari Galeri / File)" 
-                helpText="Pilih foto kelas dari galeri HP/komputer. Foto langsung otomatis muncul di beranda depan." 
+                label="Foto Kelas" 
+                helpText="" 
               />
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
