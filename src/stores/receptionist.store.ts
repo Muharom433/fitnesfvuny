@@ -91,12 +91,12 @@ export const useReceptionistStore = defineStore('receptionist', () => {
       if (data) {
         productSales.value = data.map((row: any) => ({
           id: row.id,
-          date: row.date,
+          date: row.transaction_date || row.date,
           productName: row.product_name,
           qty: row.qty,
           price: row.price,
-          total: row.total,
-          paymentMethod: row.payment_method,
+          total: row.qty * row.price,
+          paymentMethod: row.bank_name || row.payment_method,
         }))
         _cacheToLocalStorage()
       }
@@ -143,12 +143,15 @@ export const useReceptionistStore = defineStore('receptionist', () => {
     try {
       await supabase.from('product_sales').upsert({
         id: sale.id,
-        date: sale.date,
+        invoice_id: 'INV-' + Date.now(),
+        buyer_name: 'Walk-in Buyer',
+        buyer_phone: '-',
         product_name: sale.productName,
         qty: sale.qty,
         price: sale.price,
-        total: sale.total,
-        payment_method: sale.paymentMethod,
+        bank_name: sale.paymentMethod,
+        transaction_date: sale.date,
+        delivery_method: 'Direct'
       })
     } catch (err) {
       console.warn('Failed to persist product sale to Supabase:', err)
