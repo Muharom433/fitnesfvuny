@@ -127,9 +127,10 @@ export const useAdminStore = defineStore('admin', () => {
     trainers.value.push(trainer as Trainer)
     const dbPayload: any = {
       ...trainer,
-      philosophy: encodeTrainerPhilosophy(trainer.philosophy, trainer.packages)
+      philosophy: encodeTrainerPhilosophy(trainer.philosophy, trainer.packages, trainer.original_price)
     }
     delete dbPayload.packages
+    delete dbPayload.original_price
 
     const { data, error } = await supabase.from('trainers').insert(dbPayload).select().single()
     if (error) {
@@ -153,12 +154,14 @@ export const useAdminStore = defineStore('admin', () => {
       trainers.value[idx] = { ...trainers.value[idx], ...updates }
     }
     const dbPayload: any = { ...updates }
-    if (updates.philosophy !== undefined || updates.packages !== undefined) {
+    if (updates.philosophy !== undefined || updates.packages !== undefined || updates.original_price !== undefined) {
       const currentPhil = updates.philosophy !== undefined ? updates.philosophy : (oldVal?.philosophy || '')
       const currentPkgs = updates.packages !== undefined ? updates.packages : (oldVal?.packages || [])
-      dbPayload.philosophy = encodeTrainerPhilosophy(currentPhil, currentPkgs)
+      const currentOrigPrice = updates.original_price !== undefined ? updates.original_price : (oldVal?.original_price || null)
+      dbPayload.philosophy = encodeTrainerPhilosophy(currentPhil, currentPkgs, currentOrigPrice)
     }
     delete dbPayload.packages
+    delete dbPayload.original_price
 
     const { data, error } = await supabase.from('trainers').update(dbPayload).eq('id', id).select().single()
     if (error) {
@@ -191,9 +194,10 @@ export const useAdminStore = defineStore('admin', () => {
       ...kelas,
       duration: (kelas.duration || '45 Menit').slice(0, 45),
       level: (kelas.level || 'Semua Level').slice(0, 45),
-      desc_en: encodePhotoDesc(kelas.photo, kelas.desc_en)
+      desc_en: encodePhotoDesc(kelas.photo, kelas.desc_en, kelas.original_price)
     }
     delete dbPayload.photo
+    delete dbPayload.original_price
 
     const { data, error } = await supabase.from('classes').insert(dbPayload).select().single()
     if (error) {
@@ -219,12 +223,14 @@ export const useAdminStore = defineStore('admin', () => {
     const dbPayload: any = { ...updates }
     if (updates.duration) dbPayload.duration = updates.duration.slice(0, 45)
     if (updates.level) dbPayload.level = updates.level.slice(0, 45)
-    if (updates.photo !== undefined || updates.desc_en !== undefined) {
+    if (updates.photo !== undefined || updates.desc_en !== undefined || updates.original_price !== undefined) {
       const currentPhoto = updates.photo !== undefined ? updates.photo : (oldVal?.photo || '')
       const currentDesc = updates.desc_en !== undefined ? updates.desc_en : (oldVal?.desc_en || '')
-      dbPayload.desc_en = encodePhotoDesc(currentPhoto, currentDesc)
+      const currentOrigPrice = updates.original_price !== undefined ? updates.original_price : (oldVal?.original_price || null)
+      dbPayload.desc_en = encodePhotoDesc(currentPhoto, currentDesc, currentOrigPrice)
     }
     delete dbPayload.photo
+    delete dbPayload.original_price
 
     const { data, error } = await supabase.from('classes').update(dbPayload).eq('id', id).select().single()
     if (error) {
