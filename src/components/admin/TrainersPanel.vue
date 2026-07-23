@@ -114,8 +114,8 @@
             <ImageUploader 
               v-model="form.photo" 
               :aspectRatio="0.75"
-              label="Foto Pelatih (Upload dari Galeri / File)" 
-              helpText="Pilih foto pelatih dari galeri HP/komputer. Foto langsung otomatis muncul di beranda depan." 
+              label="Foto Pelatih" 
+              helpText="" 
             />
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -145,7 +145,7 @@
               <div class="flex items-center justify-between">
                 <div>
                   <label class="text-[11px] font-bold text-slate-700 uppercase tracking-wider block">Pilihan Paket Tarif Pelatih</label>
-                  <p class="text-[10px] text-slate-400">Tambah hingga 6 opsi paket tarif (e.g. 1 Sesi, 5 Sesi, 10 Sesi, Paket Bulanan, dll)</p>
+                  <p class="text-[10px] text-slate-400">Tambah hingga 6 opsi paket tarif</p>
                 </div>
                 <button
                   type="button"
@@ -201,7 +201,7 @@
                 </div>
 
                 <div v-if="form.packages.length === 0" class="text-center py-3 text-slate-400 text-xs italic bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
-                  Belum ada paket khusus. Klik "+ Tambah Paket" untuk menambah opsi tarif (max 6).
+                  Max 6 Paket Opsi Tarif
                 </div>
               </div>
             </div>

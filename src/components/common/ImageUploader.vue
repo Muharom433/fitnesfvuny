@@ -38,7 +38,6 @@
               <i class="fa-solid fa-check text-[9px]"></i> Foto Siap
             </span>
             <p class="text-xs font-bold text-slate-700 truncate mt-1">Foto Berhasil Dipilih</p>
-            <p class="text-[10px] text-slate-400">Klik "Atur Posisi" untuk memotong / menggeser foto.</p>
           </div>
         </div>
 
@@ -130,7 +129,7 @@ const props = withDefaults(defineProps<{
 }>(), {
   modelValue: '',
   label: 'Foto (Upload dari Galeri)',
-  helpText: 'Pilih foto dari galeri HP/komputer. Foto langsung otomatis muncul di beranda depan.',
+  helpText: '',
   aspectRatio: 1
 })
 
