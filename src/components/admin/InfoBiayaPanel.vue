@@ -220,7 +220,6 @@
           </div>
           <div>
             <h4 class="font-extrabold text-primary-900 text-sm">Tambah Kategori Baru</h4>
-            <p class="text-[11px] text-slate-400">Isi nama & tarif untuk kategori baru</p>
           </div>
         </div>
         <button @click="closeAddCategoryModal" class="text-slate-400 hover:text-slate-700 transition-colors">
@@ -236,10 +235,9 @@
           <input
             type="text"
             v-model="newCategory.name"
-            placeholder="Contoh: Staff Eksternal, Pelajar SMA..."
+            placeholder=""
             class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
           />
-          <p class="text-[10px] text-slate-400">ID otomatis: <span class="font-mono font-bold text-accent-600">{{ previewId }}</span></p>
         </div>
 
         <!-- Grid 2 kolom: Pendaftaran & Insidental -->
@@ -312,7 +310,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { Pricing } from '@/types/booking'
@@ -334,9 +332,8 @@ const newCategory = reactive({
   member_3_month_fee: 0,
 })
 
-const previewId = computed(() =>
-  newCategory.name.toLowerCase().trim().replace(/\s+/g, '_') || 'id_kategori'
-)
+
+
 
 function closeAddCategoryModal() {
   showAddCategoryModal.value = false
