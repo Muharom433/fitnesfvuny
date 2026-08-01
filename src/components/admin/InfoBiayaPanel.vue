@@ -32,11 +32,21 @@
       
       <!-- Tab 1: Biaya & Tarif -->
       <div v-if="activeTab === 'tariffs'" class="space-y-6">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-accent-50 flex items-center justify-center text-accent-500 flex-shrink-0">
-            <i class="fa-solid fa-circle-info text-base"></i>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-accent-50 flex items-center justify-center text-accent-500 flex-shrink-0">
+              <i class="fa-solid fa-circle-info text-base"></i>
+            </div>
+            <h3 class="font-extrabold text-primary-900 text-base tracking-wide">BIAYA GYM & METODE PEMBAYARAN</h3>
           </div>
-          <h3 class="font-extrabold text-primary-900 text-base tracking-wide">BIAYA GYM & METODE PEMBAYARAN</h3>
+          <!-- Tombol Tambah Kategori -->
+          <button
+            type="button"
+            @click="showAddCategoryModal = true"
+            class="flex items-center gap-2 px-4 py-2.5 bg-primary-900 text-white rounded-xl text-xs font-bold hover:bg-primary-800 active:scale-[0.98] transition-all shadow-md shadow-primary-900/20"
+          >
+            <i class="fa-solid fa-plus"></i> Tambah Kategori
+          </button>
         </div>
         <div class="h-[3px] w-16 bg-primary-900 rounded mb-6"></div>
 
@@ -198,10 +208,111 @@
 
     </div>
   </div>
+
+  <!-- Modal Tambah Kategori -->
+  <div v-if="showAddCategoryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" @click.self="closeAddCategoryModal">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md">
+      <!-- Modal Header -->
+      <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-accent-50 flex items-center justify-center text-accent-500">
+            <i class="fa-solid fa-tags text-base"></i>
+          </div>
+          <div>
+            <h4 class="font-extrabold text-primary-900 text-sm">Tambah Kategori Baru</h4>
+            <p class="text-[11px] text-slate-400">Isi nama & tarif untuk kategori baru</p>
+          </div>
+        </div>
+        <button @click="closeAddCategoryModal" class="text-slate-400 hover:text-slate-700 transition-colors">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-5 space-y-4">
+        <!-- Nama Kategori -->
+        <div class="space-y-1.5">
+          <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Nama Kategori <span class="text-red-500">*</span></label>
+          <input
+            type="text"
+            v-model="newCategory.name"
+            placeholder="Contoh: Staff Eksternal, Pelajar SMA..."
+            class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+          />
+          <p class="text-[10px] text-slate-400">ID otomatis: <span class="font-mono font-bold text-accent-600">{{ previewId }}</span></p>
+        </div>
+
+        <!-- Grid 2 kolom: Pendaftaran & Insidental -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Pendaftaran (Rp)</label>
+            <input
+              type="number"
+              v-model.number="newCategory.registration_fee"
+              min="0"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+            />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Insidental Harian (Rp)</label>
+            <input
+              type="number"
+              v-model.number="newCategory.incidental_fee"
+              min="0"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+            />
+          </div>
+        </div>
+
+        <!-- Grid 2 kolom: Member 1 & 3 bulan -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Member 1 Bulan (Rp)</label>
+            <input
+              type="number"
+              v-model.number="newCategory.member_1_month_fee"
+              min="0"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+            />
+          </div>
+          <div class="space-y-1.5">
+            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Member 3 Bulan (Rp)</label>
+            <input
+              type="number"
+              v-model.number="newCategory.member_3_month_fee"
+              min="0"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 border-t border-slate-100 flex justify-end gap-3">
+        <button
+          type="button"
+          @click="closeAddCategoryModal"
+          class="px-5 py-2.5 text-xs font-bold text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+        >
+          Batal
+        </button>
+        <button
+          type="button"
+          @click="saveNewCategory"
+          :disabled="isAddingCategory || !newCategory.name.trim()"
+          class="px-6 py-2.5 bg-accent-500 text-white rounded-xl text-xs font-bold hover:bg-accent-600 transition-colors disabled:opacity-60 shadow-lg shadow-accent-500/25 flex items-center gap-2"
+        >
+          <i v-if="isAddingCategory" class="fa-solid fa-spinner fa-spin"></i>
+          <i v-else class="fa-solid fa-plus"></i>
+          {{ isAddingCategory ? 'Menyimpan...' : 'Tambah Kategori' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useAdminStore } from '@/stores/admin.store'
 import { useToast } from '@/composables/useToast'
 import type { Pricing } from '@/types/booking'
@@ -211,6 +322,64 @@ const toast = useToast()
 
 const activeTab = ref('tariffs')
 const isSaving = ref(false)
+
+// === Tambah Kategori ===
+const showAddCategoryModal = ref(false)
+const isAddingCategory = ref(false)
+const newCategory = reactive({
+  name: '',
+  registration_fee: 0,
+  incidental_fee: 0,
+  member_1_month_fee: 0,
+  member_3_month_fee: 0,
+})
+
+const previewId = computed(() =>
+  newCategory.name.toLowerCase().trim().replace(/\s+/g, '_') || 'id_kategori'
+)
+
+function closeAddCategoryModal() {
+  showAddCategoryModal.value = false
+  Object.assign(newCategory, {
+    name: '',
+    registration_fee: 0,
+    incidental_fee: 0,
+    member_1_month_fee: 0,
+    member_3_month_fee: 0,
+  })
+}
+
+async function saveNewCategory() {
+  if (!newCategory.name.trim()) {
+    toast.error('Nama kategori tidak boleh kosong!')
+    return
+  }
+  // Cek duplikat ID
+  const generatedId = newCategory.name.toLowerCase().trim().replace(/\s+/g, '_')
+  const duplicate = admin.pricing.find(p => p.id === generatedId)
+  if (duplicate) {
+    toast.error(`Kategori dengan ID "${generatedId}" sudah ada. Gunakan nama yang berbeda.`)
+    return
+  }
+
+  isAddingCategory.value = true
+  try {
+    const { error } = await admin.addPricingCategory(newCategory.name.trim(), {
+      registration_fee: Number(newCategory.registration_fee),
+      incidental_fee: Number(newCategory.incidental_fee),
+      member_1_month_fee: Number(newCategory.member_1_month_fee),
+      member_3_month_fee: Number(newCategory.member_3_month_fee),
+    })
+    if (!error) {
+      toast.success(`Kategori "${newCategory.name}" berhasil ditambahkan!`)
+      closeAddCategoryModal()
+    } else {
+      toast.error('Gagal menambahkan kategori. Coba lagi.')
+    }
+  } finally {
+    isAddingCategory.value = false
+  }
+}
 
 const pricingList = ref<Pricing[]>([])
 const bankList = ref<{ key: string; name: string; number: string }[]>([])
@@ -264,6 +433,10 @@ async function deleteCategory(id?: string) {
 
 function getCategoryName(id?: string) {
   if (!id) return ''
+  // Cari dari pricingList (mencakup kategori custom)
+  const found = pricingList.value.find(p => p.id === id)
+  if (found) return found.category_name_id
+  // Fallback
   if (id === 'student') return 'UNY (MAHASISWA, TENDIK/DOSEN)'
   if (id === 'alumni') return 'ALUMNI UNY'
   if (id === 'public') return 'MASYARAKAT UMUM'

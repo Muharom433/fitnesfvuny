@@ -572,12 +572,17 @@ function getDiscountAmount(tx: KasirTransaction) {
 
 function getCategoryIdFromLabel(label?: string) {
   if (!label) return ''
-  const l = label.toLowerCase()
+  const l = label.toLowerCase().trim()
+  // Cari dari store pricing (label exact match dulu)
+  const exactMatch = adminStore.pricing.find(p => p.category_name_id.toLowerCase() === l || p.id.toLowerCase() === l)
+  if (exactMatch) return exactMatch.id
+  // Fallback untuk label standar
   if (l.includes('mahasiswa') || l === 'student') return 'student'
   if (l.includes('alumni') || l === 'alumni') return 'alumni'
   if (l.includes('umum') || l.includes('masyarakat') || l === 'public') return 'public'
-  const match = adminStore.pricing.find(p => p.id.toLowerCase() === l || getCategoryLabel(p.id).toLowerCase() === l)
-  return match ? match.id : label.toLowerCase().trim().replace(/\s+/g, '_')
+  // Cari dari store pricing dengan id yang cocok
+  const idMatch = adminStore.pricing.find(p => p.id.toLowerCase() === l.replace(/\s+/g, '_'))
+  return idMatch ? idMatch.id : l.replace(/\s+/g, '_')
 }
 
 const showCardModal = ref(false)
@@ -771,7 +776,7 @@ async function submitKasir() {
     trainer: selectedTrainer,
     kelas: selectedClass,
     alat: selectedEquipment,
-    nim: (form.civitas === 'student' || form.civitas === 'alumni') ? form.identityNumber : '',
+    nim: (form.civitas !== 'public' && form.civitas !== '') ? form.identityNumber : '',
     amount: form.amount,
     paymentMethod: finalMethod,
     status: 'Lunas',
@@ -861,6 +866,10 @@ async function submitKasir() {
 
 function getCategoryLabel(id?: string) {
   if (!id) return ''
+  // Cari dari store pricing terlebih dahulu
+  const match = adminStore.pricing.find(p => p.id === id)
+  if (match) return match.category_name_id
+  // Fallback untuk ID standar
   if (id === 'student') return 'UNY (Mahasiswa, Tendik/Dosen)'
   if (id === 'alumni') return 'Alumni UNY'
   if (id === 'public') return 'Masyarakat Umum'

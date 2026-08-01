@@ -100,18 +100,37 @@ export const useAdminStore = defineStore('admin', () => {
         })
       }
       if (pr.data) {
-        pricing.value = (pr.data as any[]).map(row => ({
-          id: row.profile,
-          category_name_id: row.profile === 'student' ? 'UNY (MAHASISWA, TENDIK/DOSEN)' : row.profile === 'alumni' ? 'ALUMNI UNY' : 'UMUM',
-          category_name_en: row.profile === 'student' ? 'UNY Student' : row.profile === 'alumni' ? 'UNY Alumni' : 'General Public',
-          registration_fee: Number(row.registration_fee),
-          incidental_fee: Number(row.incidental_fee),
-          membership_tariffs: {
-            '1': Number(row.member_1_month_fee),
-            '3': Number(row.member_3_month_fee)
-          },
-          updated_at: row.updated_at
-        })) as Pricing[]
+        pricing.value = (pr.data as any[]).map(row => {
+          // Label untuk kategori standar
+          let category_name_id: string
+          let category_name_en: string
+          if (row.profile === 'student') {
+            category_name_id = 'UNY (MAHASISWA, TENDIK/DOSEN)'
+            category_name_en = 'UNY Student'
+          } else if (row.profile === 'alumni') {
+            category_name_id = 'ALUMNI UNY'
+            category_name_en = 'UNY Alumni'
+          } else if (row.profile === 'public') {
+            category_name_id = 'MASYARAKAT UMUM'
+            category_name_en = 'General Public'
+          } else {
+            // Kategori custom: konversi ID ke label yang readable
+            category_name_id = row.profile.replace(/_/g, ' ').toUpperCase()
+            category_name_en = row.profile.replace(/_/g, ' ')
+          }
+          return {
+            id: row.profile,
+            category_name_id,
+            category_name_en,
+            registration_fee: Number(row.registration_fee),
+            incidental_fee: Number(row.incidental_fee),
+            membership_tariffs: {
+              '1': Number(row.member_1_month_fee),
+              '3': Number(row.member_3_month_fee)
+            },
+            updated_at: row.updated_at
+          }
+        }) as Pricing[]
       }
     } catch (err) {
       console.error('fetchAll error:', err)
