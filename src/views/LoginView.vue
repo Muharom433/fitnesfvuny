@@ -66,8 +66,127 @@
               </a>
             </div>
 
+            <!-- Informasi Membership -->
+            <div class="anim-token-section mt-5 pt-5 border-t border-slate-200/60">
+              <!-- Label -->
+              <div class="flex items-center justify-center gap-2 mb-4">
+                <div class="h-px flex-1 bg-slate-300/80"></div>
+                <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-300 rounded-full px-3 py-1">
+                  <i class="fa-solid fa-id-card text-accent-500 text-[10px]"></i>
+                  <p class="text-[10px] font-extrabold uppercase tracking-[1.5px] text-slate-600 whitespace-nowrap">Informasi Membership</p>
+                </div>
+                <div class="h-px flex-1 bg-slate-300/80"></div>
+              </div>
+
+              <!-- Input Token + Tombol (terpusat, proporsional) -->
+              <div v-if="!memberTokenResult" class="flex flex-col items-center gap-2.5">
+                <!-- Input -->
+                <div class="relative w-full max-w-[320px]">
+                  <i class="fa-solid fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-accent-500 text-xs pointer-events-none"></i>
+                  <input
+                    id="member-token-input"
+                    v-model="memberTokenInput"
+                    type="text"
+                    placeholder="Masukkan Token Membership"
+                    @keyup.enter="checkMemberToken"
+                    class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all shadow-sm"
+                  />
+                </div>
+
+                <!-- Error -->
+                <Transition name="fade">
+                  <div v-if="memberTokenError" class="flex items-center gap-1.5 text-red-600 text-[10px] font-semibold max-w-[320px] text-center">
+                    <i class="fa-solid fa-circle-xmark text-xs flex-shrink-0"></i>
+                    <span>{{ memberTokenError }}</span>
+                  </div>
+                </Transition>
+
+                <!-- Tombol -->
+                <button
+                  id="btn-cek-token-member"
+                  @click="checkMemberToken"
+                  :disabled="memberTokenLoading || !memberTokenInput.trim()"
+                  class="flex items-center justify-center gap-2 w-full max-w-[320px] py-2.5 rounded-xl font-bold text-xs text-white bg-accent-500 hover:bg-accent-600 active:scale-[0.98] shadow-md shadow-accent-500/25 hover:shadow-lg hover:shadow-accent-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  <i v-if="memberTokenLoading" class="fa-solid fa-spinner animate-spin text-sm"></i>
+                  <i v-else class="fa-solid fa-id-card text-sm"></i>
+                  {{ memberTokenLoading ? 'Memverifikasi...' : 'Lihat Kartu Membership' }}
+                </button>
+              </div>
+
+              <!-- Hasil Kartu Membership -->
+              <Transition name="card-slide">
+                <div v-if="memberTokenResult" class="relative rounded-2xl overflow-hidden border border-accent-500/30 shadow-xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950">
+                  <!-- Decorative Gradient Top Bar -->
+                  <div class="h-1.5 w-full bg-gradient-to-r from-accent-400 via-accent-500 to-orange-400"></div>
+
+                  <div class="p-3.5 space-y-2.5">
+                    <!-- Header Kartu -->
+                    <div class="flex items-center gap-2.5">
+                      <div class="w-8 h-8 rounded-xl bg-accent-500/20 border border-accent-500/30 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-id-card-clip text-accent-400 text-xs"></i>
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <p class="text-[8px] font-bold uppercase tracking-widest text-accent-400">Kartu Membership</p>
+                        <p class="text-white font-extrabold text-[13px] leading-tight truncate">{{ memberTokenResult.name }}</p>
+                      </div>
+                      <div class="flex-shrink-0">
+                        <img src="/assets/logo.png" alt="Logo" class="w-7 h-7 object-contain opacity-60" />
+                      </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="h-px w-full bg-white/10"></div>
+
+                    <!-- Info Grid 2x2 -->
+                    <div class="grid grid-cols-2 gap-1.5">
+                      <div class="bg-white/5 rounded-xl p-2 border border-white/10">
+                        <p class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Status Civitas</p>
+                        <p class="text-white font-bold text-[10px] mt-0.5 leading-tight">{{ memberTokenResult.status_civitas_label }}</p>
+                      </div>
+                      <div class="bg-white/5 rounded-xl p-2 border border-white/10">
+                        <p class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Durasi Paket</p>
+                        <p class="text-white font-bold text-[10px] mt-0.5 leading-tight">{{ memberTokenResult.duration }}</p>
+                      </div>
+                      <div class="bg-white/5 rounded-xl p-2 border border-white/10">
+                        <p class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Terdaftar Sejak</p>
+                        <p class="text-white font-bold text-[10px] mt-0.5 leading-tight">{{ memberTokenResult.registration_date_fmt }}</p>
+                      </div>
+                      <div :class="['rounded-xl p-2 border', memberTokenResult.is_active ? 'bg-emerald-500/15 border-emerald-500/30' : 'bg-red-500/15 border-red-500/30']">
+                        <p class="text-[7px] font-bold uppercase tracking-wider text-slate-400">Berlaku Hingga</p>
+                        <p :class="['font-bold text-[10px] mt-0.5 leading-tight', memberTokenResult.is_active ? 'text-emerald-400' : 'text-red-400']">{{ memberTokenResult.expiry_date_fmt }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Status Bar -->
+                    <div :class="['flex items-center justify-between rounded-xl px-2.5 py-2 border', memberTokenResult.is_active ? 'bg-emerald-500/10 border-emerald-500/25' : 'bg-red-500/10 border-red-500/25']">
+                      <div class="flex items-center gap-1.5">
+                        <span :class="['w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0', memberTokenResult.is_active ? 'bg-emerald-400' : 'bg-red-400']"></span>
+                        <span :class="['text-[9px] font-extrabold uppercase tracking-wider', memberTokenResult.is_active ? 'text-emerald-400' : 'text-red-400']">{{ memberTokenResult.is_active ? 'Membership Aktif' : 'Tidak Aktif' }}</span>
+                      </div>
+                      <span :class="['text-[10px] font-extrabold', memberTokenResult.is_active ? 'text-emerald-300' : 'text-red-300']">
+                        {{ memberTokenResult.is_active ? `Sisa ${memberTokenResult.days_remaining} hari` : 'Sudah Kadaluarsa' }}
+                      </span>
+                    </div>
+
+                    <!-- Footer Kartu -->
+                    <div class="flex items-center justify-between pt-0.5">
+                      <span class="text-[8px] text-slate-600 font-mono tracking-wide">{{ memberTokenResult.token_preview }}</span>
+                      <button
+                        id="btn-tutup-kartu-member"
+                        @click="resetMemberToken"
+                        class="text-[9px] font-bold text-slate-500 hover:text-accent-400 transition-colors cursor-pointer flex items-center gap-1 hover:scale-105 active:scale-95 duration-200"
+                      >
+                        <i class="fa-solid fa-rotate-left text-[8px]"></i> Cek Lain
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </Transition>
+            </div>
+
             <!-- Scroll Indicator -->
-            <div class="mt-8 flex flex-col items-center justify-center gap-1 opacity-70 hover:opacity-100 transition-opacity duration-300">
+            <div class="mt-6 flex flex-col items-center justify-center gap-1 opacity-70 hover:opacity-100 transition-opacity duration-300">
               <span class="text-[9px] font-bold tracking-widest text-slate-500 uppercase">Scroll untuk info detail</span>
               <i class="fa-solid fa-chevron-down text-accent-500 animate-bounce text-xs"></i>
             </div>
@@ -675,6 +794,86 @@ const isLoading = ref(false)
 const errorMsg = ref('')
 const showLoginForm = ref(false)
 
+// ===== CEK MASA AKTIF MEMBERSHIP =====
+const memberTokenInput = ref('')
+const memberTokenLoading = ref(false)
+const memberTokenError = ref('')
+const memberTokenResult = ref<null | {
+  name: string
+  status_civitas_label: string
+  duration: string
+  registration_date_fmt: string
+  expiry_date_fmt: string
+  is_active: boolean
+  days_remaining: number
+  token_preview: string
+}>(null)
+
+function formatDateId(dateStr: string): string {
+  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des']
+  const d = new Date(dateStr)
+  if (isNaN(d.getTime())) return dateStr
+  return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()}`
+}
+
+function statusCivitasLabel(val: string): string {
+  const map: Record<string, string> = {
+    student: 'Mahasiswa/Civitas',
+    alumni: 'Alumni UNY',
+    public: 'Masyarakat Umum'
+  }
+  return map[val] ?? val
+}
+
+async function checkMemberToken() {
+  const token = memberTokenInput.value.trim()
+  if (!token) return
+  memberTokenError.value = ''
+  memberTokenLoading.value = true
+  memberTokenResult.value = null
+  try {
+    const { data, error } = await supabase
+      .from('member_tokens')
+      .select('name, status_civitas, duration, registration_date, expiry_date, token')
+      .eq('token', token)
+      .maybeSingle()
+    if (error) throw error
+    if (!data) {
+      memberTokenError.value = 'Token tidak ditemukan. Pastikan token yang Anda masukkan benar.'
+      memberTokenLoading.value = false
+      return
+    }
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const expiry = new Date(data.expiry_date)
+    expiry.setHours(0, 0, 0, 0)
+    const diffMs = expiry.getTime() - today.getTime()
+    const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24))
+    const isActive = daysRemaining >= 0
+    const tokenStr = data.token as string
+    memberTokenResult.value = {
+      name: data.name,
+      status_civitas_label: statusCivitasLabel(data.status_civitas),
+      duration: data.duration,
+      registration_date_fmt: formatDateId(data.registration_date),
+      expiry_date_fmt: formatDateId(data.expiry_date),
+      is_active: isActive,
+      days_remaining: isActive ? daysRemaining : 0,
+      token_preview: tokenStr.length > 12 ? tokenStr.slice(0, 6) + '...' + tokenStr.slice(-4) : tokenStr
+    }
+  } catch {
+    memberTokenError.value = 'Gagal memverifikasi token. Coba lagi beberapa saat.'
+  } finally {
+    memberTokenLoading.value = false
+  }
+}
+
+function resetMemberToken() {
+  memberTokenResult.value = null
+  memberTokenInput.value = ''
+  memberTokenError.value = ''
+}
+
 // Real member count from Supabase bookings table
 const memberCount = ref('—')
 const bookingCount = ref('—')
@@ -749,6 +948,17 @@ async function handleLogin() {
 <style scoped>
 .fade-enter-active, .fade-leave-active { transition: all 0.3s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(-6px); }
+
+/* ===== Kartu Membership Slide-in ===== */
+.card-slide-enter-active { transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.card-slide-leave-active { transition: all 0.25s ease; }
+.card-slide-enter-from { opacity: 0; transform: translateY(18px) scale(0.96); }
+.card-slide-leave-to { opacity: 0; transform: translateY(-8px) scale(0.97); }
+
+/* ===== Token Section Entrance (selaras dengan anim-stat) ===== */
+.anim-token-section {
+  animation: fadeSlideUp 0.55s 1.05s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
 /* ===== Shine sweep ===== */
 .shine-sweep {
