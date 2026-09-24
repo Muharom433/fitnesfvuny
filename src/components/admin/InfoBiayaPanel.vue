@@ -48,7 +48,18 @@
             <i class="fa-solid fa-plus"></i> Tambah Kategori
           </button>
         </div>
-        <div class="h-[3px] w-16 bg-primary-900 rounded mb-6"></div>
+        <div class="h-[3px] w-16 bg-primary-900 rounded mb-4"></div>
+
+        <!-- Petunjuk Pengeditan Nama & Tarif -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 flex items-start gap-3 max-w-xl text-amber-900 text-xs mb-6">
+          <i class="fa-solid fa-pen-to-square text-accent-500 mt-0.5 text-sm flex-shrink-0"></i>
+          <div>
+            <span class="font-bold block mb-0.5">Edit Nama Kategori & 4 Nama Tarif Biaya Gym:</span>
+            <span class="text-amber-800/90 text-[11px] leading-relaxed">
+              Anda dapat mengedit langsung nama kategori maupun 4 nama tarif (<span class="font-semibold">PENDAFTARAN MEMBER, MEMBER 2 BULAN, MEMBER 3 BULAN, INSIDENTAL HARIAN</span>) pada kolom di bawah. Saat mengklik tombol <span class="font-bold text-accent-600">"Simpan Biaya, Nama & Tarif"</span>, perubahan nama dan tarif akan otomatis tersimpan dan langsung terupdate di seluruh sistem serta halaman depan.
+            </span>
+          </div>
+        </div>
 
         <div v-if="pricingList.length === 0" class="text-center py-8 text-slate-400 text-xs">
           Loading data pricing...
@@ -78,7 +89,17 @@
             <div class="space-y-4 max-w-xl">
               <!-- Registration Fee -->
               <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">PENDAFTARAN MEMBER (RP)</label>
+                <div class="flex items-center justify-between gap-2">
+                  <input
+                    type="text"
+                    v-model="feeTitles.registration"
+                    class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-accent-500 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500/20 transition-all w-full max-w-sm"
+                    title="Klik untuk mengubah nama judul tarif ini"
+                  />
+                  <span class="text-[10px] text-accent-600 font-bold flex items-center gap-1 flex-shrink-0 cursor-default">
+                    <i class="fa-solid fa-pen text-[9px]"></i> Edit Judul
+                  </span>
+                </div>
                 <input
                   type="number"
                   v-model.number="cat.registration_fee"
@@ -90,7 +111,17 @@
               <!-- Membership Tariffs: tampilkan 2 Bulan (key '1') dan 3 Bulan (key '3') -->
               <template v-if="cat.membership_tariffs">
                 <div class="space-y-1.5">
-                  <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">MEMBER 2 BULAN (RP)</label>
+                  <div class="flex items-center justify-between gap-2">
+                    <input
+                      type="text"
+                      v-model="feeTitles.member_2"
+                      class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-accent-500 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500/20 transition-all w-full max-w-sm"
+                      title="Klik untuk mengubah nama judul tarif ini"
+                    />
+                    <span class="text-[10px] text-accent-600 font-bold flex items-center gap-1 flex-shrink-0 cursor-default">
+                      <i class="fa-solid fa-pen text-[9px]"></i> Edit Judul
+                    </span>
+                  </div>
                   <input
                     type="number"
                     v-model.number="cat.membership_tariffs['1']"
@@ -99,7 +130,17 @@
                   />
                 </div>
                 <div class="space-y-1.5">
-                  <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">MEMBER 3 BULAN (RP)</label>
+                  <div class="flex items-center justify-between gap-2">
+                    <input
+                      type="text"
+                      v-model="feeTitles.member_3"
+                      class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-accent-500 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500/20 transition-all w-full max-w-sm"
+                      title="Klik untuk mengubah nama judul tarif ini"
+                    />
+                    <span class="text-[10px] text-accent-600 font-bold flex items-center gap-1 flex-shrink-0 cursor-default">
+                      <i class="fa-solid fa-pen text-[9px]"></i> Edit Judul
+                    </span>
+                  </div>
                   <input
                     type="number"
                     v-model.number="cat.membership_tariffs['3']"
@@ -111,7 +152,17 @@
 
               <!-- Incidental Fee -->
               <div class="space-y-1.5">
-                <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">INSIDENTAL HARIAN (RP)</label>
+                <div class="flex items-center justify-between gap-2">
+                  <input
+                    type="text"
+                    v-model="feeTitles.incidental"
+                    class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-accent-500 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500/20 transition-all w-full max-w-sm"
+                    title="Klik untuk mengubah nama judul tarif ini"
+                  />
+                  <span class="text-[10px] text-accent-600 font-bold flex items-center gap-1 flex-shrink-0 cursor-default">
+                    <i class="fa-solid fa-pen text-[9px]"></i> Edit Judul
+                  </span>
+                </div>
                 <input
                   type="number"
                   v-model.number="cat.incidental_fee"
@@ -258,7 +309,14 @@
         <!-- Grid 2 kolom: Pendaftaran & Insidental -->
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Pendaftaran (Rp)</label>
+            <div class="flex items-center justify-between">
+              <input
+                type="text"
+                v-model="feeTitles.registration"
+                class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200 focus:border-accent-500 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent-500/30 transition-all w-full"
+                title="Klik untuk mengubah nama judul"
+              />
+            </div>
             <input
               type="number"
               v-model.number="newCategory.registration_fee"
@@ -267,7 +325,14 @@
             />
           </div>
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Insidental Harian (Rp)</label>
+            <div class="flex items-center justify-between">
+              <input
+                type="text"
+                v-model="feeTitles.incidental"
+                class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200 focus:border-accent-500 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent-500/30 transition-all w-full"
+                title="Klik untuk mengubah nama judul"
+              />
+            </div>
             <input
               type="number"
               v-model.number="newCategory.incidental_fee"
@@ -280,7 +345,14 @@
         <!-- Grid 2 kolom: Member 2 & 3 bulan -->
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Member 2 Bulan (Rp)</label>
+            <div class="flex items-center justify-between">
+              <input
+                type="text"
+                v-model="feeTitles.member_2"
+                class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200 focus:border-accent-500 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent-500/30 transition-all w-full"
+                title="Klik untuk mengubah nama judul"
+              />
+            </div>
             <input
               type="number"
               v-model.number="newCategory.member_1_month_fee"
@@ -289,7 +361,14 @@
             />
           </div>
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Member 3 Bulan (Rp)</label>
+            <div class="flex items-center justify-between">
+              <input
+                type="text"
+                v-model="feeTitles.member_3"
+                class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200 focus:border-accent-500 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent-500/30 transition-all w-full"
+                title="Klik untuk mengubah nama judul"
+              />
+            </div>
             <input
               type="number"
               v-model.number="newCategory.member_3_month_fee"
@@ -336,6 +415,24 @@ const toast = useToast()
 const activeTab = ref('tariffs')
 const isSaving = ref(false)
 
+// === Judul & Nama Biaya (Reactive & Terhubung ke Seluruh Tampilan) ===
+const feeTitles = reactive({
+  registration: admin.feeTitles.registration,
+  member_2: admin.feeTitles.member_2,
+  member_3: admin.feeTitles.member_3,
+  incidental: admin.feeTitles.incidental,
+})
+
+watch(
+  () => admin.feeTitles,
+  (newVal) => {
+    if (newVal) {
+      Object.assign(feeTitles, newVal)
+    }
+  },
+  { deep: true, immediate: true }
+)
+
 // === Tambah Kategori ===
 const showAddCategoryModal = ref(false)
 const isAddingCategory = ref(false)
@@ -376,6 +473,14 @@ async function saveNewCategory() {
 
   isAddingCategory.value = true
   try {
+    // Sinkronkan perubahan nama judul tarif jika diedit di modal
+    admin.updateFeeTitles({
+      registration: feeTitles.registration.trim() || 'PENDAFTARAN MEMBER (RP)',
+      member_2: feeTitles.member_2.trim() || 'MEMBER 2 BULAN (RP)',
+      member_3: feeTitles.member_3.trim() || 'MEMBER 3 BULAN (RP)',
+      incidental: feeTitles.incidental.trim() || 'INSIDENTAL HARIAN (RP)',
+    })
+
     const { error } = await admin.addPricingCategory(newCategory.name.trim(), {
       registration_fee: Number(newCategory.registration_fee),
       incidental_fee: Number(newCategory.incidental_fee),
@@ -467,6 +572,14 @@ function setDefaultBanks() {
 async function saveTariffs() {
   isSaving.value = true
   try {
+    // 1. Simpan judul/nama tarif ke store & localStorage (otomatis ubah tampilan depan)
+    admin.updateFeeTitles({
+      registration: feeTitles.registration.trim() || 'PENDAFTARAN MEMBER (RP)',
+      member_2: feeTitles.member_2.trim() || 'MEMBER 2 BULAN (RP)',
+      member_3: feeTitles.member_3.trim() || 'MEMBER 3 BULAN (RP)',
+      incidental: feeTitles.incidental.trim() || 'INSIDENTAL HARIAN (RP)',
+    })
+
     let success = true
     for (const p of pricingList.value) {
       // Hanya kirim key '1' dan '3' — sesuai kolom DB yang ada (member_1_month_fee, member_3_month_fee)
@@ -485,7 +598,7 @@ async function saveTariffs() {
       if (error) success = false
     }
     if (success) {
-      toast.success('Biaya & Tarif berhasil disimpan!')
+      toast.success('Biaya, Nama & Tarif berhasil disimpan!')
     } else {
       toast.error('Beberapa data tarif gagal disimpan ke database.')
     }

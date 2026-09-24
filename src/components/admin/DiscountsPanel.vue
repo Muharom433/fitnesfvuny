@@ -96,19 +96,19 @@
           </div>
           <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Pendaftaran Member (Rp)</label>
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.registration }}</label>
               <input type="number" v-model.number="newCategoryForm.registration_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Insidental Harian (Rp)</label>
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.incidental }}</label>
               <input type="number" v-model.number="newCategoryForm.incidental_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Member 2 Bulan (Rp)</label>
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.member_2 }}</label>
               <input type="number" v-model.number="newCategoryForm.member_1_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Member 3 Bulan (Rp)</label>
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.member_3 }}</label>
               <input type="number" v-model.number="newCategoryForm.member_3_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
           </div>

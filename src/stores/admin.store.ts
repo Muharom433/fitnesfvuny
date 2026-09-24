@@ -4,6 +4,34 @@ import { supabase } from '@/lib/supabase'
 import type { Trainer, GymClass, Equipment, EquipmentItem, Product, Booking, Pricing } from '@/types/booking'
 import { decodeTrainerPhilosophy, encodeTrainerPhilosophy, decodePhotoDesc, encodePhotoDesc } from '@/lib/imageHelper'
 
+export interface FeeTitles {
+  registration: string
+  member_2: string
+  member_3: string
+  incidental: string
+}
+
+function loadInitialFeeTitles(): FeeTitles {
+  try {
+    const saved = localStorage.getItem('fit_uny_fee_titles')
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      return {
+        registration: parsed.registration || 'PENDAFTARAN MEMBER (RP)',
+        member_2: parsed.member_2 || 'MEMBER 2 BULAN (RP)',
+        member_3: parsed.member_3 || 'MEMBER 3 BULAN (RP)',
+        incidental: parsed.incidental || 'INSIDENTAL HARIAN (RP)',
+      }
+    }
+  } catch {}
+  return {
+    registration: 'PENDAFTARAN MEMBER (RP)',
+    member_2: 'MEMBER 2 BULAN (RP)',
+    member_3: 'MEMBER 3 BULAN (RP)',
+    incidental: 'INSIDENTAL HARIAN (RP)',
+  }
+}
+
 export const useAdminStore = defineStore('admin', () => {
   const trainers = ref<Trainer[]>([])
   const classes = ref<GymClass[]>([])
@@ -11,7 +39,17 @@ export const useAdminStore = defineStore('admin', () => {
   const products = ref<Product[]>([])
   const bookings = ref<Booking[]>([])
   const pricing = ref<Pricing[]>([])
+  const feeTitles = ref<FeeTitles>(loadInitialFeeTitles())
   const isLoading = ref(false)
+
+  function updateFeeTitles(titles: Partial<FeeTitles>) {
+    feeTitles.value = { ...feeTitles.value, ...titles }
+    try {
+      localStorage.setItem('fit_uny_fee_titles', JSON.stringify(feeTitles.value))
+    } catch (e) {
+      console.error('Failed to save feeTitles to localStorage', e)
+    }
+  }
 
   async function fetchAll() {
     isLoading.value = true
@@ -100,13 +138,19 @@ export const useAdminStore = defineStore('admin', () => {
         })
       }
       if (pr.data) {
+        let savedCategoryNames: Record<string, string> = {}
+        try {
+          const s = localStorage.getItem('fit_uny_category_names')
+          if (s) savedCategoryNames = JSON.parse(s)
+        } catch {}
+
         pricing.value = (pr.data as any[]).map(row => {
-          // Gunakan category_name_id dari DB jika tersedia (tidak kosong)
-          // Fallback ke hardcode untuk kompatibilitas data lama
           let category_name_id: string
           let category_name_en: string
 
-          if (row.category_name_id && row.category_name_id.trim() !== '') {
+          if (savedCategoryNames[row.profile]) {
+            category_name_id = savedCategoryNames[row.profile]
+          } else if (row.category_name_id && row.category_name_id.trim() !== '') {
             category_name_id = row.category_name_id
           } else if (row.profile === 'student') {
             category_name_id = 'UNY (MAHASISWA, TENDIK/DOSEN)'
@@ -525,6 +569,16 @@ export const useAdminStore = defineStore('admin', () => {
       return { data, error }
     }
 
+    // Simpan juga nama kategori ke localStorage agar tahan refresh jika kolom DB tidak ada
+    if (updates.category_name_id) {
+      try {
+        const s = localStorage.getItem('fit_uny_category_names')
+        const current = s ? JSON.parse(s) : {}
+        current[id] = updates.category_name_id
+        localStorage.setItem('fit_uny_category_names', JSON.stringify(current))
+      } catch {}
+    }
+
     // Coba update nama kategori secara terpisah (kolom ini mungkin ada atau tidak di DB)
     // Jika gagal, store sudah terupdate in-memory sehingga halaman depan tetap update
     if (updates.category_name_id !== undefined || updates.category_name_en !== undefined) {
@@ -566,8 +620,9 @@ export const useAdminStore = defineStore('admin', () => {
   }
 
   return {
-    trainers, classes, equipment, products, bookings, pricing, isLoading,
+    trainers, classes, equipment, products, bookings, pricing, feeTitles, isLoading,
     fetchAll,
+    updateFeeTitles,
     addTrainer, updateTrainer, deleteTrainer,
     addClass, updateClass, deleteClass,
     addProduct, updateProduct, deleteProduct,
