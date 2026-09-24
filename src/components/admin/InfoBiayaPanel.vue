@@ -48,18 +48,7 @@
             <i class="fa-solid fa-plus"></i> Tambah Kategori
           </button>
         </div>
-        <div class="h-[3px] w-16 bg-primary-900 rounded mb-4"></div>
-
-        <!-- Petunjuk Pengeditan Nama & Tarif -->
-        <div class="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5 flex items-start gap-3 max-w-xl text-amber-900 text-xs mb-6">
-          <i class="fa-solid fa-pen-to-square text-accent-500 mt-0.5 text-sm flex-shrink-0"></i>
-          <div>
-            <span class="font-bold block mb-0.5">Edit Nama Kategori & 4 Nama Tarif Biaya Gym:</span>
-            <span class="text-amber-800/90 text-[11px] leading-relaxed">
-              Anda dapat mengedit langsung nama kategori maupun 4 nama tarif (<span class="font-semibold">PENDAFTARAN MEMBER, MEMBER 2 BULAN, MEMBER 3 BULAN, INSIDENTAL HARIAN</span>) pada kolom di bawah. Saat mengklik tombol <span class="font-bold text-accent-600">"Simpan Biaya, Nama & Tarif"</span>, perubahan nama dan tarif akan otomatis tersimpan dan langsung terupdate di seluruh sistem serta halaman depan.
-            </span>
-          </div>
-        </div>
+        <div class="h-[3px] w-16 bg-primary-900 rounded mb-6"></div>
 
         <div v-if="pricingList.length === 0" class="text-center py-8 text-slate-400 text-xs">
           Loading data pricing...
