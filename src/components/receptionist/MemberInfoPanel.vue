@@ -154,7 +154,7 @@
                   :disabled="isExtending"
                   class="py-2.5 bg-white hover:bg-primary-50 text-primary-800 hover:text-primary-900 rounded-xl border border-slate-200 hover:border-primary-200 text-xs font-bold transition-all disabled:opacity-50"
                 >
-                  + 1 Bulan
+                  + 2 Bulan
                 </button>
                 <button
                   @click="extendMembership(3)"

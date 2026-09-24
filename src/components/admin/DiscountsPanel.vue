@@ -104,7 +104,7 @@
               <input type="number" v-model.number="newCategoryForm.incidental_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Member 1 Bulan (Rp)</label>
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Member 2 Bulan (Rp)</label>
               <input type="number" v-model.number="newCategoryForm.member_1_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">

@@ -57,13 +57,19 @@
         <div v-else class="space-y-8">
           <div v-for="cat in pricingList" :key="cat.id" class="space-y-4 pb-8 border-b border-slate-100 last:border-0 last:pb-0">
             <div class="flex justify-between items-center max-w-xl mb-2">
-              <div class="font-extrabold text-accent-500 text-xs uppercase tracking-wider">
-                {{ getCategoryName(cat.id) }}
+              <!-- Input Nama Kategori yang Bisa Diedit -->
+              <div class="flex-1 mr-4">
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nama Kategori</label>
+                <input
+                  type="text"
+                  v-model="cat.category_name_id"
+                  class="w-full px-3 py-1.5 rounded-lg border border-accent-200 text-xs font-extrabold text-accent-600 uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-accent-50/50"
+                />
               </div>
               <button
                 type="button"
                 @click="deleteCategory(cat.id)"
-                class="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1.5"
+                class="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1.5 flex-shrink-0"
               >
                 <i class="fa-solid fa-trash-can"></i> Hapus Kategori
               </button>
@@ -81,13 +87,22 @@
                 />
               </div>
 
-              <!-- Membership Tariffs (dynamic keys, sorted 1 then 3) -->
+              <!-- Membership Tariffs: tampilkan 2 Bulan (key '1') dan 3 Bulan (key '3') -->
               <template v-if="cat.membership_tariffs">
-                <div v-for="months in ['1', '3']" :key="months" class="space-y-1.5">
-                  <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">MEMBER {{ months }} BULAN (RP)</label>
+                <div class="space-y-1.5">
+                  <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">MEMBER 2 BULAN (RP)</label>
                   <input
                     type="number"
-                    v-model.number="cat.membership_tariffs[months]"
+                    v-model.number="cat.membership_tariffs['1']"
+                    required
+                    class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+                  />
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">MEMBER 3 BULAN (RP)</label>
+                  <input
+                    type="number"
+                    v-model.number="cat.membership_tariffs['3']"
                     required
                     class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
                   />
@@ -262,10 +277,10 @@
           </div>
         </div>
 
-        <!-- Grid 2 kolom: Member 1 & 3 bulan -->
+        <!-- Grid 2 kolom: Member 2 & 3 bulan -->
         <div class="grid grid-cols-2 gap-3">
           <div class="space-y-1.5">
-            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Member 1 Bulan (Rp)</label>
+            <label class="text-[11px] font-bold text-primary-900 uppercase tracking-wider block">Member 2 Bulan (Rp)</label>
             <input
               type="number"
               v-model.number="newCategory.member_1_month_fee"
@@ -454,10 +469,17 @@ async function saveTariffs() {
   try {
     let success = true
     for (const p of pricingList.value) {
+      // Hanya kirim key '1' dan '3' — sesuai kolom DB yang ada (member_1_month_fee, member_3_month_fee)
+      const tariffs = {
+        '1': Number(p.membership_tariffs?.['1'] ?? 0),
+        '3': Number(p.membership_tariffs?.['3'] ?? 0),
+      }
       const payload = {
         registration_fee: Number(p.registration_fee),
         incidental_fee: Number(p.incidental_fee),
-        membership_tariffs: p.membership_tariffs
+        membership_tariffs: tariffs,
+        category_name_id: p.category_name_id,
+        category_name_en: p.category_name_en || p.category_name_id,
       }
       const { error } = await admin.updatePricing(p.id, payload)
       if (error) success = false

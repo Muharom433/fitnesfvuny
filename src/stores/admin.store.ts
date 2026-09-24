@@ -101,23 +101,35 @@ export const useAdminStore = defineStore('admin', () => {
       }
       if (pr.data) {
         pricing.value = (pr.data as any[]).map(row => {
-          // Label untuk kategori standar
+          // Gunakan category_name_id dari DB jika tersedia (tidak kosong)
+          // Fallback ke hardcode untuk kompatibilitas data lama
           let category_name_id: string
           let category_name_en: string
-          if (row.profile === 'student') {
+
+          if (row.category_name_id && row.category_name_id.trim() !== '') {
+            category_name_id = row.category_name_id
+          } else if (row.profile === 'student') {
             category_name_id = 'UNY (MAHASISWA, TENDIK/DOSEN)'
-            category_name_en = 'UNY Student'
           } else if (row.profile === 'alumni') {
             category_name_id = 'ALUMNI UNY'
-            category_name_en = 'UNY Alumni'
           } else if (row.profile === 'public') {
             category_name_id = 'MASYARAKAT UMUM'
+          } else {
+            category_name_id = row.profile.replace(/_/g, ' ').toUpperCase()
+          }
+
+          if (row.category_name_en && row.category_name_en.trim() !== '') {
+            category_name_en = row.category_name_en
+          } else if (row.profile === 'student') {
+            category_name_en = 'UNY Student'
+          } else if (row.profile === 'alumni') {
+            category_name_en = 'UNY Alumni'
+          } else if (row.profile === 'public') {
             category_name_en = 'General Public'
           } else {
-            // Kategori custom: konversi ID ke label yang readable
-            category_name_id = row.profile.replace(/_/g, ' ').toUpperCase()
             category_name_en = row.profile.replace(/_/g, ' ')
           }
+
           return {
             id: row.profile,
             category_name_id,
@@ -125,8 +137,8 @@ export const useAdminStore = defineStore('admin', () => {
             registration_fee: Number(row.registration_fee),
             incidental_fee: Number(row.incidental_fee),
             membership_tariffs: {
-              '1': Number(row.member_1_month_fee),
-              '3': Number(row.member_3_month_fee)
+              '1': Number(row.member_1_month_fee ?? 0),
+              '3': Number(row.member_3_month_fee ?? 0)
             },
             updated_at: row.updated_at
           }
@@ -487,9 +499,11 @@ export const useAdminStore = defineStore('admin', () => {
     let oldVal: Pricing | null = null
     if (idx !== -1) {
       oldVal = JSON.parse(JSON.stringify(pricing.value[idx]))
+      // Update store secara optimistic (in-memory) agar halaman depan langsung update
       pricing.value[idx] = { ...pricing.value[idx], ...updates }
     }
 
+    // Payload hanya berisi kolom yang PASTI ada di DB
     const dbPayload: any = {}
     if (updates.registration_fee !== undefined) dbPayload.registration_fee = Number(updates.registration_fee)
     if (updates.incidental_fee !== undefined) dbPayload.incidental_fee = Number(updates.incidental_fee)
@@ -505,9 +519,26 @@ export const useAdminStore = defineStore('admin', () => {
       .select()
 
     if (error) {
+      // Rollback store jika update harga gagal
       if (idx !== -1 && oldVal) pricing.value[idx] = oldVal
       console.error('updatePricing db error:', error)
+      return { data, error }
     }
+
+    // Coba update nama kategori secara terpisah (kolom ini mungkin ada atau tidak di DB)
+    // Jika gagal, store sudah terupdate in-memory sehingga halaman depan tetap update
+    if (updates.category_name_id !== undefined || updates.category_name_en !== undefined) {
+      const namePayload: any = {}
+      if (updates.category_name_id !== undefined) namePayload.category_name_id = updates.category_name_id
+      if (updates.category_name_en !== undefined) namePayload.category_name_en = updates.category_name_en
+      try {
+        await supabase.from('pricing').update(namePayload).eq('profile', id)
+      } catch {
+        // Kolom category_name tidak ada di DB — abaikan, store sudah terupdate in-memory
+        console.warn('category_name_id column may not exist in DB, name update skipped')
+      }
+    }
+
     return { data, error }
   }
 

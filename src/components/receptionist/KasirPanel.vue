@@ -44,7 +44,7 @@
           <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Durasi</label>
           <select v-model="form.duration" required class="input-field">
             <option value="">-- Pilih Durasi --</option>
-            <option value="1 Bulan">1 Bulan</option>
+            <option value="1 Bulan">2 Bulan</option>
             <option value="3 Bulan">3 Bulan</option>
           </select>
         </div>

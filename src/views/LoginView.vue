@@ -227,13 +227,13 @@
 
                   <div class="mt-6 pt-5 border-t border-slate-100 space-y-3 bg-slate-50 p-4 rounded-xl">
                     <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Tarif Member Bulanan:</span>
-                    <div class="flex justify-between items-center text-xs text-slate-700">
-                      <span>1 Bulan:</span>
-                      <span class="font-bold text-slate-800">Rp {{ p.membership_tariffs['1'].toLocaleString('id-ID') }}</span>
+                    <div v-if="p.membership_tariffs?.['1'] != null" class="flex justify-between items-center text-xs text-slate-700">
+                      <span>2 Bulan:</span>
+                      <span class="font-bold text-slate-800">Rp {{ (p.membership_tariffs['1'] ?? 0).toLocaleString('id-ID') }}</span>
                     </div>
-                    <div class="flex justify-between items-center text-xs text-slate-700">
+                    <div v-if="p.membership_tariffs?.['3'] != null" class="flex justify-between items-center text-xs text-slate-700">
                       <span>3 Bulan:</span>
-                      <span class="font-bold text-slate-800">Rp {{ p.membership_tariffs['3'].toLocaleString('id-ID') }}</span>
+                      <span class="font-bold text-slate-800">Rp {{ (p.membership_tariffs['3'] ?? 0).toLocaleString('id-ID') }}</span>
                     </div>
                   </div>
                 </div>
