@@ -148,9 +148,16 @@
                 <i class="fa-solid fa-clock-rotate-left text-accent-500"></i>
                 Perpanjang Masa Membership
               </h4>
-              <div class="grid grid-cols-2 gap-2">
+              <div class="grid grid-cols-3 gap-2">
                 <button
                   @click="extendMembership(1)"
+                  :disabled="isExtending"
+                  class="py-2.5 bg-white hover:bg-primary-50 text-primary-800 hover:text-primary-900 rounded-xl border border-slate-200 hover:border-primary-200 text-xs font-bold transition-all disabled:opacity-50"
+                >
+                  + 1 Bulan
+                </button>
+                <button
+                  @click="extendMembership(2)"
                   :disabled="isExtending"
                   class="py-2.5 bg-white hover:bg-primary-50 text-primary-800 hover:text-primary-900 rounded-xl border border-slate-200 hover:border-primary-200 text-xs font-bold transition-all disabled:opacity-50"
                 >

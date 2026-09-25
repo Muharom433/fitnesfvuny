@@ -6,6 +6,7 @@ import { decodeTrainerPhilosophy, encodeTrainerPhilosophy, decodePhotoDesc, enco
 
 export interface FeeTitles {
   registration: string
+  member_1: string
   member_2: string
   member_3: string
   incidental: string
@@ -17,18 +18,20 @@ function loadInitialFeeTitles(): FeeTitles {
     if (saved) {
       const parsed = JSON.parse(saved)
       return {
-        registration: parsed.registration || 'PENDAFTARAN MEMBER (RP)',
-        member_2: parsed.member_2 || 'MEMBER 2 BULAN (RP)',
-        member_3: parsed.member_3 || 'MEMBER 3 BULAN (RP)',
-        incidental: parsed.incidental || 'INSIDENTAL HARIAN (RP)',
+        registration: parsed.registration || 'PENDAFTARAN MEMBER',
+        member_1: parsed.member_1 || '1 BULAN',
+        member_2: parsed.member_2 || '2 BULAN',
+        member_3: parsed.member_3 || '3 BULAN',
+        incidental: parsed.incidental || 'INSIDENTAL HARIAN',
       }
     }
   } catch {}
   return {
-    registration: 'PENDAFTARAN MEMBER (RP)',
-    member_2: 'MEMBER 2 BULAN (RP)',
-    member_3: 'MEMBER 3 BULAN (RP)',
-    incidental: 'INSIDENTAL HARIAN (RP)',
+    registration: 'PENDAFTARAN MEMBER',
+    member_1: '1 BULAN',
+    member_2: '2 BULAN',
+    member_3: '3 BULAN',
+    incidental: 'INSIDENTAL HARIAN',
   }
 }
 
@@ -174,6 +177,16 @@ export const useAdminStore = defineStore('admin', () => {
             category_name_en = row.profile.replace(/_/g, ' ')
           }
 
+          // Load harga 2 Bulan dari localStorage (tidak ada kolom DB, disimpan lokal)
+          let month2Price = 0
+          try {
+            const m2stored = localStorage.getItem('fit_uny_pricing_month2')
+            if (m2stored) {
+              const m2data = JSON.parse(m2stored)
+              month2Price = Number(m2data[row.profile] ?? 0)
+            }
+          } catch {}
+
           return {
             id: row.profile,
             category_name_id,
@@ -182,6 +195,7 @@ export const useAdminStore = defineStore('admin', () => {
             incidental_fee: Number(row.incidental_fee),
             membership_tariffs: {
               '1': Number(row.member_1_month_fee ?? 0),
+              '2': month2Price,
               '3': Number(row.member_3_month_fee ?? 0)
             },
             updated_at: row.updated_at
@@ -552,8 +566,17 @@ export const useAdminStore = defineStore('admin', () => {
     if (updates.registration_fee !== undefined) dbPayload.registration_fee = Number(updates.registration_fee)
     if (updates.incidental_fee !== undefined) dbPayload.incidental_fee = Number(updates.incidental_fee)
     if (updates.membership_tariffs !== undefined) {
+      // Key '1' = 1 Bulan → kolom member_1_month_fee di DB
       dbPayload.member_1_month_fee = Number(updates.membership_tariffs['1'] ?? 0)
+      // Key '3' = 3 Bulan → kolom member_3_month_fee di DB
       dbPayload.member_3_month_fee = Number(updates.membership_tariffs['3'] ?? 0)
+      // Key '2' = 2 Bulan → simpan di localStorage (tidak ada kolom DB tambahan)
+      try {
+        const m2stored = localStorage.getItem('fit_uny_pricing_month2')
+        const m2data = m2stored ? JSON.parse(m2stored) : {}
+        m2data[id] = Number(updates.membership_tariffs['2'] ?? 0)
+        localStorage.setItem('fit_uny_pricing_month2', JSON.stringify(m2data))
+      } catch {}
     }
 
     const { data, error } = await supabase
@@ -596,8 +619,16 @@ export const useAdminStore = defineStore('admin', () => {
     return { data, error }
   }
 
-  async function addPricingCategory(profileName: string, payload: { registration_fee: number; incidental_fee: number; member_1_month_fee: number; member_3_month_fee: number }) {
+  async function addPricingCategory(profileName: string, payload: { registration_fee: number; incidental_fee: number; member_1_month_fee: number; member_2_month_fee: number; member_3_month_fee: number }) {
     const profileId = profileName.toLowerCase().trim().replace(/\s+/g, '_')
+    // Simpan harga 2 Bulan ke localStorage (tidak ada kolom DB)
+    try {
+      const m2stored = localStorage.getItem('fit_uny_pricing_month2')
+      const m2data = m2stored ? JSON.parse(m2stored) : {}
+      m2data[profileId] = Number(payload.member_2_month_fee)
+      localStorage.setItem('fit_uny_pricing_month2', JSON.stringify(m2data))
+    } catch {}
+
     const { data, error } = await supabase.from('pricing').insert({
       profile: profileId,
       registration_fee: Number(payload.registration_fee),

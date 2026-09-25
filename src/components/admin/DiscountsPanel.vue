@@ -104,8 +104,12 @@
               <input type="number" v-model.number="newCategoryForm.incidental_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.member_2 }}</label>
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.member_1 }}</label>
               <input type="number" v-model.number="newCategoryForm.member_1_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.member_2 }}</label>
+              <input type="number" v-model.number="newCategoryForm.member_2_month_fee" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs bg-white" />
             </div>
             <div class="space-y-1">
               <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">{{ admin.feeTitles.member_3 }}</label>
@@ -147,6 +151,7 @@ const newCategoryForm = reactive({
   registration_fee: 0,
   incidental_fee: 0,
   member_1_month_fee: 0,
+  member_2_month_fee: 0,
   member_3_month_fee: 0,
 })
 
@@ -237,6 +242,7 @@ async function createCategory() {
     registration_fee: Number(newCategoryForm.registration_fee || 0),
     incidental_fee: Number(newCategoryForm.incidental_fee || 0),
     member_1_month_fee: Number(newCategoryForm.member_1_month_fee || 0),
+    member_2_month_fee: Number(newCategoryForm.member_2_month_fee || 0),
     member_3_month_fee: Number(newCategoryForm.member_3_month_fee || 0),
   }
   const { error } = await admin.addPricingCategory(name, payload)
@@ -248,6 +254,7 @@ async function createCategory() {
       registration_fee: 0,
       incidental_fee: 0,
       member_1_month_fee: 0,
+      member_2_month_fee: 0,
       member_3_month_fee: 0,
     })
   } else {

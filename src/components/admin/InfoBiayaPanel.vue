@@ -97,8 +97,27 @@
                 />
               </div>
 
-              <!-- Membership Tariffs: tampilkan 2 Bulan (key '1') dan 3 Bulan (key '3') -->
+              <!-- Membership Tariffs: 1 Bulan, 2 Bulan, 3 Bulan -->
               <template v-if="cat.membership_tariffs">
+                <div class="space-y-1.5">
+                  <div class="flex items-center justify-between gap-2">
+                    <input
+                      type="text"
+                      v-model="feeTitles.member_1"
+                      class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-accent-500 rounded-lg px-2.5 py-1 focus:outline-none focus:ring-2 focus:ring-accent-500/20 transition-all w-full max-w-sm"
+                      title="Klik untuk mengubah nama judul tarif ini"
+                    />
+                    <span class="text-[10px] text-accent-600 font-bold flex items-center gap-1 flex-shrink-0 cursor-default">
+                      <i class="fa-solid fa-pen text-[9px]"></i> Edit Judul
+                    </span>
+                  </div>
+                  <input
+                    type="number"
+                    v-model.number="cat.membership_tariffs['1']"
+                    required
+                    class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+                  />
+                </div>
                 <div class="space-y-1.5">
                   <div class="flex items-center justify-between gap-2">
                     <input
@@ -113,7 +132,7 @@
                   </div>
                   <input
                     type="number"
-                    v-model.number="cat.membership_tariffs['1']"
+                    v-model.number="cat.membership_tariffs['2']"
                     required
                     class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
                   />
@@ -331,8 +350,24 @@
           </div>
         </div>
 
-        <!-- Grid 2 kolom: Member 2 & 3 bulan -->
-        <div class="grid grid-cols-2 gap-3">
+        <!-- Grid 3 kolom: Member 1, 2 & 3 bulan -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <input
+                type="text"
+                v-model="feeTitles.member_1"
+                class="text-[11px] font-bold text-primary-900 uppercase tracking-wider bg-slate-100 hover:bg-white focus:bg-white border border-slate-200 focus:border-accent-500 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-accent-500/30 transition-all w-full"
+                title="Klik untuk mengubah nama judul"
+              />
+            </div>
+            <input
+              type="number"
+              v-model.number="newCategory.member_1_month_fee"
+              min="0"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
+            />
+          </div>
           <div class="space-y-1.5">
             <div class="flex items-center justify-between">
               <input
@@ -344,7 +379,7 @@
             </div>
             <input
               type="number"
-              v-model.number="newCategory.member_1_month_fee"
+              v-model.number="newCategory.member_2_month_fee"
               min="0"
               class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm text-primary-900 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all bg-slate-50/50"
             />
@@ -407,6 +442,7 @@ const isSaving = ref(false)
 // === Judul & Nama Biaya (Reactive & Terhubung ke Seluruh Tampilan) ===
 const feeTitles = reactive({
   registration: admin.feeTitles.registration,
+  member_1: admin.feeTitles.member_1,
   member_2: admin.feeTitles.member_2,
   member_3: admin.feeTitles.member_3,
   incidental: admin.feeTitles.incidental,
@@ -430,6 +466,7 @@ const newCategory = reactive({
   registration_fee: 0,
   incidental_fee: 0,
   member_1_month_fee: 0,
+  member_2_month_fee: 0,
   member_3_month_fee: 0,
 })
 
@@ -443,6 +480,7 @@ function closeAddCategoryModal() {
     registration_fee: 0,
     incidental_fee: 0,
     member_1_month_fee: 0,
+    member_2_month_fee: 0,
     member_3_month_fee: 0,
   })
 }
@@ -464,16 +502,18 @@ async function saveNewCategory() {
   try {
     // Sinkronkan perubahan nama judul tarif jika diedit di modal
     admin.updateFeeTitles({
-      registration: feeTitles.registration.trim() || 'PENDAFTARAN MEMBER (RP)',
-      member_2: feeTitles.member_2.trim() || 'MEMBER 2 BULAN (RP)',
-      member_3: feeTitles.member_3.trim() || 'MEMBER 3 BULAN (RP)',
-      incidental: feeTitles.incidental.trim() || 'INSIDENTAL HARIAN (RP)',
+      registration: feeTitles.registration.trim() || 'PENDAFTARAN MEMBER',
+      member_1: feeTitles.member_1.trim() || '1 BULAN',
+      member_2: feeTitles.member_2.trim() || '2 BULAN',
+      member_3: feeTitles.member_3.trim() || '3 BULAN',
+      incidental: feeTitles.incidental.trim() || 'INSIDENTAL HARIAN',
     })
 
     const { error } = await admin.addPricingCategory(newCategory.name.trim(), {
       registration_fee: Number(newCategory.registration_fee),
       incidental_fee: Number(newCategory.incidental_fee),
       member_1_month_fee: Number(newCategory.member_1_month_fee),
+      member_2_month_fee: Number(newCategory.member_2_month_fee),
       member_3_month_fee: Number(newCategory.member_3_month_fee),
     })
     if (!error) {
@@ -563,17 +603,19 @@ async function saveTariffs() {
   try {
     // 1. Simpan judul/nama tarif ke store & localStorage (otomatis ubah tampilan depan)
     admin.updateFeeTitles({
-      registration: feeTitles.registration.trim() || 'PENDAFTARAN MEMBER (RP)',
-      member_2: feeTitles.member_2.trim() || 'MEMBER 2 BULAN (RP)',
-      member_3: feeTitles.member_3.trim() || 'MEMBER 3 BULAN (RP)',
-      incidental: feeTitles.incidental.trim() || 'INSIDENTAL HARIAN (RP)',
+      registration: feeTitles.registration.trim() || 'PENDAFTARAN MEMBER',
+      member_1: feeTitles.member_1.trim() || '1 BULAN',
+      member_2: feeTitles.member_2.trim() || '2 BULAN',
+      member_3: feeTitles.member_3.trim() || '3 BULAN',
+      incidental: feeTitles.incidental.trim() || 'INSIDENTAL HARIAN',
     })
 
     let success = true
     for (const p of pricingList.value) {
-      // Hanya kirim key '1' dan '3' — sesuai kolom DB yang ada (member_1_month_fee, member_3_month_fee)
+      // Kirim key '1' (1 Bulan) dan '3' (3 Bulan) ke DB; key '2' (2 Bulan) ke localStorage
       const tariffs = {
         '1': Number(p.membership_tariffs?.['1'] ?? 0),
+        '2': Number(p.membership_tariffs?.['2'] ?? 0),
         '3': Number(p.membership_tariffs?.['3'] ?? 0),
       }
       const payload = {

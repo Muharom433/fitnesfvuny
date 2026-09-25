@@ -44,7 +44,8 @@
           <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Durasi</label>
           <select v-model="form.duration" required class="input-field">
             <option value="">-- Pilih Durasi --</option>
-            <option value="1 Bulan">{{ adminStore.feeTitles?.member_2 || '2 Bulan' }}</option>
+            <option value="1 Bulan">{{ adminStore.feeTitles?.member_1 || '1 Bulan' }}</option>
+            <option value="2 Bulan">{{ adminStore.feeTitles?.member_2 || '2 Bulan' }}</option>
             <option value="3 Bulan">{{ adminStore.feeTitles?.member_3 || '3 Bulan' }}</option>
           </select>
         </div>
@@ -540,7 +541,9 @@ function getBasePrice(tx: KasirTransaction) {
   if (tx.category === 'Insidental') {
     return Number(pricing.incidental_fee)
   } else {
-    const durKey = tx.duration === '3 Bulan' ? '3' : '1'
+    let durKey = '1'
+    if (tx.duration === '2 Bulan') durKey = '2'
+    else if (tx.duration === '3 Bulan') durKey = '3'
     return Number(pricing.membership_tariffs[durKey] ?? 0)
   }
 }
@@ -697,7 +700,8 @@ const computedAmount = computed(() => {
   } else if (form.category === 'Member') {
     total += Number(pricing.registration_fee)
     let durKey = '1'
-    if (form.duration === '3 Bulan') durKey = '3'
+    if (form.duration === '2 Bulan') durKey = '2'
+    else if (form.duration === '3 Bulan') durKey = '3'
     
     total += Number(pricing.membership_tariffs[durKey] ?? 0)
   }
@@ -814,7 +818,9 @@ async function submitKasir() {
 
     tx.token = generatedToken
     
-    const months = form.duration === '3 Bulan' ? 3 : 1
+    let months = 1
+    if (form.duration === '2 Bulan') months = 2
+    else if (form.duration === '3 Bulan') months = 3
     const expiry = new Date()
     expiry.setMonth(expiry.getMonth() + months)
 

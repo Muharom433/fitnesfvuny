@@ -302,7 +302,9 @@ function getMembershipInfo(m: any) {
     duration = tx.duration || '1 Bulan'
   }
   
-  const months = duration === '3 Bulan' ? 3 : 1
+  let months = 1
+  if (duration === '2 Bulan') months = 2
+  else if (duration === '3 Bulan') months = 3
   const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + months, startDate.getDate())
   const today = new Date()
   today.setHours(0,0,0,0)

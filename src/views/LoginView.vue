@@ -227,9 +227,9 @@
 
                   <div class="mt-6 pt-5 border-t border-slate-100 space-y-3 bg-slate-50 p-4 rounded-xl">
                     <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">Tarif Member Bulanan:</span>
-                    <div v-if="p.membership_tariffs?.['1'] != null" class="flex justify-between items-center text-xs text-slate-700">
+                    <div v-if="p.membership_tariffs?.['2'] != null" class="flex justify-between items-center text-xs text-slate-700">
                       <span class="font-bold text-slate-700">{{ adminStore.feeTitles.member_2 }}:</span>
-                      <span class="font-bold text-slate-800">Rp {{ (p.membership_tariffs['1'] ?? 0).toLocaleString('id-ID') }}</span>
+                      <span class="font-bold text-slate-800">Rp {{ (p.membership_tariffs['2'] ?? 0).toLocaleString('id-ID') }}</span>
                     </div>
                     <div v-if="p.membership_tariffs?.['3'] != null" class="flex justify-between items-center text-xs text-slate-700">
                       <span class="font-bold text-slate-700">{{ adminStore.feeTitles.member_3 }}:</span>
