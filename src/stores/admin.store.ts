@@ -177,15 +177,18 @@ export const useAdminStore = defineStore('admin', () => {
             category_name_en = row.profile.replace(/_/g, ' ')
           }
 
-          // Load harga 2 Bulan dari localStorage (tidak ada kolom DB, disimpan lokal)
-          let month2Price = 0
-          try {
-            const m2stored = localStorage.getItem('fit_uny_pricing_month2')
-            if (m2stored) {
-              const m2data = JSON.parse(m2stored)
-              month2Price = Number(m2data[row.profile] ?? 0)
-            }
-          } catch {}
+          // Baca harga dari kolom DB: member_1_month_fee, member_2_month_fee, member_3_month_fee
+          // Fallback ke localStorage untuk kompatibilitas data lama (sebelum kolom member_2_month_fee ditambahkan)
+          let month2FromDB = Number(row.member_2_month_fee ?? 0)
+          if (!month2FromDB) {
+            try {
+              const m2stored = localStorage.getItem('fit_uny_pricing_month2')
+              if (m2stored) {
+                const m2data = JSON.parse(m2stored)
+                month2FromDB = Number(m2data[row.profile] ?? 0)
+              }
+            } catch {}
+          }
 
           return {
             id: row.profile,
@@ -195,7 +198,7 @@ export const useAdminStore = defineStore('admin', () => {
             incidental_fee: Number(row.incidental_fee),
             membership_tariffs: {
               '1': Number(row.member_1_month_fee ?? 0),
-              '2': month2Price,
+              '2': month2FromDB,
               '3': Number(row.member_3_month_fee ?? 0)
             },
             updated_at: row.updated_at
@@ -561,16 +564,16 @@ export const useAdminStore = defineStore('admin', () => {
       pricing.value[idx] = { ...pricing.value[idx], ...updates }
     }
 
-    // Payload hanya berisi kolom yang PASTI ada di DB
+    // Payload berisi kolom yang ada di DB
     const dbPayload: any = {}
     if (updates.registration_fee !== undefined) dbPayload.registration_fee = Number(updates.registration_fee)
     if (updates.incidental_fee !== undefined) dbPayload.incidental_fee = Number(updates.incidental_fee)
     if (updates.membership_tariffs !== undefined) {
-      // Key '1' = 1 Bulan → kolom member_1_month_fee di DB
+      // Simpan ke kolom terpisah di DB
       dbPayload.member_1_month_fee = Number(updates.membership_tariffs['1'] ?? 0)
-      // Key '3' = 3 Bulan → kolom member_3_month_fee di DB
+      dbPayload.member_2_month_fee = Number(updates.membership_tariffs['2'] ?? 0)
       dbPayload.member_3_month_fee = Number(updates.membership_tariffs['3'] ?? 0)
-      // Key '2' = 2 Bulan → simpan di localStorage (tidak ada kolom DB tambahan)
+      // Simpan juga ke localStorage sebagai backup/kompatibilitas
       try {
         const m2stored = localStorage.getItem('fit_uny_pricing_month2')
         const m2data = m2stored ? JSON.parse(m2stored) : {}
@@ -621,7 +624,8 @@ export const useAdminStore = defineStore('admin', () => {
 
   async function addPricingCategory(profileName: string, payload: { registration_fee: number; incidental_fee: number; member_1_month_fee: number; member_2_month_fee: number; member_3_month_fee: number }) {
     const profileId = profileName.toLowerCase().trim().replace(/\s+/g, '_')
-    // Simpan harga 2 Bulan ke localStorage (tidak ada kolom DB)
+
+    // Simpan harga ke localStorage sebagai backup
     try {
       const m2stored = localStorage.getItem('fit_uny_pricing_month2')
       const m2data = m2stored ? JSON.parse(m2stored) : {}
@@ -629,11 +633,13 @@ export const useAdminStore = defineStore('admin', () => {
       localStorage.setItem('fit_uny_pricing_month2', JSON.stringify(m2data))
     } catch {}
 
+    // Simpan ke kolom terpisah di DB
     const { data, error } = await supabase.from('pricing').insert({
       profile: profileId,
       registration_fee: Number(payload.registration_fee),
       incidental_fee: Number(payload.incidental_fee),
       member_1_month_fee: Number(payload.member_1_month_fee),
+      member_2_month_fee: Number(payload.member_2_month_fee),
       member_3_month_fee: Number(payload.member_3_month_fee)
     }).select()
     if (!error) {
